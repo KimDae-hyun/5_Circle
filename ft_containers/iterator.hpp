@@ -5,7 +5,7 @@
 
 namespace ft
 {
-	struct input_iterator_tag {};
+/*	struct input_iterator_tag {};
 	struct output_iterator_tag {};
 	struct forward_iterator_tag : public input_iterator_tag { };
 	struct bidirectional_iterator_tag : public forward_iterator_tag { };
@@ -54,24 +54,28 @@ namespace ft
             typedef	const T&						reference;
             typedef	random_access_iterator_tag		iterator_category;
 	};
-
+*/
     template <class T>
     class vector_iterator
     {
         public:
-        	typedef	ft::iterator<ft::random_access_iterator_tag, T, ptrdiff_t, T*, T&>	iter;
-            typedef	typename iter::value_type											value_type;
-            typedef	typename iter::difference_type										difference_type;
-            typedef typename iter::pointer												pointer;
-            typedef	typename iter::reference											reference;
-            typedef	typename iter::iterator_category									iterator_category;
-		
+        	// typedef	ft::iterator<ft::random_access_iterator_tag, T, ptrdiff_t, T*, T&>	iter;
+            // typedef	typename iter::value_type											value_type;
+            // typedef	typename iter::difference_type										difference_type;
+            // typedef typename iter::pointer												pointer;
+            // typedef	typename iter::reference											reference;
+            // typedef	typename iter::iterator_category									iterator_category;
+			typedef T	value_type;
+			typedef T&	reference;
+			typedef T*	pointer;
+
 		private:
 			pointer	ptr;
 
 		public:
 			vector_iterator(void) : ptr(0) {}
-			vector_iterator(const iter &iter) : ptr(iter) {};
+			vector_iterator(pointer p) : ptr(p) {};
+			vector_iterator(const vector_iterator &iter) {*this = iter;};
 			~vector_iterator() {};
 			
 			vector_iterator& operator=(const vector_iterator &iter)
@@ -107,17 +111,27 @@ namespace ft
                 return (ptr);
             }
 
-			vector_iterator operator+(difference_type n) const
+			value_type &operator*(void)
+			{
+				return (*ptr);
+			}
+
+			value_type *operator->(void)
+			{
+				return (ptr);
+			}
+
+			vector_iterator operator+(int n) const
 			{
 				vector_iterator copy(*this);
-				ptr = ptr + n;
+				copy += n;
 				return (copy);
 			}
 
-			vector_iterator operator-(difference_type n) const
+			vector_iterator operator-(int n) const
 			{
 				vector_iterator copy(*this);
-				ptr = ptr - n;
+				copy -= n;
 				return (copy);
 			}
 
@@ -179,13 +193,13 @@ namespace ft
 					return (0);
 			}
 			
-			vector_iterator& operator+=(const difference_type n)
+			vector_iterator& operator+=(const int n)
 			{
 				ptr = ptr + n;
 				return (*this);
 			}
 
-			vector_iterator& operator-=(const difference_type n)
+			vector_iterator& operator-=(const int n)
 			{
 				ptr = ptr - n;
 				return (*this);
@@ -196,6 +210,40 @@ namespace ft
 				return (*(ptr + n));
 			}
     };
+
+	template <class T>
+    class const_vector_iterator : public vector_iterator<T>
+    {
+		public:
+			typedef T	value_type;
+			typedef T&	reference;
+			typedef T*	pointer;
+			const_vector_iterator(void) {};
+			const_vector_iterator(pointer p)
+			{
+				this->ptr = p;
+			};
+			const_vector_iterator(const const_vector_iterator &iter)
+			{
+				*this = iter;
+			};
+			~const_vector_iterator() {};
+			const_vector_iterator &operator=(const const_vector_iterator &iter)
+			{
+				if (this != &iter)
+					this->ptr = iter.ptr;
+				return (*this);
+			};
+			const value_type &operator*(void)
+			{
+				return (*this->ptr);
+			};
+			const value_type &operator[](int n) const
+			{
+				return (*(this->ptr + n));
+			};
+	};
+
 }
 
 #endif
