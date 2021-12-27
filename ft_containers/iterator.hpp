@@ -2,6 +2,7 @@
 # define ITERATOR_HPP
 
 # include <iostream>
+# include "utils.hpp"
 
 namespace ft
 {

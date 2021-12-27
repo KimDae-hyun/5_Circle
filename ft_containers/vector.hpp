@@ -5,7 +5,7 @@
 # include <memory>
 # include <limits>
 # include "iterator.hpp"
-//# include "utils.hpp"
+# include "utils.hpp"
 
 namespace ft
 {
@@ -37,33 +37,36 @@ namespace ft
 			vector (const allocator_type& alloc = allocator_type()) : v_ptr(NULL), v_size(0), v_capacity(0), v_alloc(alloc)
 			{
 				v_ptr = v_alloc.allocator(0);
-				std::cout << "__1"<< std::endl;
 			}
 			vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
 			: v_ptr(NULL), v_size(n), v_capacity(n), v_alloc(alloc)
 			{
-				std::cout << "__2"<< std::endl;
 				if (n > 0)
 				{
 					v_ptr = v_alloc.allocate(v_size);
 					for (size_type i = 0; i < n; i++)
 					{
 						v_ptr[i] = val;
-						std::cout << v_ptr[i] << std::endl;
 					}
 				}
 			}
 			template <class InputIterator>
-			vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
+			vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(), 
+					typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0)
 			: v_ptr(NULL), v_size(0), v_capacity(0), v_alloc(alloc)
 			{
-				std::cout << "__3" << std::endl;
 				v_ptr = v_alloc.allocate(0);
-				assign(first, last);
+				for (; first != last; first++)
+            		push_back(*first);
+				pointer v_new = v_alloc.allocate(v_size); // capacity등을 최대값과 맞춰주기 위한 과정이 필요
+				for (size_type i = 0; i < v_size; i++)
+					v_new[i] = v_ptr[i];
+				v_alloc.deallocate(v_ptr, v_capacity);
+				v_ptr = v_new;
+				v_capacity = v_size;
 			}
 			vector (const vector &vec)
 			{
-				std::cout << "__4"<< std::endl;
 				if (this != &vec)
 					*this = vec;
 			}
@@ -88,45 +91,13 @@ namespace ft
 			{
 				return (v_ptr[n]);
 			};
+
 			const_reference operator[](size_type n) const
 			{
 				return (v_ptr[n]);
 			};
-		//Member Funtion
 
-		// con/destructor
-		/*	template <class T, class Alloc>
-			vector<T, Alloc>::vector(const allocator_type& alloc) : v_ptr(NULL), v_size(0), v_capacity(0), v_alloc(alloc) {}
-
-			template <class T, class Alloc>
-			vector<T, Alloc>::vector(size_type n, const value_type& val, const allocator_type& alloc)\
-			: v_ptr(NULL), v_size(n), v_capacity(n), v_alloc(alloc)
-			{
-				if (n > 0)
-				{
-					v_ptr = v_alloc.allocate(v_size);
-					for (size_type i = 0; i < n; i++)
-						v_ptr[i] = val;
-				}
-			}
-
-			template <class T, class Alloc>
-			template <class InputIterator>
-			vector<T, Alloc>::vector (InputIterator first, InputIterator last, const allocator_type& alloc, typename enable_if<!is_integral<InputIterator>::value>::type*) : v_alloc(alloc)
-			{
-				v_size = last - first;
-				v_capacity = last - first;
-				v_ptr = v_alloc.allocate(v_capacity);
-				for (int i = 0; first != last; first++)
-					v_ptr[i++] = *first;
-			}
-
-			template <class T, class Alloc>
-			vector<T, Alloc>::vector(const vector& vec)
-			{
-				if (this != &vec)
-					*this = vec;
-			}*/
+		// Member Funtion
 
 		// Iterator
 			iterator begin()
@@ -194,7 +165,6 @@ namespace ft
 			template <class InputIterator>
 			void assign (InputIterator first, InputIterator last)
 			{
-				std::cout << "here??" << std::endl;
 				clear();
 				insert(begin(), first, last);
 			}
@@ -222,12 +192,10 @@ namespace ft
 				if (v_size + 1 > v_capacity)
 					reserve(v_capacity + 1);
 				size_type j = v_capacity - 1;
-				std::cout << "i = "<< i << " j = "<< j << " val = " << val << std::endl;
 				while (j > i)
 				{
 					v_ptr[j] = v_ptr[j - 1];
 					j--;
-					std::cout << "v_ptr[j] "<< v_ptr[j] << std::endl;
 				}
 				v_ptr[i] = val;
 				v_size++;
@@ -261,9 +229,8 @@ namespace ft
 				iterator iter = begin();
 				while (iter + i != position && i < v_size)
 					i++;
-				while (first != last)////
+				while (first != last)
 				{
-					std::cout << "insert " << v_ptr[i] << " i = " << i << std::endl;
 					position = insert(position, v_ptr[i++]) + 1;
 					++first;
 				}
@@ -283,7 +250,7 @@ namespace ft
 
 			iterator erase (iterator first, iterator last)
 			{
-				while (first != last)////
+				while (first != last)
 				{
 					erase(first);
 					last--;
