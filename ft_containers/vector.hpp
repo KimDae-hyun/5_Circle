@@ -58,12 +58,6 @@ namespace ft
 				v_ptr = v_alloc.allocate(0);
 				for (; first != last; first++)
             		push_back(*first);
-				pointer v_new = v_alloc.allocate(v_size); // capacity등을 최대값과 맞춰주기 위한 과정이 필요
-				for (size_type i = 0; i < v_size; i++)
-					v_new[i] = v_ptr[i];
-				v_alloc.deallocate(v_ptr, v_capacity);
-				v_ptr = v_new;
-				v_capacity = v_size;
 			}
 			vector (const vector &vec)
 			{
