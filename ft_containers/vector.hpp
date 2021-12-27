@@ -58,6 +58,12 @@ namespace ft
 				v_ptr = v_alloc.allocate(0);
 				for (; first != last; first++)
             		push_back(*first);
+				pointer v_new = v_alloc.allocate(v_size); // capacity등을 최대값과 맞춰주기 위한 과정이 필요
+				for (size_type i = 0; i < v_size; i++)
+					v_new[i] = v_ptr[i];
+				v_alloc.deallocate(v_ptr, v_capacity);
+				v_ptr = v_new;
+				v_capacity = v_size;
 			}
 			vector (const vector &vec)
 			{
@@ -139,8 +145,12 @@ namespace ft
 			{
 				while (n < v_size)
 					pop_back();
-				while (n > v_size)
-					push_back(val);
+				if (n > v_size)
+				{
+					reserve(n);
+					for(size_type i = v_size; i < n; i++)
+						push_back(val);
+				}
 			}
 
 			size_type capacity() const
@@ -223,12 +233,24 @@ namespace ft
 			{
 				clear();
 				insert(begin(), n, val);
-			};
+			}
+
+			size_type add_size(size_type new_size)
+			{
+				size_type v_ms = max_size();
+				size_type v_cap = capacity();
+				if (v_cap >= v_ms / 2)
+					return (v_ms);
+				if (new_size < v_cap * 2)
+					return (v_cap * 2);
+				else
+					return (new_size);
+			}
 
 			void push_back(const value_type& val)
 			{
 				if (v_size == v_capacity)
-					reserve(v_size + 1);
+					reserve(add_size(v_size + 1));
 				v_size++;
 				v_ptr[v_size - 1] = val;
 			}
