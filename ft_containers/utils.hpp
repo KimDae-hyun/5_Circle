@@ -20,7 +20,6 @@ namespace ft
         static const bool value = false;
     };
 
-
     template <>
     struct is_integral<bool> {static const bool value = true;};
 

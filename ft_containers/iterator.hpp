@@ -102,25 +102,15 @@ namespace ft
 					return (0);
 			}
 
-            reference           operator*() const
+            reference	operator*() const
 			{
                 return (*ptr);
             }
 
-            pointer             operator->() const
+            pointer		operator->() const
 			{
                 return (ptr);
             }
-
-			value_type &operator*(void)
-			{
-				return (*ptr);
-			}
-
-			value_type *operator->(void)
-			{
-				return (ptr);
-			}
 
 			vector_iterator operator+(int n) const
 			{
@@ -245,6 +235,178 @@ namespace ft
 			};
 	};
 
+    template <class T>
+    class reverse_iterator
+    {
+        public:
+			typedef T	value_type;
+			typedef T&	reference;
+			typedef T*	pointer;
+
+		private:
+			pointer	ptr;
+
+		public:
+			reverse_iterator(void) : ptr(0) {}
+			reverse_iterator(pointer p) : ptr(p) {};
+			reverse_iterator(const reverse_iterator &iter) {*this = iter;};
+			~reverse_iterator() {};
+			
+			reverse_iterator& operator=(const reverse_iterator &iter)
+			{
+				if (this != &iter)
+					ptr = iter.ptr;
+				return (*this);
+			}
+
+			int	operator==(const reverse_iterator &iter) const
+			{
+				if (this->ptr == iter.ptr)
+					return (1);
+				else
+					return (0);
+			}
+
+			int	operator!=(const reverse_iterator &iter) const
+			{
+				if (this->ptr != iter.ptr)
+					return (1);
+				else
+					return (0);
+			}
+
+            reference	operator*() const
+			{
+                return (*ptr);
+            }
+
+            pointer		operator->() const
+			{
+                return (ptr);
+            }
+
+			reverse_iterator operator+(int n) const
+			{
+				reverse_iterator copy(*this);
+				copy -= n;
+				return (copy);
+			}
+
+			reverse_iterator operator-(int n) const
+			{
+				reverse_iterator copy(*this);
+				copy += n;
+				return (copy);
+			}
+
+			reverse_iterator& operator++()
+			{
+				ptr = ptr - 1;
+				return (*this);
+			}
+
+			reverse_iterator& operator--()
+			{
+				ptr = ptr + 1;
+				return (*this);
+			}
+
+			reverse_iterator operator++(int)
+			{
+				reverse_iterator copy(*this);
+				ptr = ptr - 1;
+				return (copy);
+			}
+
+			reverse_iterator operator--(int)
+			{
+				reverse_iterator copy(*this);
+				ptr = ptr + 1;
+				return (copy);
+			}
+
+			int	operator<(const reverse_iterator &iter) const
+			{
+				if (this->ptr < iter.ptr)
+					return (1);
+				else
+					return (0);
+			}
+
+			int	operator>(const reverse_iterator &iter) const
+			{
+				if (this->ptr > iter.ptr)
+					return (1);
+				else
+					return (0);
+			}
+
+			int	operator<=(const reverse_iterator &iter) const
+			{
+				if (this->ptr <= iter.ptr)
+					return (1);
+				else
+					return (0);
+			}
+
+			int	operator>=(const reverse_iterator &iter) const
+			{
+				if (this->ptr >= iter.ptr)
+					return (1);
+				else
+					return (0);
+			}
+			
+			reverse_iterator& operator+=(const int n)
+			{
+				ptr = ptr - n;
+				return (*this);
+			}
+
+			reverse_iterator& operator-=(const int n)
+			{
+				ptr = ptr + n;
+				return (*this);
+			}
+
+			reference	operator[](int n) const
+			{
+				return (*(ptr - n));
+			}
+    };
+
+	template <class T>
+    class const_reverse_iterator : public reverse_iterator<T>
+    {
+		public:
+			typedef T	value_type;
+			typedef T&	reference;
+			typedef T*	pointer;
+			const_reverse_iterator(void) {};
+			const_reverse_iterator(pointer p)
+			{
+				this->ptr = p;
+			};
+			const_reverse_iterator(const const_reverse_iterator &iter)
+			{
+				*this = iter;
+			};
+			~const_reverse_iterator() {};
+			const_reverse_iterator &operator=(const const_reverse_iterator &iter)
+			{
+				if (this != &iter)
+					this->ptr = iter.ptr;
+				return (*this);
+			};
+			const value_type &operator*(void)
+			{
+				return (*this->ptr);
+			};
+			const value_type &operator[](int n) const
+			{
+				return (*(this->ptr - n));
+			};
+	};
 }
 
 #endif

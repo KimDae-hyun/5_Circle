@@ -13,17 +13,17 @@ namespace ft
 	class vector
 	{
 		public:
-			typedef T										value_type;
-			typedef Alloc									allocator_type;
-			typedef T&										reference;
-			typedef const T&								const_reference;
-			typedef T*										pointer;
-			typedef const T *								const_pointer;
-			typedef size_t									size_type;
-			typedef ft::vector_iterator<T>					iterator;
-			typedef ft::const_vector_iterator<T>			const_iterator;
-			//typedef ft::reverse_iterator<iterator>				reverse_iterator;
-			//typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
+			typedef T								value_type;
+			typedef Alloc							allocator_type;
+			typedef T&								reference;
+			typedef const T&						const_reference;
+			typedef T*								pointer;
+			typedef const T *						const_pointer;
+			typedef size_t							size_type;
+			typedef ft::vector_iterator<T>			iterator;
+			typedef ft::const_vector_iterator<T>	const_iterator;
+			typedef ft::reverse_iterator<T>			reverse_iterator;
+			typedef ft::const_reverse_iterator<T>	const_reverse_iterator;
 			
 		private:
 			pointer			v_ptr;
@@ -87,16 +87,6 @@ namespace ft
 				return (*this);
 			};
 
-			reference operator[](size_type n)
-			{
-				return (v_ptr[n]);
-			};
-
-			const_reference operator[](size_type n) const
-			{
-				return (v_ptr[n]);
-			};
-
 		// Member Funtion
 
 		// Iterator
@@ -112,12 +102,32 @@ namespace ft
 
 			iterator end()
 			{
-				return (iterator(&v_ptr[v_size]));
+				return (iterator(v_ptr + v_size));
 			}
 
 			const_iterator end() const
 			{
-				return (const_iterator(&v_ptr[v_size]));
+				return (const_iterator(v_ptr + v_size));
+			}
+
+			reverse_iterator rbegin()
+			{
+				return (reverse_iterator(v_ptr + v_size - 1));
+			}
+
+			const_reverse_iterator rbegin() const
+			{
+				return (const_reverse_iterator(v_ptr + v_size - 1));
+			}
+
+			reverse_iterator rend()
+			{
+				return (reverse_iterator(v_ptr - 1));
+			}
+
+			const_reverse_iterator rend() const
+			{
+				return (const_reverse_iterator(v_ptr - 1));
 			}
 
 		// Capacity
@@ -131,21 +141,22 @@ namespace ft
 				return (v_alloc.max_size());
 			}
 
+			void resize (size_type n, value_type val = value_type())
+			{
+				while (n < v_size)
+					pop_back();
+				while (n > v_size)
+					push_back(val);
+			}
+
 			size_type capacity() const
 			{
 				return (v_capacity);
 			}
-
-			size_type add_size(size_type new_size)
+			
+			bool empty() const
 			{
-				size_type v_ms = max_size();
-				size_type v_cap = capacity();
-				if (v_cap >= v_ms / 2)
-					return (v_ms);
-				if (new_size < v_cap * 2)
-					return (v_cap * 2);
-				else
-					return (new_size);
+				return (v_size == 0);
 			}
 
 			void reserve(size_type n)
@@ -159,6 +170,51 @@ namespace ft
 					v_ptr = v_new;
 					v_capacity = n;
 				}
+			}
+
+		// Element acces
+			reference operator[](size_type n)
+			{
+				return (v_ptr[n]);
+			};
+
+			const_reference operator[](size_type n) const
+			{
+				return (v_ptr[n]);
+			};
+
+			reference at (size_type n)
+			{
+				if (n >= v_size || n < 0)
+					throw std::out_of_range("Out of range!");
+				return v_ptr[n];
+			}
+
+			const_reference at (size_type n) const
+			{
+				if (n >= v_size || n < 0)
+					throw std::out_of_range("Out of range!");
+				return v_ptr[n];
+			}
+
+			reference front()
+			{
+				return (*v_ptr);
+			}
+
+			const_reference front() const
+			{
+				return (*v_ptr);
+			}
+
+			reference back()
+			{
+				return (v_ptr[v_size - 1]);
+			}
+
+			const_reference back() const
+			{
+				return (v_ptr[v_size - 1]);
 			}
 
 		// Modifiers
@@ -178,9 +234,15 @@ namespace ft
 			void push_back(const value_type& val)
 			{
 				if (v_size == v_capacity)
-					reserve(add_size(v_size + 1));
+					reserve(v_size + 1);
 				v_size++;
 				v_ptr[v_size - 1] = val;
+			}
+
+			void pop_back(void)
+			{
+				if (v_size)
+					v_size--;
 			}
 
 			iterator insert (iterator position, const value_type& val)
@@ -257,6 +319,11 @@ namespace ft
 				}
 				return (iterator(first));
 			}
+
+			// void swap (vector& x)
+			// {
+				
+			// }
 
 			void clear(void)
 			{
