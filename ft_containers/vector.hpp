@@ -235,22 +235,20 @@ namespace ft
 				insert(begin(), n, val);
 			}
 
-			size_type add_size(size_type new_size)
+			void push_back(const value_type& val)
 			{
 				size_type v_ms = max_size();
 				size_type v_cap = capacity();
-				if (v_cap >= v_ms / 2)
-					return (v_ms);
-				if (new_size < v_cap * 2)
-					return (v_cap * 2);
-				else
-					return (new_size);
-			}
-
-			void push_back(const value_type& val)
-			{
+				size_type new_size = v_size + 1;
+				
 				if (v_size == v_capacity)
-					reserve(add_size(v_size + 1));
+				{
+					if (v_cap >= v_ms / 2)
+						new_size = v_ms;
+					if (new_size < v_cap * 2)
+						new_size = v_cap * 2;
+					reserve(new_size);
+				}
 				v_size++;
 				v_ptr[v_size - 1] = val;
 			}
@@ -336,16 +334,110 @@ namespace ft
 				return (iterator(first));
 			}
 
-			// void swap (vector& x)
-			// {
-				
-			// }
+			void swap (vector& x)
+			{
+				pointer			p_tmp;
+				size_type		s_tmp;
+				size_type		c_tmp;
+
+				p_tmp = v_ptr;
+				v_ptr = x.v_ptr;
+				x.v_ptr = p_tmp;
+				s_tmp = v_size;
+				v_size = x.v_size;
+				x.v_size = s_tmp;
+				c_tmp = v_capacity;
+				v_capacity = x.v_capacity;
+				x.v_capacity = c_tmp;
+			}
 
 			void clear(void)
 			{
 				erase(begin(), end());
 			};
+
+			allocator_type get_allocator() const
+			{
+				return (allocator_type());
+			}
 	};
+
+	// Non member funtions
+	template <class T, class Alloc>
+	bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		if (lhs.size() != rhs.v_size())
+			return (false);
+		size_t i = -1;
+		while (++i < lhs.size())
+		{
+			if (lhs[i] != rhs[i])
+				return (false);
+		}
+		return (true);
+	}
+	
+	template <class T, class Alloc>
+	bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (!(lhs == rhs));
+	}
+	
+	template <class T, class Alloc>
+	bool operator<  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		size_t	size;
+		size_t	i;
+
+		if (lhs.size() > rhs.size())
+			size = rhs.size();
+		else
+			size = lhs.size();
+		i = -1;
+		while (++i < size)
+		{
+			if (lhs.at(i) != rhs.at(i))
+				return (lhs.at(i) < rhs.at(i))
+		}
+		return (lhs.size() < rhs.size());
+	}
+	
+	template <class T, class Alloc>
+	bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (!(lhs > rhs));
+	}
+	
+	template <class T, class Alloc>
+	bool operator>  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		size_t	size;
+		size_t	i;
+
+		if (lhs.size() > rhs.size())
+			size = rhs.size();
+		else
+			size = lhs.size();
+		i = -1;
+		while (++i < size)
+		{
+			if (lhs.at(i) != rhs.at(i))
+				return (lhs.at(i) > rhs.at(i))
+		}
+		return (lhs.size() > rhs.size());
+	}
+	
+	template <class T, class Alloc>
+	bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (!(lhs < rhs));
+	}
+
+	template <class T, class Alloc>
+	void swap (vector<T,Alloc>& x, vector<T,Alloc>& y)
+	{
+		x.swap(y);
+	}
 }
 
 #endif

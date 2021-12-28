@@ -33,10 +33,10 @@ int main()
     std::cout << '\n';
 
     ft::vector<int> t3(3, 10);
-    //ft::vector<int> t4(2, 7);
+    ft::vector<int> t4(2, 7);
 
     t3.resize(5, 3);
-    //t3.swap(t4);
+    t3.swap(t4);
 
     for (unsigned i=0; i<t3.size(); i++)
         std::cout << t3.at(i) << ' ';
@@ -46,6 +46,15 @@ int main()
     for(ft::vector<int>::iterator i = t3.begin(); i != t3.end(); i++)
         std::cout << *i << ' ';
     std::cout << '\n';
+
+    int *p;
+
+    p = t3.get_allocator().allocate(3);
+    for (int i = 0; i < 3; i++)
+        p[i] = i;
+    for(int i = 0; i < 3; i++)
+        std::cout << p[i] << ' ';
+    t3.get_allocator().deallocate(p, 3);
 
     return (0);
 }
