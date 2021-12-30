@@ -34,11 +34,11 @@ namespace ft
 		//Member Funtion
 		public:
 		// con/destructor
-			vector (const allocator_type& alloc = allocator_type()) : v_ptr(NULL), v_size(0), v_capacity(0), v_alloc(alloc)
+			explicit vector (const allocator_type& alloc = allocator_type()) : v_ptr(NULL), v_size(0), v_capacity(0), v_alloc(alloc)
 			{
 				v_ptr = v_alloc.allocator(0);
 			}
-			vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
+			explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
 			: v_ptr(NULL), v_size(n), v_capacity(n), v_alloc(alloc)
 			{
 				if (n > 0)
@@ -397,7 +397,7 @@ namespace ft
 		while (++i < size)
 		{
 			if (lhs.at(i) != rhs.at(i))
-				return (lhs.at(i) < rhs.at(i))
+				return (lhs.at(i) < rhs.at(i));
 		}
 		return (lhs.size() < rhs.size());
 	}
@@ -422,7 +422,7 @@ namespace ft
 		while (++i < size)
 		{
 			if (lhs.at(i) != rhs.at(i))
-				return (lhs.at(i) > rhs.at(i))
+				return (lhs.at(i) > rhs.at(i));
 		}
 		return (lhs.size() > rhs.size());
 	}
