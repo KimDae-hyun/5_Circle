@@ -14,7 +14,7 @@ namespace ft
 			typedef T&	reference;
 			typedef T*	pointer;
 
-		private:
+		protected:
 			pointer	ptr;
 
 		public:

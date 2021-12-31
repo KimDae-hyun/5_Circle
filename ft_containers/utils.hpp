@@ -1,7 +1,6 @@
 #ifndef UTILS_HPP
 # define UTILS_HPP
 
-
 namespace ft
 {
     template <bool Cond, class T = void>
