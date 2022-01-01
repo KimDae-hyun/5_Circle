@@ -65,10 +65,14 @@ namespace ft
 				v_ptr = v_new;
 				v_capacity = v_size;
 			}
-			vector (const vector &vec)
+			vector (const vector &vec) : v_size(vec.v_size), v_capacity(vec.v_capacity), v_alloc(vec.v_alloc)
 			{
-				if (this != &vec)
-					*this = vec;
+				size_type i;
+
+				v_ptr = v_alloc.allocate(v_capacity);
+				i = -1;
+				while (++i < v_size)
+					v_ptr[i] = vec.v_ptr[i];
 			}
 			~vector(void)
 			{

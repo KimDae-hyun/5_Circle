@@ -18,7 +18,7 @@ namespace ft
 			pointer	ptr;
 
 		public:
-			vector_iterator(void) : ptr(0) {}
+			vector_iterator(void) : ptr(0) {};
 			vector_iterator(pointer p) : ptr(p) {};
 			vector_iterator(const vector_iterator &iter) {*this = iter;};
 			~vector_iterator() {};
