@@ -37,18 +37,107 @@ namespace ft
 					{
 						return comp(x.first, y.first);
 					}
-			}
+			};
 		private:
-			key_type	key;
-			mapped_type	;
-			value_type	val;
+			typedef RBtree<value_type, allocator_type> tree_type;
+			tree_type	tree;
+
+			typedef struct RBnode<value_type> node;
+			allocator_type	t_alloc;
+			key_compare		comp;
 
 		public:
-			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type());
+			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : \
+									t_alloc(alloc), comp(comp)  {};
 			template <class InputIterator>
-			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type());
-			map (const map& x);
-			~map();
+			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : \
+									t_alloc(alloc), comp(comp) {};
+			map (const map& x) {tree(x.tree);};
+			~map() {};
+
+			map& operator= (const map& x)
+			{
+				if (this != &x)
+				{
+					tree = x.tree;
+				}
+				return (*this);
+			}
+
+			mapped_type& operator[] (const key_type& k)
+			{
+				return ((*((this->insert(ft::make_pair(k,mapped_type()))).data)).value);
+			}
+
+		// Iterator
+			iterator begin()
+			{
+				return (iterator(tree.begin()));
+			}
+
+			const_iterator begin() const
+			{
+				return (const_iterator(tree.begin()));
+			}
+
+			iterator end()
+			{
+				return (iterator(tree.end()));
+			}
+
+			const_iterator end() const
+			{
+				return (const_iterator(tree.end()));
+			}
+
+			reverse_iterator rbegin()
+			{
+				return (reverse_iterator(tree.end()));
+			}
+
+			const_reverse_iterator rbegin() const
+			{
+				return (const_reverse_iterator(tree.end()));
+			}
+
+			reverse_iterator rend()
+			{
+				return (reverse_iterator(tree.begin()));
+			}
+
+			const_reverse_iterator rend() const
+			{
+				return (const_reverse_iterator(tree.begin()));
+			}
+
+		// Modifiers
+			pair<iterator,bool> insert (const value_type& val)
+			{
+				node *tmp = tree.search(val);
+				if (tmp)
+					return (make_pair(iterator(*tmp), false));
+				tmp = tree.insertnode(val);
+				return (make_pair(iterator(*tmp), true));
+			}
+
+			iterator insert (iterator position, const value_type& val)
+			{
+				node *tmp = tree.serarch(val);
+				if (tmp)
+					return (iterator(*tmp));
+				tmp = tree.insertnode(val);
+				return (iterator(*tmp));
+			}
+
+			template <class InputIterator>
+			void insert (InputIterator first, InputIterator last)
+			{
+				while (first != last)
+				{
+					insert(*first);
+					++first;
+				}
+			}
     };
 }
 

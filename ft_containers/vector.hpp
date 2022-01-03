@@ -74,6 +74,7 @@ namespace ft
 				while (++i < v_size)
 					v_ptr[i] = vec.v_ptr[i];
 			}
+			
 			~vector(void)
 			{
 				v_alloc.deallocate(v_ptr, v_capacity);
