@@ -2,7 +2,6 @@
 # define RBT_HPP
 
 # include <iostream>
-# include "utils.hpp"
 
 namespace ft
 {
@@ -16,7 +15,7 @@ namespace ft
 		T		data;
 	};
 
-    template <class T, class Alloc>
+    template <class T, class Alloc = std::allocator<T> >
     class RBtree
     {
         protected:
@@ -40,7 +39,7 @@ namespace ft
 
 			node *create(value_type data)
 			{
-				node* node = t_alloc.allocator(0);
+				node* node = new RBnode<T>;
 				node->parent = NULL;
 				node->left = NULL;
 				node->right = NULL;
@@ -49,16 +48,17 @@ namespace ft
 				return (node);
 			}
 
-			void insertnode(value_type data)
+			node *insertnode(value_type data)
 			{
 				node *node = create(data);
 
 				node->color = true;
 				node->left = nil;
-				node->rigth = nil;
+				node->right = nil;
 
 				insertvalue(root, node);
 				insertcheck(root, node);
+				return (node);
 			}
 
 			void insertvalue(node *parent, node *node)
@@ -85,64 +85,64 @@ namespace ft
 					else
 						insertvalue(parent->left, node);
 				}
-				else
-					t_alloc.deallocate(node);
+				//else
+				//	t_alloc.deallocate(node);
 			}
 
-			void insertcheck(node *root, node *node)
+			void insertcheck(node *root, node *now)
 			{
 				//부모가 red이면 자식은 black
-				while (node != root && node->parent->color == true)
+				while (now != root && now->parent->color == true)
 				{ 
 					//부모 노드가 조부모의 왼쪽 자식인 경우
-					if (node->parent == node->parent->parent->left)
+					if (now->parent == now->parent->parent->left)
 					{ 
-						node *uncle = node->parent->parent->right;
+						node *uncle = now->parent->parent->right;
 						
 						//부모, 삼촌 노드가 red
 						if (uncle->color == true)
 						{ 
-							node->parent->color = false;
+							now->parent->color = false;
 							uncle->color = false;
-							node->parent->parent->color = true;
-							node = node->prent->prent;
+							now->parent->parent->color = true;
+							now = now->parent->parent;
 						}
 						else //부모는 red, 삼촌은 black
 						{ 
 							// 부모의 오른쪽으로 삽입되는 경우
-							if (node == node->parent->right)
+							if (now == now->parent->right)
 							{ 
-								node = node->parent;
-								leftrotate(root, node);
+								now = now->parent;
+								leftrotate(root, now);
 							}
 
 							// 부모의 왼쪽으로 삽입되는 경우
-							node->parent->color = false;
-							node->parent->parent->color = true;
-							rightrotate(root, node->parent->parent);
+							now->parent->color = false;
+							now->parent->parent->color = true;
+							rightrotate(root, now->parent->parent);
 						}
 					}
 					else
 					{ //부모 노드가 조부모의 오른쪽 자식인 경우 왼쪽과 반대로
-						node *uncle = node->parent->parent->left;
+						node *uncle = now->parent->parent->left;
 
 						if (uncle->color == true)
 						{
-							node->parent->color = false;
+							now->parent->color = false;
 							uncle->color = false;
-							node->parent->parent->color = true;
-							node = node->parent->parent;
+							now->parent->parent->color = true;
+							now = now->parent->parent;
 						}
 						else
 						{
-							if (node == node->parent->left)
+							if (now == now->parent->left)
 							{
-								node = node->parent;
-								rightrotate(root, node);
+								now = now->parent;
+								rightrotate(root, now);
 							}
-							node->parent->color = false;
-							node->parent->parent->color = true;
-							leftrotate(root, node->parent->parent);
+							now->parent->color = false;
+							now->parent->parent->color = true;
+							leftrotate(root, now->parent->parent);
 						}
 					}
 				}
@@ -154,17 +154,15 @@ namespace ft
 			{
 				if (node == NULL)
 					return (NULL);
-				if (node->data > data);
+				if (node->data > data)
 					return (search(node->left, data));
-				else if (node->data < data);
+				else if (node->data < data)
 					return (search(node->right, data));
 				return (node);
 			}
 
-			void minsearch(node *node)
+			node *minsearch(node *node)
 			{
-				if (node == NULL)
-					return (NULL);
 				if (node == nil)
 					return (nil);
 				if (node->left == nil && node->right == nil)
@@ -226,25 +224,25 @@ namespace ft
 
 			void checkdelete(node *root, node *replace)
 			{
-				node *Sibling = NULL;
+				node *sibling = NULL;
 
 				while (replace->parent && replace->color == false)
 				{
 					if (replace == replace->parent->left) // 이중 흑색 노드가 부모의 왼쪽 
 					{
-						Sibling = replace->parent->right;
+						sibling = replace->parent->right;
 
 						if (replace->parent->color == true)
 						{
-							if (sibling->color == false && sibling->left->color = false && sibling->right->color == false)
+							if (sibling->color == false && sibling->left->color == false && sibling->right->color == false)
 							{
 								sibling->color == true;
 								replace->color == false;
 							}
 						}
-						if (Sibling->color == true) // 형제 노드가 red
+						if (sibling->color == true) // 형제 노드가 red
 						{
-							Sibling->color = false;
+							sibling->color = false;
 							replace->parent->color = true;
 							leftrotate(root, replace->parent);
 						}
@@ -274,19 +272,19 @@ namespace ft
 					}
 					else // 이중 흑색 노드가 부모의 오른쪽
 					{
-						Sibling = replace->parent->left;
+						sibling = replace->parent->left;
 
 						if (replace->parent->color == true)
 						{
-							if (sibling->color == false && sibling->left->color = false && sibling->right->color == false)
+							if (sibling->color == false && sibling->left->color == false && sibling->right->color == false)
 							{
 								sibling->color == true;
 								replace->color == false;
 							}
 						}
-						if (Sibling->color == true) // 형제 노드가 red
+						if (sibling->color == true) // 형제 노드가 red
 						{
-							Sibling->color = false;
+							sibling->color = false;
 							replace->parent->color = true;
 							rightrotate(root, replace->parent);
 						}
@@ -351,8 +349,8 @@ namespace ft
 				node *l_child = now->left;
 
 				now->left = l_child->right;
-				if (l_child->rigth != nil)
-					l_child->rigth->parent = now;
+				if (l_child->right != nil)
+					l_child->right->parent = now;
 				l_child->parent = now->parent;
 				if (now->parent == NULL)
 					root = l_child;
@@ -376,7 +374,7 @@ namespace ft
 				else if (node->left == nil)
 					return (node);
 				else
-					return (begin(node->left));
+					return (find_min(node->left));
 			}
 
 			node* begin(void)
@@ -393,7 +391,7 @@ namespace ft
 				else if (node->right == nil)
 					return (node);
 				else
-					return (end(node->right));
+					return (find_max(node->right));
 			}
 
 			node* end(void)

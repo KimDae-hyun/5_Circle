@@ -1,6 +1,7 @@
 #ifndef MAP_HPP
 # define MAP_HPP
 
+# include "utils.hpp"
 # include "map_iterator.hpp"
 
 namespace ft
@@ -51,7 +52,10 @@ namespace ft
 									t_alloc(alloc), comp(comp)  {};
 			template <class InputIterator>
 			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : \
-									t_alloc(alloc), comp(comp) {};
+									t_alloc(alloc), comp(comp)
+			{
+				insert(first, last);
+			};
 			map (const map& x) {tree(x.tree);};
 			~map() {};
 
@@ -64,65 +68,67 @@ namespace ft
 				return (*this);
 			}
 
-			mapped_type& operator[] (const key_type& k)
-			{
-				return ((*((this->insert(ft::make_pair(k,mapped_type()))).data)).value);
-			}
+			// mapped_type& operator[] (const key_type& k)
+			// {
+			// 	return ((*((this->insert(ft::make_pair(k,mapped_type()), true)).first)).second);
+			// }
 
 		// Iterator
-			iterator begin()
-			{
-				return (iterator(tree.begin()));
-			}
+			// iterator begin()
+			// {
+			// 	return (iterator(tree.begin()));
+			// }
 
-			const_iterator begin() const
-			{
-				return (const_iterator(tree.begin()));
-			}
+			// const_iterator begin() const
+			// {
+			// 	return (const_iterator(tree.begin()));
+			// }
 
-			iterator end()
-			{
-				return (iterator(tree.end()));
-			}
+			// iterator end()
+			// {
+			// 	return (iterator(tree.end()));
+			// }
 
-			const_iterator end() const
-			{
-				return (const_iterator(tree.end()));
-			}
+			// const_iterator end() const
+			// {
+			// 	return (const_iterator(tree.end()));
+			// }
 
-			reverse_iterator rbegin()
-			{
-				return (reverse_iterator(tree.end()));
-			}
+			// reverse_iterator rbegin()
+			// {
+			// 	return (reverse_iterator(tree.end()));
+			// }
 
-			const_reverse_iterator rbegin() const
-			{
-				return (const_reverse_iterator(tree.end()));
-			}
+			// const_reverse_iterator rbegin() const
+			// {
+			// 	return (const_reverse_iterator(tree.end()));
+			// }
 
-			reverse_iterator rend()
-			{
-				return (reverse_iterator(tree.begin()));
-			}
+			// reverse_iterator rend()
+			// {
+			// 	return (reverse_iterator(tree.begin()));
+			// }
 
-			const_reverse_iterator rend() const
-			{
-				return (const_reverse_iterator(tree.begin()));
-			}
+			// const_reverse_iterator rend() const
+			// {
+			// 	return (const_reverse_iterator(tree.begin()));
+			// }
 
 		// Modifiers
-			pair<iterator,bool> insert (const value_type& val)
+			pair<iterator, bool> insert (const value_type& val)
 			{
-				node *tmp = tree.search(val);
-				if (tmp)
-					return (make_pair(iterator(*tmp), false));
-				tmp = tree.insertnode(val);
-				return (make_pair(iterator(*tmp), true));
+
+				// node *tmp = tree.search(val);
+				// if (tmp)
+				// 	return (make_pair(iterator(*tmp), false));
+				node *tmp = tree.insertnode(val);
+				return (make_pair(iterator(tmp), true));
 			}
 
 			iterator insert (iterator position, const value_type& val)
 			{
-				node *tmp = tree.serarch(val);
+				(void)position;
+				node *tmp = tree.serarch(position, val);
 				if (tmp)
 					return (iterator(*tmp));
 				tmp = tree.insertnode(val);
@@ -130,7 +136,7 @@ namespace ft
 			}
 
 			template <class InputIterator>
-			void insert (InputIterator first, InputIterator last)
+  			void insert (InputIterator first, InputIterator last)
 			{
 				while (first != last)
 				{

@@ -3,7 +3,6 @@
 
 # include <iostream>
 # include "RBT.hpp"
-# include "utils.hpp"
 
 namespace ft
 {
@@ -21,7 +20,7 @@ namespace ft
 		public:
 			map_iterator(void) : ptr(0) {};
 			map_iterator(pointer p) : ptr(p) {};
-			map_iterator(const map_iterator &iter) {*this = iter;};
+			//map_iterator(const map_iterator &iter) {*this = iter;};
 			~map_iterator() {};
 			
 			map_iterator& operator=(const map_iterator &iter)
@@ -232,14 +231,14 @@ namespace ft
 
 			reverse_map_iterator operator+(int n) const
 			{
-				reverse_iterator copy(*this);
+				reverse_map_iterator copy(*this);
 				copy -= n;
 				return (copy);
 			}
 
 			reverse_map_iterator operator-(int n) const
 			{
-				reverse_iterator copy(*this);
+				reverse_map_iterator copy(*this);
 				copy += n;
 				return (copy);
 			}
@@ -258,14 +257,14 @@ namespace ft
 
 			reverse_map_iterator operator++(int)
 			{
-				reverse_iterator copy(*this);
+				reverse_map_iterator copy(*this);
 				ptr = ptr - 1;
 				return (copy);
 			}
 
 			reverse_map_iterator operator--(int)
 			{
-				reverse_iterator copy(*this);
+				reverse_map_iterator copy(*this);
 				ptr = ptr + 1;
 				return (copy);
 			}
