@@ -1,7 +1,6 @@
 #ifndef MAP_HPP
 # define MAP_HPP
 
-# include "utils.hpp"
 # include "map_iterator.hpp"
 
 namespace ft
@@ -20,10 +19,10 @@ namespace ft
 			typedef T*										pointer;
 			typedef const T *								const_pointer;
 			typedef size_t									size_type;
-			typedef ft::map_iterator<T>						iterator;
-			typedef ft::const_map_iterator<T>				const_iterator;
-			typedef ft::reverse_map_iterator<T>				reverse_iterator;
-			typedef ft::const_reverse_map_iterator<T>		const_reverse_iterator;
+			typedef ft::map_iterator<value_type>				iterator;
+			typedef ft::const_map_iterator<value_type>			const_iterator;
+			typedef ft::reverse_map_iterator<value_type>		reverse_iterator;
+			typedef ft::const_reverse_map_iterator<value_type>	const_reverse_iterator;
 			class value_compare// : public binary_function<value_type,value_type,bool>
 			{   // in C++98, it is required to inherit binary_function<value_type,value_type,bool>
 				friend class map;
@@ -40,7 +39,7 @@ namespace ft
 					}
 			};
 		private:
-			typedef RBtree<value_type, allocator_type> tree_type;
+			typedef RBtree<ft::pair<const key_type, mapped_type>> tree_type;
 			tree_type	tree;
 
 			typedef struct RBnode<value_type> node;
@@ -68,61 +67,61 @@ namespace ft
 				return (*this);
 			}
 
-			// mapped_type& operator[] (const key_type& k)
-			// {
-			// 	return ((*((this->insert(ft::make_pair(k,mapped_type()), true)).first)).second);
-			// }
+			mapped_type& operator[] (const key_type& k)
+			{
+				return ((*((this->insert(ft::make_pair(k,mapped_type()), true)).first)).second);
+			}
 
-		// Iterator
-			// iterator begin()
-			// {
-			// 	return (iterator(tree.begin()));
-			// }
+		//Iterator
+			iterator begin()
+			{
+				return (iterator(tree.begin()));
+			}
 
-			// const_iterator begin() const
-			// {
-			// 	return (const_iterator(tree.begin()));
-			// }
+			const_iterator begin() const
+			{
+				return (const_iterator(tree.begin()));
+			}
 
-			// iterator end()
-			// {
-			// 	return (iterator(tree.end()));
-			// }
+			iterator end()
+			{
+				return (iterator(tree.end()));
+			}
 
-			// const_iterator end() const
-			// {
-			// 	return (const_iterator(tree.end()));
-			// }
+			const_iterator end() const
+			{
+				return (const_iterator(tree.end()));
+			}
 
-			// reverse_iterator rbegin()
-			// {
-			// 	return (reverse_iterator(tree.end()));
-			// }
+			reverse_iterator rbegin()
+			{
+				return (reverse_iterator(tree.end()));
+			}
 
-			// const_reverse_iterator rbegin() const
-			// {
-			// 	return (const_reverse_iterator(tree.end()));
-			// }
+			const_reverse_iterator rbegin() const
+			{
+				return (const_reverse_iterator(tree.end()));
+			}
 
-			// reverse_iterator rend()
-			// {
-			// 	return (reverse_iterator(tree.begin()));
-			// }
+			reverse_iterator rend()
+			{
+				return (reverse_iterator(tree.begin()));
+			}
 
-			// const_reverse_iterator rend() const
-			// {
-			// 	return (const_reverse_iterator(tree.begin()));
-			// }
+			const_reverse_iterator rend() const
+			{
+				return (const_reverse_iterator(tree.begin()));
+			}
 
 		// Modifiers
-			pair<iterator, bool> insert (const value_type& val)
+			ft::pair<iterator, bool> insert (const value_type& val)
 			{
+				node *tmp = tree.searchnode(val);
 
-				// node *tmp = tree.search(val);
-				// if (tmp)
-				// 	return (make_pair(iterator(*tmp), false));
-				node *tmp = tree.insertnode(val);
-				return (make_pair(iterator(tmp), true));
+				if (tmp)
+				 	return (ft::make_pair(iterator(tmp), false));
+				tree.insertnode(val);
+				return (ft::make_pair(iterator(tmp), true));
 			}
 
 			iterator insert (iterator position, const value_type& val)

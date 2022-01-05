@@ -1,7 +1,6 @@
 #ifndef MAP_ITERATOR_HPP
 # define MAP_ITERATOR_HPP
 
-# include <iostream>
 # include "RBT.hpp"
 
 namespace ft
@@ -20,7 +19,7 @@ namespace ft
 		public:
 			map_iterator(void) : ptr(0) {};
 			map_iterator(pointer p) : ptr(p) {};
-			//map_iterator(const map_iterator &iter) {*this = iter;};
+			map_iterator(const map_iterator &iter) {*this = iter;};
 			~map_iterator() {};
 			
 			map_iterator& operator=(const map_iterator &iter)
@@ -46,10 +45,10 @@ namespace ft
 					return (0);
 			}
 
-            // reference	operator*() const
-			// {
-            //     return (*ptr);
-            // }
+            reference	operator*() const
+			{
+                return (*ptr);
+            }
 
             pointer		operator->() const
 			{

@@ -2,6 +2,7 @@
 # define RBT_HPP
 
 # include <iostream>
+# include "utils.hpp"
 
 namespace ft
 {
@@ -15,23 +16,23 @@ namespace ft
 		T		data;
 	};
 
-    template <class T, class Alloc = std::allocator<T> >
+    template <class T>
     class RBtree
     {
         protected:
 			typedef T					value_type;
-			typedef Alloc				allocator_type;
+			// typedef Alloc				allocator_type;
 			typedef struct RBnode<T>	node;
 
 			value_type		t_val;
-			allocator_type	t_alloc;
+			//allocator_type	t_alloc;
 			node			*root;
 			node			*nil;
 
 		public:
 			RBtree() : root(0)
 			{
-				nil = create(make_pair(0, 0));
+				nil = NULL;
 			}
 
 			~RBtree() {};
@@ -48,7 +49,7 @@ namespace ft
 				return (node);
 			}
 
-			node *insertnode(value_type data)
+			void insertnode(value_type data)
 			{
 				node *node = create(data);
 
@@ -58,7 +59,6 @@ namespace ft
 
 				insertvalue(root, node);
 				insertcheck(root, node);
-				return (node);
 			}
 
 			void insertvalue(node *parent, node *node)
@@ -161,8 +161,16 @@ namespace ft
 				return (node);
 			}
 
-			node *minsearch(node *node)
+			node *searchnode(value_type data)
 			{
+				node* tmp = search(root, data);
+				return (tmp);
+			}
+
+			void minsearch(node *node)
+			{
+				if (node == NULL)
+					return (NULL);
 				if (node == nil)
 					return (nil);
 				if (node->left == nil && node->right == nil)
@@ -224,25 +232,25 @@ namespace ft
 
 			void checkdelete(node *root, node *replace)
 			{
-				node *sibling = NULL;
+				node *Sibling = NULL;
 
 				while (replace->parent && replace->color == false)
 				{
 					if (replace == replace->parent->left) // 이중 흑색 노드가 부모의 왼쪽 
 					{
-						sibling = replace->parent->right;
+						Sibling = replace->parent->right;
 
 						if (replace->parent->color == true)
 						{
-							if (sibling->color == false && sibling->left->color == false && sibling->right->color == false)
+							if (sibling->color == false && sibling->left->color = false && sibling->right->color == false)
 							{
 								sibling->color == true;
 								replace->color == false;
 							}
 						}
-						if (sibling->color == true) // 형제 노드가 red
+						if (Sibling->color == true) // 형제 노드가 red
 						{
-							sibling->color = false;
+							Sibling->color = false;
 							replace->parent->color = true;
 							leftrotate(root, replace->parent);
 						}
@@ -272,19 +280,19 @@ namespace ft
 					}
 					else // 이중 흑색 노드가 부모의 오른쪽
 					{
-						sibling = replace->parent->left;
+						Sibling = replace->parent->left;
 
 						if (replace->parent->color == true)
 						{
-							if (sibling->color == false && sibling->left->color == false && sibling->right->color == false)
+							if (sibling->color == false && sibling->left->color = false && sibling->right->color == false)
 							{
 								sibling->color == true;
 								replace->color == false;
 							}
 						}
-						if (sibling->color == true) // 형제 노드가 red
+						if (Sibling->color == true) // 형제 노드가 red
 						{
-							sibling->color = false;
+							Sibling->color = false;
 							replace->parent->color = true;
 							rightrotate(root, replace->parent);
 						}
@@ -374,7 +382,7 @@ namespace ft
 				else if (node->left == nil)
 					return (node);
 				else
-					return (find_min(node->left));
+					return (begin(node->left));
 			}
 
 			node* begin(void)
@@ -391,7 +399,7 @@ namespace ft
 				else if (node->right == nil)
 					return (node);
 				else
-					return (find_max(node->right));
+					return (end(node->right));
 			}
 
 			node* end(void)

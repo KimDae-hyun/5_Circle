@@ -26,6 +26,7 @@ int main(void)
 	// 	std::cout << i->first << " = " << i->second << '\n';
 
 	ft::map<std::string, int> origin;
+
 	ft::pair<ft::map<std::string, int>::iterator, bool> ret;
 
 	ret = origin.insert( ft::pair<std::string, int>("test123", 1) );
@@ -43,7 +44,7 @@ int main(void)
 	}
 
 	// 만약 반환된 이터레이터의 요소에 접근하려면
-	std::cout << ret.first->first << std::endl;
-	std::cout << ret.first->second << std::endl;
+	//std::cout << ret.first->first << std::endl;
+	//std::cout << ret.first->second << std::endl;
 	return 0;
 }

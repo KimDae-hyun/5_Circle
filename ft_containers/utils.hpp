@@ -72,8 +72,9 @@ namespace ft
 
             pair& operator= (const pair& pr)
             {
+
                 if (this != &pr)
-                {
+				{
                     first = pr.first;
                     second = pr.second;
                 }
