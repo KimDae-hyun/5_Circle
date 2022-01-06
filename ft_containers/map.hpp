@@ -1,12 +1,12 @@
 #ifndef MAP_HPP
 # define MAP_HPP
 
-# include "map_iterator.hpp"
+# include "MapIterator.hpp"
 
 namespace ft
 {
     template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> > >
-    class map
+    class Map
     {
         public:
             typedef Key										key_type;
@@ -19,13 +19,13 @@ namespace ft
 			typedef T*										pointer;
 			typedef const T *								const_pointer;
 			typedef size_t									size_type;
-			typedef ft::map_iterator<value_type>				iterator;
-			typedef ft::map_iterator<const value_type>			const_iterator;
-			typedef ft::reverse_map_iterator<value_type>		reverse_iterator;
-			typedef ft::reverse_map_iterator<const value_type>	const_reverse_iterator;
+			typedef ft::MapIterator<value_type>				iterator;
+			typedef ft::MapIterator<const value_type>			const_iterator;
+			typedef ft::ReverseMapIterator<value_type>		reverse_iterator;
+			typedef ft::ReverseMapIterator<const value_type>	const_reverse_iterator;
 			class value_compare// : public binary_function<value_type,value_type,bool>
 			{   // in C++98, it is required to inherit binary_function<value_type,value_type,bool>
-				friend class map;
+				friend class Map;
 				protected:
 					Compare comp;
 					value_compare (Compare c) : comp(c) {}  // constructed with map's comparison object
@@ -47,21 +47,21 @@ namespace ft
 			// key_compare		comp;
 
 		public:
-			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : \
+			explicit Map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : \
 									tree(value_compare(comp), t_alloc(alloc))  {};
 			template <class InputIterator>
-			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : \
+			Map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : \
 									tree(value_compare(comp), t_alloc(alloc))
 			{
 				insert(first, last);
 			};
-			map (const map& x) : tree(x.tree)
+			Map (const Map& x) : tree(x.tree)
             {
                 insert(x.begin(), x.end());
             };
-			~map() {};
+			~Map() {};
 
-			map& operator= (const map& x)
+			Map& operator= (const Map& x)
 			{
 				if (this != &x)
 				{

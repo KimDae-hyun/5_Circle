@@ -1,6 +1,6 @@
 #include <iostream>
 #include <map>
-#include "map.hpp"
+#include "Map.hpp"
 
 int main(void)
 {
@@ -31,9 +31,9 @@ int main(void)
 
 
 
-	ft::map<std::string, int> origin;
+	ft::Map<std::string, int> origin;
 
-	ft::pair<ft::map<std::string, int>::iterator, bool> ret;
+	ft::pair<ft::Map<std::string, int>::iterator, bool> ret;
 
 	ret = origin.insert( ft::pair<std::string, int>("test123", 1) );
 
