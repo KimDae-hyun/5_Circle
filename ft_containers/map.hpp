@@ -20,9 +20,9 @@ namespace ft
 			typedef const T *								const_pointer;
 			typedef size_t									size_type;
 			typedef ft::map_iterator<value_type>				iterator;
-			typedef ft::const_map_iterator<value_type>			const_iterator;
+			typedef ft::map_iterator<const value_type>			const_iterator;
 			typedef ft::reverse_map_iterator<value_type>		reverse_iterator;
-			typedef ft::const_reverse_map_iterator<value_type>	const_reverse_iterator;
+			typedef ft::reverse_map_iterator<const value_type>	const_reverse_iterator;
 			class value_compare// : public binary_function<value_type,value_type,bool>
 			{   // in C++98, it is required to inherit binary_function<value_type,value_type,bool>
 				friend class map;
@@ -39,23 +39,26 @@ namespace ft
 					}
 			};
 		private:
-			typedef RBtree<ft::pair<const key_type, mapped_type>> tree_type;
+			typedef RBtree<value_type, value_compare, allocator_type> tree_type;
 			tree_type	tree;
 
 			typedef struct RBnode<value_type> node;
 			allocator_type	t_alloc;
-			key_compare		comp;
+			// key_compare		comp;
 
 		public:
 			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : \
-									t_alloc(alloc), comp(comp)  {};
+									tree(value_compare(comp), t_alloc(alloc))  {};
 			template <class InputIterator>
 			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : \
-									t_alloc(alloc), comp(comp)
+									tree(value_compare(comp), t_alloc(alloc))
 			{
 				insert(first, last);
 			};
-			map (const map& x) {tree(x.tree);};
+			map (const map& x) : tree(x.tree)
+            {
+                insert(x.begin(), x.end());
+            };
 			~map() {};
 
 			map& operator= (const map& x)
@@ -119,9 +122,9 @@ namespace ft
 				node *tmp = tree.searchnode(val);
 
 				if (tmp)
-				 	return (ft::make_pair(iterator(tmp), false));
-				tree.insertnode(val);
-				return (ft::make_pair(iterator(tmp), true));
+				 	return (ft::make_pair(tmp, false));
+				tmp = tree.insertnode(tree.root, val);
+				return (ft::make_pair(tmp, true));
 			}
 
 			iterator insert (iterator position, const value_type& val)
@@ -139,7 +142,7 @@ namespace ft
 			{
 				while (first != last)
 				{
-					insert(*first);
+					tree.root = tree.insert(tree.root, *first);
 					++first;
 				}
 			}

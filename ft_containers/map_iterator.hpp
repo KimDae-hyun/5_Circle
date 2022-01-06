@@ -22,6 +22,11 @@ namespace ft
 			map_iterator(const map_iterator &iter) {*this = iter;};
 			~map_iterator() {};
 			
+			operator map_iterator<const T> () const
+			{
+				return (map_iterator<const T>(ptr));
+			}
+			
 			map_iterator& operator=(const map_iterator &iter)
 			{
 				if (this != &iter)
@@ -47,7 +52,7 @@ namespace ft
 
             reference	operator*() const
 			{
-                return (*ptr);
+                return (ptr->data);
             }
 
             pointer		operator->() const
@@ -145,38 +150,38 @@ namespace ft
 			}
     };
 
-	template <class T>
-    class const_map_iterator : public map_iterator<T>
-    {
-		public:
-			typedef T	value_type;
-			typedef T&	reference;
-			typedef T*	pointer;
-			const_map_iterator(void) {};
-			const_map_iterator(pointer p)
-			{
-				this->ptr = p;
-			};
-			const_map_iterator(const const_map_iterator &iter)
-			{
-				*this = iter;
-			};
-			~const_map_iterator() {};
-			const_map_iterator &operator=(const const_map_iterator &iter)
-			{
-				if (this != &iter)
-					this->ptr = iter.ptr;
-				return (*this);
-			};
-			const value_type &operator*(void)
-			{
-				return (*this->ptr);
-			};
-			const value_type &operator[](int n) const
-			{
-				return (*(this->ptr + n));
-			};
-	};
+	// template <class T>
+    // class const_map_iterator : public map_iterator<T>
+    // {
+	// 	public:
+	// 		typedef T	value_type;
+	// 		typedef T&	reference;
+	// 		typedef T*	pointer;
+	// 		const_map_iterator(void) {};
+	// 		const_map_iterator(pointer p)
+	// 		{
+	// 			this->ptr = p;
+	// 		};
+	// 		const_map_iterator(const const_map_iterator &iter)
+	// 		{
+	// 			*this = iter;
+	// 		};
+	// 		~const_map_iterator() {};
+	// 		const_map_iterator &operator=(const const_map_iterator &iter)
+	// 		{
+	// 			if (this != &iter)
+	// 				this->ptr = iter.ptr;
+	// 			return (*this);
+	// 		};
+	// 		const value_type &operator*(void)
+	// 		{
+	// 			return (*this->ptr);
+	// 		};
+	// 		const value_type &operator[](int n) const
+	// 		{
+	// 			return (*(this->ptr + n));
+	// 		};
+	// };
 
     template <class T>
     class reverse_map_iterator
@@ -195,6 +200,11 @@ namespace ft
 			reverse_map_iterator(const reverse_map_iterator &iter) {*this = iter;};
 			~reverse_map_iterator() {};
 			
+			operator reverse_map_iterator<const T> () const
+			{
+				return (reverse_map_iterator<const T>(ptr));
+			}
+
 			reverse_map_iterator& operator=(const reverse_map_iterator &iter)
 			{
 				if (this != &iter)
@@ -318,38 +328,38 @@ namespace ft
 			}
     };
 
-	template <class T>
-    class const_reverse_map_iterator : public reverse_map_iterator<T>
-    {
-		public:
-			typedef T	value_type;
-			typedef T&	reference;
-			typedef T*	pointer;
-			const_reverse_map_iterator(void) {};
-			const_reverse_map_iterator(pointer p)
-			{
-				this->ptr = p;
-			};
-			const_reverse_map_iterator(const const_reverse_map_iterator &iter)
-			{
-				*this = iter;
-			};
-			~const_reverse_map_iterator() {};
-			const_reverse_map_iterator &operator=(const const_reverse_map_iterator &iter)
-			{
-				if (this != &iter)
-					this->ptr = iter.ptr;
-				return (*this);
-			};
-			const value_type &operator*(void)
-			{
-				return (*this->ptr);
-			};
-			const value_type &operator[](int n) const
-			{
-				return (*(this->ptr - n));
-			};
-	};
+	// template <class T>
+    // class const_reverse_map_iterator : public reverse_map_iterator<T>
+    // {
+	// 	public:
+	// 		typedef T	value_type;
+	// 		typedef T&	reference;
+	// 		typedef T*	pointer;
+	// 		const_reverse_map_iterator(void) {};
+	// 		const_reverse_map_iterator(pointer p)
+	// 		{
+	// 			this->ptr = p;
+	// 		};
+	// 		const_reverse_map_iterator(const const_reverse_map_iterator &iter)
+	// 		{
+	// 			*this = iter;
+	// 		};
+	// 		~const_reverse_map_iterator() {};
+	// 		const_reverse_map_iterator &operator=(const const_reverse_map_iterator &iter)
+	// 		{
+	// 			if (this != &iter)
+	// 				this->ptr = iter.ptr;
+	// 			return (*this);
+	// 		};
+	// 		const value_type &operator*(void)
+	// 		{
+	// 			return (*this->ptr);
+	// 		};
+	// 		const value_type &operator[](int n) const
+	// 		{
+	// 			return (*(this->ptr - n));
+	// 		};
+	// };
 }
 
 #endif

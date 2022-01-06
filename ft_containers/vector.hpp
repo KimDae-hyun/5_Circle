@@ -21,9 +21,9 @@ namespace ft
 			typedef const T *						const_pointer;
 			typedef size_t							size_type;
 			typedef ft::vector_iterator<T>			iterator;
-			typedef ft::const_vector_iterator<T>	const_iterator;
+			typedef ft::vector_iterator<const T>	const_iterator;
 			typedef ft::reverse_iterator<T>			reverse_iterator;
-			typedef ft::const_reverse_iterator<T>	const_reverse_iterator;
+			typedef ft::reverse_iterator<const T>	const_reverse_iterator;
 			
 		private:
 			pointer			v_ptr;

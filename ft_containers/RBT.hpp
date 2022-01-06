@@ -9,56 +9,122 @@ namespace ft
 	template <class T>
 	struct RBnode
 	{
+		typedef T	value_type;
 		RBnode	*parent;
 		RBnode	*left;
 		RBnode	*right;
 		bool 	color; // RED = true, BLACK = false
-		T		data;
+		value_type	data;
+
+		RBnode() : left(NULL), right(NULL), parent(NULL), data() {}
+
+		RBnode(value_type& other) : left(NULL), right(NULL), parent(NULL), data(other) {}
+
+		RBnode(const RBnode& node) : left(node.left), right(node.right), parent(node.parent), data(node.value) {}
+
+		~RBnode() {} 
+
+		RBnode& operator =(const RBnode& node)
+		{
+			if (*this != node)
+			{
+				this->left = node.left;
+				this->right = node.right;
+				this->parent = node.parent;
+				this->value = node.value;
+			}
+			return (*this);
+		}
+
+		bool operator ==(const RBnode &node)
+		{
+			if (this->value == node->value)
+				return (true);
+			return (false);
+		}
+
+		bool operator !=(const RBnode &node)
+		{
+			return (!(*this == node));
+		}
+
 	};
 
-    template <class T>
+    template <class V, class C, class A>
     class RBtree
     {
-        protected:
-			typedef T					value_type;
-			// typedef Alloc				allocator_type;
-			typedef struct RBnode<T>	node;
+        public:
+			typedef V					value_type;
+			typedef C					value_compare;
+			typedef A					allocator_type;
+			typedef size_t				size_type;
+			typedef RBnode<V>			node;
+
 
 			value_type		t_val;
-			//allocator_type	t_alloc;
+			value_compare	t_comp;
+			allocator_type	t_alloc;
+			size_type		size;
 			node			*root;
 			node			*nil;
 
 		public:
-			RBtree() : root(0)
+			RBtree(value_compare const& comp = value_compare(), allocator_type const& alloc = allocator_type()) : t_comp(comp), t_alloc(alloc)
 			{
-				nil = NULL;
+				root = t_alloc.allocate(1);
+				root->left = NULL;
+				root->right = NULL;
+				root->parent = NULL;
+				size = 0;
+				nil = t_alloc.allocate(1);
+				root->left = NULL;
+				root->right = NULL;
+				root->parent = NULL;
+				size = 0;
 			}
-
+			RBtree(const RBtree& tree)
+			{
+				root = tree.root;
+				t_comp = tree.t_comp;
+				t_alloc = tree.t_alloc;
+				size = tree.size;
+			}
 			~RBtree() {};
 
 
-			node *create(value_type data)
+			node *create(node *now, value_type& data)
 			{
-				node* node = new RBnode<T>;
-				node->parent = NULL;
-				node->left = NULL;
-				node->right = NULL;
-				node->color = false; // BLACK = false
-				node->data = data;
-				return (node);
+				if (size == 0)
+					t_alloc.construct(root, data);
+				else
+				{
+					node* tmp = t_alloc.allocate(1);
+					t_alloc.construct(tmp, data);
+					tmp->parent = now;
+					tmp->left = NULL;
+					tmp->right = NULL;
+					tmp->color = false; // BLACK = false
+					tmp->data = data;
+					size++;
+					return (tmp);
+				}
+				size++;	
+				return (root);
 			}
 
-			void insertnode(value_type data)
+			node* insertnode(node* now, value_type data)
 			{
-				node *node = create(data);
+				if (now == NULL || size == 0)
+					return (create(now, data));
 
-				node->color = true;
-				node->left = nil;
-				node->right = nil;
-
-				insertvalue(root, node);
-				insertcheck(root, node);
+				now->color = true;
+				now->left = nil;
+				now->right = nil;
+				if (!root)
+					root = now;
+				insertvalue(root, now);
+				insertcheck(root, now);
+				return (now);
 			}
 
 			void insertvalue(node *parent, node *node)
@@ -90,10 +156,10 @@ namespace ft
 			}
 
 			void insertcheck(node *root, node *now)
-			{
+			{	
 				//부모가 red이면 자식은 black
 				while (now != root && now->parent->color == true)
-				{ 
+				{	
 					//부모 노드가 조부모의 왼쪽 자식인 경우
 					if (now->parent == now->parent->parent->left)
 					{ 
@@ -154,6 +220,8 @@ namespace ft
 			{
 				if (node == NULL)
 					return (NULL);
+				if (node == nil)
+					return (nil);
 				if (node->data > data)
 					return (search(node->left, data));
 				else if (node->data < data)
@@ -167,10 +235,8 @@ namespace ft
 				return (tmp);
 			}
 
-			void minsearch(node *node)
+			node* minsearch(node *node)
 			{
-				if (node == NULL)
-					return (NULL);
 				if (node == nil)
 					return (nil);
 				if (node->left == nil && node->right == nil)
@@ -226,31 +292,31 @@ namespace ft
 				if (del->color == false)
 					checkdelete(root, replace);
 
-				t_alloc.deallocate(del);
-				del = 0;
+				//t_alloc.deallocate(del);
+				//del = 0;
 			}
 
 			void checkdelete(node *root, node *replace)
 			{
-				node *Sibling = NULL;
+				node *sibling = NULL;
 
 				while (replace->parent && replace->color == false)
 				{
 					if (replace == replace->parent->left) // 이중 흑색 노드가 부모의 왼쪽 
 					{
-						Sibling = replace->parent->right;
+						sibling = replace->parent->right;
 
 						if (replace->parent->color == true)
 						{
-							if (sibling->color == false && sibling->left->color = false && sibling->right->color == false)
+							if (sibling->color == false && sibling->left->color == false && sibling->right->color == false)
 							{
 								sibling->color == true;
 								replace->color == false;
 							}
 						}
-						if (Sibling->color == true) // 형제 노드가 red
+						if (sibling->color == true) // 형제 노드가 red
 						{
-							Sibling->color = false;
+							sibling->color = false;
 							replace->parent->color = true;
 							leftrotate(root, replace->parent);
 						}
@@ -280,19 +346,19 @@ namespace ft
 					}
 					else // 이중 흑색 노드가 부모의 오른쪽
 					{
-						Sibling = replace->parent->left;
+						sibling = replace->parent->left;
 
 						if (replace->parent->color == true)
 						{
-							if (sibling->color == false && sibling->left->color = false && sibling->right->color == false)
+							if (sibling->color == false && sibling->left->color == false && sibling->right->color == false)
 							{
 								sibling->color == true;
 								replace->color == false;
 							}
 						}
-						if (Sibling->color == true) // 형제 노드가 red
+						if (sibling->color == true) // 형제 노드가 red
 						{
-							Sibling->color = false;
+							sibling->color = false;
 							replace->parent->color = true;
 							rightrotate(root, replace->parent);
 						}
@@ -382,7 +448,7 @@ namespace ft
 				else if (node->left == nil)
 					return (node);
 				else
-					return (begin(node->left));
+					return (find_min(node->left));
 			}
 
 			node* begin(void)
@@ -399,7 +465,7 @@ namespace ft
 				else if (node->right == nil)
 					return (node);
 				else
-					return (end(node->right));
+					return (find_max(node->right));
 			}
 
 			node* end(void)
