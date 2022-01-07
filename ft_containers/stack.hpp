@@ -2,12 +2,12 @@
 # define STACK_HPP
 
 # include <iostream>
-# include "Vector.hpp"
+# include "vector.hpp"
 
 namespace ft
 {
-    template <class T, class Container = ft::Vector<T> >
-    class Stack
+    template <class T, class Container = ft::vector<T> >
+    class stack
     {
 		public:
         	typedef T			value_type;
@@ -18,7 +18,7 @@ namespace ft
 			container_type	cont;
 
 		public:
-			explicit Stack (const container_type& ctnr = container_type()) : cont(ctnr) {};
+			explicit stack (const container_type& ctnr = container_type()) : cont(ctnr) {};
 			// vec_iterator.hpp 161 컴파일 에러 -> g++이 아닌 clang++로 컴파일
 			// segmentation fault -> vector의 복사생성자 수정
 			bool empty() const {return (cont.empty());}
@@ -30,37 +30,37 @@ namespace ft
     };
 
 	template <class T, class Container>
-	bool operator== (const Stack<T,Container>& lhs, const Stack<T,Container>& rhs)
+	bool operator== (const stack<T,Container>& lhs, const stack<T,Container>& rhs)
 	{
 		return (lhs.cont == rhs.cont);
 	}
 
 	template <class T, class Container>
-	bool operator!= (const Stack<T,Container>& lhs, const Stack<T,Container>& rhs)
+	bool operator!= (const stack<T,Container>& lhs, const stack<T,Container>& rhs)
 	{
 		return (lhs.cont != rhs.cont);
 	}
 
 	template <class T, class Container>
-	bool operator<  (const Stack<T,Container>& lhs, const Stack<T,Container>& rhs)
+	bool operator<  (const stack<T,Container>& lhs, const stack<T,Container>& rhs)
 	{
 		return (lhs.cont < rhs.cont);
 	}
 
 	template <class T, class Container>
-	bool operator<= (const Stack<T,Container>& lhs, const Stack<T,Container>& rhs)
+	bool operator<= (const stack<T,Container>& lhs, const stack<T,Container>& rhs)
 	{
 		return (lhs.cont <= rhs.cont);
 	}
 
 	template <class T, class Container>
-	bool operator>  (const Stack<T,Container>& lhs, const Stack<T,Container>& rhs)
+	bool operator>  (const stack<T,Container>& lhs, const stack<T,Container>& rhs)
 	{
 		return (lhs.cont > rhs.cont);
 	}
 
 	template <class T, class Container>
-	bool operator>= (const Stack<T,Container>& lhs, const Stack<T,Container>& rhs)
+	bool operator>= (const stack<T,Container>& lhs, const stack<T,Container>& rhs)
 	{
 		return (lhs.cont >= rhs.cont);
 	}

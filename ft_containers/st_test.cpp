@@ -1,11 +1,11 @@
 #include <deque>
 #include <stack>
-#include "Stack.hpp"
+#include "stack.hpp"
 
 int main()
 {
     std::deque<int> t1(3, 10);
-    ft::Vector<int> t2(2, 20);
+    ft::vector<int> t2(2, 20);
 
     std::cout << "std stack\n";
     std::stack<int> first (t1);
@@ -17,7 +17,7 @@ int main()
     std::cout << first.top() << " " << first.size() << std::endl;
 
     std::cout << "ft stack\n";
-    ft::Stack<int> second (t2);
+    ft::stack<int> second (t2);
     
     std::cout << second.top() << " " << second.size() << std::endl;
     second.push(0);

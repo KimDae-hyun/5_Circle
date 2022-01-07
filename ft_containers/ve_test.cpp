@@ -1,19 +1,19 @@
 #include <iostream>
 #include <vector>
-#include "Vector.hpp"
+#include "vector.hpp"
 
 int main()
 {
-    ft::Vector<int> t1(3, 10);
-    ft::Vector<int> t2(t1.begin(), t1.end());
+    ft::vector<int> t1(3, 10);
+    ft::vector<int> t2(t1.begin(), t1.end());
 
     std::cout << "t1 " << t1.size() << " " << t1.capacity() << std::endl;
-    for(ft::Vector<int>::iterator i = t1.begin(); i != t1.end(); i++)
+    for(ft::vector<int>::iterator i = t1.begin(); i != t1.end(); i++)
         std::cout << *i << ' ';
     std::cout << '\n';
 
     std::cout << "t2 " << t2.size() << " " << t2.capacity() << std::endl;
-    for(ft::Vector<int>::iterator i = t2.begin(); i != t2.end(); i++)
+    for(ft::vector<int>::iterator i = t2.begin(); i != t2.end(); i++)
         std::cout << *i << ' ';
     std::cout << '\n';
 
@@ -32,8 +32,8 @@ int main()
         std::cout << t2[i] << ' ';
     std::cout << '\n';
 
-    ft::Vector<int> t3(3, 10);
-    ft::Vector<int> t4(2, 7);
+    ft::vector<int> t3(3, 10);
+    ft::vector<int> t4(2, 7);
 
     t3.resize(5, 3);
     t3.swap(t4);
@@ -43,7 +43,7 @@ int main()
     std::cout << '\n';
     std::cout << "front, back " << t3.front() << ' ' << t3.back() << std::endl;
     std::cout << "t3 " << t3.size() << " " << t3.capacity() << std::endl;
-    for(ft::Vector<int>::iterator i = t3.begin(); i != t3.end(); i++)
+    for(ft::vector<int>::iterator i = t3.begin(); i != t3.end(); i++)
         std::cout << *i << ' ';
     std::cout << '\n';
 

@@ -1,40 +1,40 @@
-#ifndef VEC_ITERATOR_HPP
-# define VEC_ITERATOR_HPP
+#ifndef MAP_ITERATOR_HPP
+# define MAP_ITERATOR_HPP
 
-# include <iostream>
-# include "Utils.hpp"
+# include "RBT.hpp"
 
 namespace ft
 {
     template <class T>
-    class VectorIterator
+    class map_iterator
     {
-        protected:
+        public:
 			typedef T	value_type;
 			typedef T&	reference;
-			typedef T*	pointer;
+			typedef RBnode<T>*	pointer;
 
 		protected:
 			pointer	ptr;
 
 		public:
-			VectorIterator(void) : ptr(0) {};
-			VectorIterator(pointer p) : ptr(p) {};
-			VectorIterator(const VectorIterator &iter) {*this = iter;};
-			~VectorIterator() {};
-			operator VectorIterator<const T> () const
+			map_iterator(void) : ptr(0) {};
+			map_iterator(pointer p) : ptr(p) {};
+			map_iterator(const map_iterator &iter) {*this = iter;};
+			~map_iterator() {};
+			
+			operator map_iterator<const T> () const
 			{
-				return (VectorIterator<const T>(ptr));
+				return (map_iterator<const T>(ptr));
 			}
 			
-			VectorIterator& operator=(const VectorIterator &iter)
+			map_iterator& operator=(const map_iterator &iter)
 			{
 				if (this != &iter)
 					ptr = iter.ptr;
 				return (*this);
 			}
 
-			int	operator==(const VectorIterator &iter) const
+			int	operator==(const map_iterator &iter) const
 			{
 				if (this->ptr == iter.ptr)
 					return (1);
@@ -42,7 +42,7 @@ namespace ft
 					return (0);
 			}
 
-			int	operator!=(const VectorIterator &iter) const
+			int	operator!=(const map_iterator &iter) const
 			{
 				if (this->ptr != iter.ptr)
 					return (1);
@@ -52,7 +52,7 @@ namespace ft
 
             reference	operator*() const
 			{
-                return (*ptr);
+                return (ptr->data);
             }
 
             pointer		operator->() const
@@ -60,47 +60,47 @@ namespace ft
                 return (ptr);
             }
 
-			VectorIterator operator+(int n) const
+			map_iterator operator+(int n) const
 			{
-				VectorIterator copy(*this);
+				map_iterator copy(*this);
 				copy += n;
 				return (copy);
 			}
 
-			VectorIterator operator-(int n) const
+			map_iterator operator-(int n) const
 			{
-				VectorIterator copy(*this);
+				map_iterator copy(*this);
 				copy -= n;
 				return (copy);
 			}
 
-			VectorIterator& operator++()
+			map_iterator& operator++()
 			{
 				ptr = ptr + 1;
 				return (*this);
 			}
 
-			VectorIterator& operator--()
+			map_iterator& operator--()
 			{
 				ptr = ptr - 1;
 				return (*this);
 			}
 
-			VectorIterator operator++(int)
+			map_iterator operator++(int)
 			{
-				VectorIterator copy(*this);
+				map_iterator copy(*this);
 				ptr = ptr + 1;
 				return (copy);
 			}
 
-			VectorIterator operator--(int)
+			map_iterator operator--(int)
 			{
-				VectorIterator copy(*this);
+				map_iterator copy(*this);
 				ptr = ptr - 1;
 				return (copy);
 			}
 
-			int	operator<(const VectorIterator &iter) const
+			int	operator<(const map_iterator &iter) const
 			{
 				if (this->ptr < iter.ptr)
 					return (1);
@@ -108,7 +108,7 @@ namespace ft
 					return (0);
 			}
 
-			int	operator>(const VectorIterator &iter) const
+			int	operator>(const map_iterator &iter) const
 			{
 				if (this->ptr > iter.ptr)
 					return (1);
@@ -116,7 +116,7 @@ namespace ft
 					return (0);
 			}
 
-			int	operator<=(const VectorIterator &iter) const
+			int	operator<=(const map_iterator &iter) const
 			{
 				if (this->ptr <= iter.ptr)
 					return (1);
@@ -124,7 +124,7 @@ namespace ft
 					return (0);
 			}
 
-			int	operator>=(const VectorIterator &iter) const
+			int	operator>=(const map_iterator &iter) const
 			{
 				if (this->ptr >= iter.ptr)
 					return (1);
@@ -132,13 +132,13 @@ namespace ft
 					return (0);
 			}
 			
-			VectorIterator& operator+=(const int n)
+			map_iterator& operator+=(const int n)
 			{
 				ptr = ptr + n;
 				return (*this);
 			}
 
-			VectorIterator& operator-=(const int n)
+			map_iterator& operator-=(const int n)
 			{
 				ptr = ptr - n;
 				return (*this);
@@ -151,23 +151,23 @@ namespace ft
     };
 
 	// template <class T>
-    // class const_VectorIterator : public VectorIterator<T>
+    // class const_map_iterator : public map_iterator<T>
     // {
 	// 	public:
 	// 		typedef T	value_type;
 	// 		typedef T&	reference;
 	// 		typedef T*	pointer;
-	// 		const_VectorIterator(void) {};
-	// 		const_VectorIterator(pointer p)
+	// 		const_map_iterator(void) {};
+	// 		const_map_iterator(pointer p)
 	// 		{
 	// 			this->ptr = p;
 	// 		};
-	// 		const_VectorIterator(const const_VectorIterator &iter)
+	// 		const_map_iterator(const const_map_iterator &iter)
 	// 		{
 	// 			*this = iter;
 	// 		};
-	// 		~const_VectorIterator() {};
-	// 		const_VectorIterator &operator=(const const_VectorIterator &iter)
+	// 		~const_map_iterator() {};
+	// 		const_map_iterator &operator=(const const_map_iterator &iter)
 	// 		{
 	// 			if (this != &iter)
 	// 				this->ptr = iter.ptr;
@@ -184,7 +184,7 @@ namespace ft
 	// };
 
     template <class T>
-    class ReverseIterator
+    class reverse_map_iterator
     {
         public:
 			typedef T	value_type;
@@ -195,23 +195,24 @@ namespace ft
 			pointer	ptr;
 
 		public:
-			ReverseIterator(void) : ptr(0) {}
-			ReverseIterator(pointer p) : ptr(p) {};
-			ReverseIterator(const ReverseIterator &iter) {*this = iter;};
-			~ReverseIterator() {};
-			operator ReverseIterator<const T> () const
-			{
-				return (ReverseIterator<const T>(ptr));
-			}
+			reverse_map_iterator(void) : ptr(0) {}
+			reverse_map_iterator(pointer p) : ptr(p) {};
+			reverse_map_iterator(const reverse_map_iterator &iter) {*this = iter;};
+			~reverse_map_iterator() {};
 			
-			ReverseIterator& operator=(const ReverseIterator &iter)
+			operator reverse_map_iterator<const T> () const
+			{
+				return (reverse_map_iterator<const T>(ptr));
+			}
+
+			reverse_map_iterator& operator=(const reverse_map_iterator &iter)
 			{
 				if (this != &iter)
 					ptr = iter.ptr;
 				return (*this);
 			}
 
-			int	operator==(const ReverseIterator &iter) const
+			int	operator==(const reverse_map_iterator &iter) const
 			{
 				if (this->ptr == iter.ptr)
 					return (1);
@@ -219,7 +220,7 @@ namespace ft
 					return (0);
 			}
 
-			int	operator!=(const ReverseIterator &iter) const
+			int	operator!=(const reverse_map_iterator &iter) const
 			{
 				if (this->ptr != iter.ptr)
 					return (1);
@@ -237,47 +238,47 @@ namespace ft
                 return (ptr);
             }
 
-			ReverseIterator operator+(int n) const
+			reverse_map_iterator operator+(int n) const
 			{
-				ReverseIterator copy(*this);
+				reverse_map_iterator copy(*this);
 				copy -= n;
 				return (copy);
 			}
 
-			ReverseIterator operator-(int n) const
+			reverse_map_iterator operator-(int n) const
 			{
-				ReverseIterator copy(*this);
+				reverse_map_iterator copy(*this);
 				copy += n;
 				return (copy);
 			}
 
-			ReverseIterator& operator++()
+			reverse_map_iterator& operator++()
 			{
 				ptr = ptr - 1;
 				return (*this);
 			}
 
-			ReverseIterator& operator--()
+			reverse_map_iterator& operator--()
 			{
 				ptr = ptr + 1;
 				return (*this);
 			}
 
-			ReverseIterator operator++(int)
+			reverse_map_iterator operator++(int)
 			{
-				ReverseIterator copy(*this);
+				reverse_map_iterator copy(*this);
 				ptr = ptr - 1;
 				return (copy);
 			}
 
-			ReverseIterator operator--(int)
+			reverse_map_iterator operator--(int)
 			{
-				ReverseIterator copy(*this);
+				reverse_map_iterator copy(*this);
 				ptr = ptr + 1;
 				return (copy);
 			}
 
-			int	operator<(const ReverseIterator &iter) const
+			int	operator<(const reverse_map_iterator &iter) const
 			{
 				if (this->ptr < iter.ptr)
 					return (1);
@@ -285,7 +286,7 @@ namespace ft
 					return (0);
 			}
 
-			int	operator>(const ReverseIterator &iter) const
+			int	operator>(const reverse_map_iterator &iter) const
 			{
 				if (this->ptr > iter.ptr)
 					return (1);
@@ -293,7 +294,7 @@ namespace ft
 					return (0);
 			}
 
-			int	operator<=(const ReverseIterator &iter) const
+			int	operator<=(const reverse_map_iterator &iter) const
 			{
 				if (this->ptr <= iter.ptr)
 					return (1);
@@ -301,7 +302,7 @@ namespace ft
 					return (0);
 			}
 
-			int	operator>=(const ReverseIterator &iter) const
+			int	operator>=(const reverse_map_iterator &iter) const
 			{
 				if (this->ptr >= iter.ptr)
 					return (1);
@@ -309,13 +310,13 @@ namespace ft
 					return (0);
 			}
 			
-			ReverseIterator& operator+=(const int n)
+			reverse_map_iterator& operator+=(const int n)
 			{
 				ptr = ptr - n;
 				return (*this);
 			}
 
-			ReverseIterator& operator-=(const int n)
+			reverse_map_iterator& operator-=(const int n)
 			{
 				ptr = ptr + n;
 				return (*this);
@@ -328,23 +329,23 @@ namespace ft
     };
 
 	// template <class T>
-    // class const_ReverseIterator : public ReverseIterator<T>
+    // class const_reverse_map_iterator : public reverse_map_iterator<T>
     // {
 	// 	public:
 	// 		typedef T	value_type;
 	// 		typedef T&	reference;
 	// 		typedef T*	pointer;
-	// 		const_ReverseIterator(void) {};
-	// 		const_ReverseIterator(pointer p)
+	// 		const_reverse_map_iterator(void) {};
+	// 		const_reverse_map_iterator(pointer p)
 	// 		{
 	// 			this->ptr = p;
 	// 		};
-	// 		const_ReverseIterator(const const_ReverseIterator &iter)
+	// 		const_reverse_map_iterator(const const_reverse_map_iterator &iter)
 	// 		{
 	// 			*this = iter;
 	// 		};
-	// 		~const_ReverseIterator() {};
-	// 		const_ReverseIterator &operator=(const const_ReverseIterator &iter)
+	// 		~const_reverse_map_iterator() {};
+	// 		const_reverse_map_iterator &operator=(const const_reverse_map_iterator &iter)
 	// 		{
 	// 			if (this != &iter)
 	// 				this->ptr = iter.ptr;
