@@ -18,7 +18,7 @@ namespace ft
 			typedef const T&								const_reference;
 			typedef T*										pointer;
 			typedef const T *								const_pointer;
-			typedef size_t									size_type;
+			typedef std::ptrdiff_t								size_type;
 			typedef ft::map_iterator<value_type>				iterator;
 			typedef ft::map_iterator<const value_type>			const_iterator;
 			typedef ft::reverse_map_iterator<value_type>		reverse_iterator;
@@ -42,16 +42,16 @@ namespace ft
 			typedef RBtree<value_type, value_compare, allocator_type> tree_type;
 			tree_type	tree;
 
-			typedef struct RBnode<value_type> node;
-			allocator_type	t_alloc;
+			// typedef struct RBnode<value_type> node;
+			// allocator_type	t_alloc;
 			// key_compare		comp;
 
 		public:
-			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : \
-									tree(value_compare(comp), t_alloc(alloc))  {};
+			map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : \
+									tree(value_compare(comp), alloc)  {};
 			template <class InputIterator>
 			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : \
-									tree(value_compare(comp), t_alloc(alloc))
+									tree(value_compare(comp), alloc)
 			{
 				insert(first, last);
 			};

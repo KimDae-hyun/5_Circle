@@ -82,6 +82,7 @@ namespace ft
 				root->parent = NULL;
 				size = 0;
 			}
+			
 			RBtree(const RBtree& tree)
 			{
 				root = tree.root;

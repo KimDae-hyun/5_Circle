@@ -33,25 +33,25 @@ int main(void)
 
 	ft::map<std::string, int> origin;
 
-	ft::pair<ft::map<std::string, int>::iterator, bool> ret;
+	// ft::pair<ft::map<std::string, int>::iterator, bool> ret;
 
-	ret = origin.insert( ft::pair<std::string, int>("test123", 1) );
+	// ret = origin.insert( ft::pair<std::string, int>("test123", 1) );
 
-	if (ret.second == false)
-	{
-		if (ret.second == true)
-		{
-			std::cout << "insert fail. second value is true" << std::endl;
-		}
-		else if (ret.second == false)
-		{
-			std::cout << "insert sucess. second value is false" << std::endl;
-		}
-	}
+	// if (ret.second == false)
+	// {
+	// 	if (ret.second == true)
+	// 	{
+	// 		std::cout << "insert fail. second value is true" << std::endl;
+	// 	}
+	// 	else if (ret.second == false)
+	// 	{
+	// 		std::cout << "insert sucess. second value is false" << std::endl;
+	// 	}
+	// }
 
-	//만약 반환된 이터레이터의 요소에 접근하려면
-	std::cout << ret.first->data.first << std::endl;
-	std::cout << ret.first->data.second << std::endl;
+	// //만약 반환된 이터레이터의 요소에 접근하려면
+	// std::cout << ret.first->data.first << std::endl;
+	// std::cout << ret.first->data.second << std::endl;
 
 	// ft::map<int, int> t;
 	// t.insert(ft::pair<int, int>(3, 4));
