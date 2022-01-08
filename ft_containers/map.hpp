@@ -5,7 +5,7 @@
 
 namespace ft
 {
-    template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> > >
+    template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<pair<const Key,T> > >
     class map
     {
         public:
@@ -23,7 +23,7 @@ namespace ft
 			typedef ft::map_iterator<const value_type>			const_iterator;
 			typedef ft::reverse_map_iterator<value_type>		reverse_iterator;
 			typedef ft::reverse_map_iterator<const value_type>	const_reverse_iterator;
-			class value_compare// : public binary_function<value_type,value_type,bool>
+			class value_compare : public std::binary_function<value_type,value_type,bool>
 			{   // in C++98, it is required to inherit binary_function<value_type,value_type,bool>
 				friend class map;
 				protected:
@@ -42,13 +42,13 @@ namespace ft
 			typedef RBtree<value_type, value_compare, allocator_type> tree_type;
 			tree_type	tree;
 
-			// typedef struct RBnode<value_type> node;
-			// allocator_type	t_alloc;
+			typedef struct RBnode<value_type> node;
+			//allocator_type	t_alloc;
 			// key_compare		comp;
 
 		public:
-			map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : \
-									tree(value_compare(comp), alloc)  {};
+			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : \
+									tree(value_compare(comp), alloc) {};
 			template <class InputIterator>
 			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : \
 									tree(value_compare(comp), alloc)
@@ -57,7 +57,7 @@ namespace ft
 			};
 			map (const map& x) : tree(x.tree)
             {
-                insert(x.begin(), x.end());
+               // insert(x.begin(), x.end());
             };
 			~map() {};
 
@@ -76,45 +76,45 @@ namespace ft
 			}
 
 		//Iterator
-			// iterator begin()
-			// {
-			// 	return (iterator(tree.begin()));
-			// }
+			iterator begin()
+			{
+				return (iterator(tree.begin()));
+			}
 
-			// const_iterator begin() const
-			// {
-			// 	return (const_iterator(tree.begin()));
-			// }
+			const_iterator begin() const
+			{
+				return (const_iterator(tree.begin()));
+			}
 
-			// iterator end()
-			// {
-			// 	return (iterator(tree.end()));
-			// }
+			iterator end()
+			{
+				return (iterator(tree.end()));
+			}
 
-			// const_iterator end() const
-			// {
-			// 	return (const_iterator(tree.end()));
-			// }
+			const_iterator end() const
+			{
+				return (const_iterator(tree.end()));
+			}
 
-			// reverse_iterator rbegin()
-			// {
-			// 	return (reverse_iterator(tree.end()));
-			// }
+			reverse_iterator rbegin()
+			{
+				return (reverse_iterator(tree.end()));
+			}
 
-			// const_reverse_iterator rbegin() const
-			// {
-			// 	return (const_reverse_iterator(tree.end()));
-			// }
+			const_reverse_iterator rbegin() const
+			{
+				return (const_reverse_iterator(tree.end()));
+			}
 
-			// reverse_iterator rend()
-			// {
-			// 	return (reverse_iterator(tree.begin()));
-			// }
+			reverse_iterator rend()
+			{
+				return (reverse_iterator(tree.begin()));
+			}
 
-			// const_reverse_iterator rend() const
-			// {
-			// 	return (const_reverse_iterator(tree.begin()));
-			// }
+			const_reverse_iterator rend() const
+			{
+				return (const_reverse_iterator(tree.begin()));
+			}
 
 		// Modifiers
 			ft::pair<iterator, bool> insert (const value_type& val)
@@ -142,7 +142,7 @@ namespace ft
 			{
 				while (first != last)
 				{
-					tree.root = tree.insert(tree.root, *first);
+					tree.root = tree.insertnode(tree.root, *first);
 					++first;
 				}
 			}

@@ -1,9 +1,6 @@
 #ifndef VECTOR_HPP
 # define VECTOR_HPP
 
-# include <iostream>
-# include <memory>
-# include <limits>
 # include "vec_iterator.hpp"
 # include "utils.hpp"
 

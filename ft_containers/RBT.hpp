@@ -1,7 +1,6 @@
 #ifndef RBT_HPP
 # define RBT_HPP
 
-# include <iostream>
 # include "utils.hpp"
 
 namespace ft
@@ -9,18 +8,19 @@ namespace ft
 	template <class T>
 	struct RBnode
 	{
-		typedef T	value_type;
-		RBnode	*parent;
-		RBnode	*left;
-		RBnode	*right;
-		bool 	color; // RED = true, BLACK = false
-		value_type	data;
+		typedef T		value_type;
 
-		RBnode() : left(NULL), right(NULL), parent(NULL), data() {}
+		RBnode			*parent;
+		RBnode			*left;
+		RBnode			*right;
+		bool 			color; // RED = true, BLACK = false
+		value_type		data;
 
-		RBnode(value_type& other) : left(NULL), right(NULL), parent(NULL), data(other) {}
+		//RBnode() : left(NULL), right(NULL), parent(NULL), data() {}
 
-		RBnode(const RBnode& node) : left(node.left), right(node.right), parent(node.parent), data(node.value) {}
+		//RBnode(value_type& other) : left(NULL), right(NULL), parent(NULL), data(other) {}
+
+		RBnode(const RBnode& node) : left(node.left), right(node.right), parent(node.parent), color(node.color), data(node.value) {}
 
 		~RBnode() {} 
 
@@ -32,6 +32,7 @@ namespace ft
 				this->right = node.right;
 				this->parent = node.parent;
 				this->value = node.value;
+				this->data = node.data;
 			}
 			return (*this);
 		}
@@ -58,25 +59,29 @@ namespace ft
 			typedef C					value_compare;
 			typedef A					allocator_type;
 			typedef size_t				size_type;
+			typedef RBtree				tree;
 			typedef RBnode<V>			node;
+			typedef typename std::allocator<node> node_alloc;
 
 
-			value_type		t_val;
+			//value_type		t_val;
 			value_compare	t_comp;
 			allocator_type	t_alloc;
+			node_alloc		n_alloc;
 			size_type		size;
 			node			*root;
 			node			*nil;
 
 		public:
-			RBtree(value_compare const& comp = value_compare(), allocator_type const& alloc = allocator_type()) : t_comp(comp), t_alloc(alloc)
+			RBtree(value_compare const& comp = value_compare(), allocator_type const& alloc = allocator_type(), node_alloc const& node_a = node_alloc())
+			: t_comp(comp), t_alloc(alloc), n_alloc(node_a), size(0)
 			{
-				root = t_alloc.allocate(1);
+				root = n_alloc.allocate(1);
 				root->left = NULL;
 				root->right = NULL;
 				root->parent = NULL;
 				size = 0;
-				nil = t_alloc.allocate(1);
+				nil = n_alloc.allocate(1);
 				root->left = NULL;
 				root->right = NULL;
 				root->parent = NULL;
@@ -93,19 +98,89 @@ namespace ft
 			~RBtree() {};
 
 
+		// // add
+		// 	tree&	operator=(tree const& tree)
+		// 	{
+		// 		if (this == &tree)
+		// 			return (*this);
+		// 		if (tree.root->left != NULL)
+		// 		{
+		// 			if (this->root == NULL)
+		// 			{
+		// 				node n = n_alloc.allocate(1);
+		// 				n->left = NULL;
+		// 				n->right = NULL;
+		// 				n->color = true;
+		// 				n->parent = root;
+		// 			}
+		// 			else
+		// 				t_alloc.destroy(&this->root->data);
+		// 			assignTree(this->root->left, tree.root->left);
+		// 		}
+		// 		else
+		// 		{
+		// 			deleteTree(this->getRoot());
+		// 			this->setRoot(NULL);
+		// 		}
+		// 		this->size_ = tree.size_;
+		// 		return (*this);
+		// 	};
+
+		// 	void	assignTree(node& this_node, node const& that_node)
+		// 	{
+		// 		t_alloc.construct(&this_node->data, that_node->data);
+		// 		this_node->color = that_node->color;
+		// 		if (that_node->left == NULL)
+		// 		{
+		// 			deleteTree(this_node->left->data);
+		// 			this_node->left = NULL;
+		// 		}
+		// 		else
+		// 		{
+		// 			if (this_node->left == NULL)
+		// 			{
+		// 				this_node->left = n_alloc.allocate(1);
+		// 				this_node->left->parent = this_node;
+		// 				this_node->left->left = NULL;
+		// 				this_node->left->right = NULL;
+		// 			}
+		// 			else
+		// 				t_alloc.destroy(&this_node->left->data);
+		// 			assignTree(this_node->left, that_node->left);
+		// 		}
+		// 		if (that_node->right == NULL)
+		// 		{
+		// 			deletenode(this_node->right->data);
+		// 			this_node->right = NULL;
+		// 		}
+		// 		else
+		// 		{
+		// 			if (this_node->right == NULL)
+		// 			{
+		// 				this_node->right = n_alloc.allocate(1);
+		// 				this_node->right->parent = this_node;
+		// 				this_node->right->left = NULL;
+		// 				this_node->right->right = NULL;
+		// 			}
+		// 			else
+		// 				t_alloc.destroy(&this_node->right->data);
+		// 			assignTree(this_node->right, that_node->right);
+		// 		}
+		// 	};
+
 			node *create(node *now, value_type& data)
 			{
 				if (size == 0)
-					t_alloc.construct(root, data);
+					n_alloc.construct(&root->data, data);
 				else
 				{
-					node* tmp = t_alloc.allocate(1);
-					t_alloc.construct(tmp, data);
+					node* tmp = n_alloc.allocate(1);
+					n_alloc.construct(&tmp->data, data);
 					tmp->parent = now;
 					tmp->left = NULL;
 					tmp->right = NULL;
 					tmp->color = false; // BLACK = false
-					tmp->data = data;
+					//tmp->data = data;
 					size++;
 					return (tmp);
 				}
@@ -473,7 +548,7 @@ namespace ft
 			{
 				return (find_max(root));
 			}
-    };
+     };
 }
 
 #endif

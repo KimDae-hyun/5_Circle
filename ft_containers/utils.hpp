@@ -2,6 +2,8 @@
 # define UTILS_HPP
 
 # include <iostream>
+# include <memory>
+# include <limits>
 
 namespace ft
 {
