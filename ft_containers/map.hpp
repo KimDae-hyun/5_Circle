@@ -5,13 +5,13 @@
 
 namespace ft
 {
-    template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<pair<const Key,T> > >
+    template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<pair<Key,T> > >
     class map
     {
         public:
             typedef Key										key_type;
             typedef T										mapped_type;
-            typedef ft::pair<const key_type, mapped_type>	value_type;
+            typedef ft::pair<key_type, mapped_type>			value_type;
 			typedef Compare									key_compare;
 			typedef Alloc									allocator_type;
 			typedef T&										reference;
@@ -43,6 +43,7 @@ namespace ft
 			tree_type	tree;
 
 			typedef struct RBnode<value_type> node;
+			value_type	val;
 			//allocator_type	t_alloc;
 			// key_compare		comp;
 
@@ -57,7 +58,7 @@ namespace ft
 			};
 			map (const map& x) : tree(x.tree)
             {
-               // insert(x.begin(), x.end());
+               insert(x.begin(), x.end());
             };
 			~map() {};
 
@@ -72,7 +73,8 @@ namespace ft
 
 			mapped_type& operator[] (const key_type& k)
 			{
-				return ((*((this->insert(ft::make_pair(k,mapped_type()), true)).first)).second);
+				val = insert(ft::make_pair(k,mapped_type()));
+				return (val.second);
 			}
 
 		//Iterator
@@ -117,14 +119,14 @@ namespace ft
 			}
 
 		// Modifiers
-			ft::pair<iterator, bool> insert (const value_type& val)
+			ft::pair<Key, T> insert (const value_type& val)
 			{
-				node *tmp = tree.searchnode(val);
+				node *tmp = tree.search(tree.root, val);
 
 				if (tmp)
-				 	return (ft::make_pair(tmp, false));
-				tmp = tree.insertnode(tree.root, val);
-				return (ft::make_pair(tmp, true));
+				 	return (ft::make_pair(val.first, val.second));
+				tree.insertnode(val);
+				return (ft::make_pair(val.first, val.second));
 			}
 
 			iterator insert (iterator position, const value_type& val)
@@ -142,7 +144,7 @@ namespace ft
 			{
 				while (first != last)
 				{
-					tree.root = tree.insertnode(tree.root, *first);
+					tree.root = tree.insertnode(*first);
 					++first;
 				}
 			}

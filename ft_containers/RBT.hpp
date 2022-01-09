@@ -16,9 +16,9 @@ namespace ft
 		bool 			color; // RED = true, BLACK = false
 		value_type		data;
 
-		//RBnode() : left(NULL), right(NULL), parent(NULL), data() {}
+		//RBnode() : left(nullptr), right(nullptr), parent(nullptr), data() {}
 
-		//RBnode(value_type& other) : left(NULL), right(NULL), parent(NULL), data(other) {}
+		RBnode(value_type& other) : left(nullptr), right(nullptr), parent(nullptr), data(other) {}
 
 		RBnode(const RBnode& node) : left(node.left), right(node.right), parent(node.parent), color(node.color), data(node.value) {}
 
@@ -77,14 +77,14 @@ namespace ft
 			: t_comp(comp), t_alloc(alloc), n_alloc(node_a), size(0)
 			{
 				root = n_alloc.allocate(1);
-				root->left = NULL;
-				root->right = NULL;
-				root->parent = NULL;
+				root->left = nullptr;
+				root->right = nullptr;
+				root->parent = nullptr;
 				size = 0;
 				nil = n_alloc.allocate(1);
-				root->left = NULL;
-				root->right = NULL;
-				root->parent = NULL;
+				root->left = nullptr;
+				root->right = nullptr;
+				root->parent = nullptr;
 				size = 0;
 			}
 			
@@ -98,114 +98,32 @@ namespace ft
 			~RBtree() {};
 
 
-		// // add
-		// 	tree&	operator=(tree const& tree)
-		// 	{
-		// 		if (this == &tree)
-		// 			return (*this);
-		// 		if (tree.root->left != NULL)
-		// 		{
-		// 			if (this->root == NULL)
-		// 			{
-		// 				node n = n_alloc.allocate(1);
-		// 				n->left = NULL;
-		// 				n->right = NULL;
-		// 				n->color = true;
-		// 				n->parent = root;
-		// 			}
-		// 			else
-		// 				t_alloc.destroy(&this->root->data);
-		// 			assignTree(this->root->left, tree.root->left);
-		// 		}
-		// 		else
-		// 		{
-		// 			deleteTree(this->getRoot());
-		// 			this->setRoot(NULL);
-		// 		}
-		// 		this->size_ = tree.size_;
-		// 		return (*this);
-		// 	};
-
-		// 	void	assignTree(node& this_node, node const& that_node)
-		// 	{
-		// 		t_alloc.construct(&this_node->data, that_node->data);
-		// 		this_node->color = that_node->color;
-		// 		if (that_node->left == NULL)
-		// 		{
-		// 			deleteTree(this_node->left->data);
-		// 			this_node->left = NULL;
-		// 		}
-		// 		else
-		// 		{
-		// 			if (this_node->left == NULL)
-		// 			{
-		// 				this_node->left = n_alloc.allocate(1);
-		// 				this_node->left->parent = this_node;
-		// 				this_node->left->left = NULL;
-		// 				this_node->left->right = NULL;
-		// 			}
-		// 			else
-		// 				t_alloc.destroy(&this_node->left->data);
-		// 			assignTree(this_node->left, that_node->left);
-		// 		}
-		// 		if (that_node->right == NULL)
-		// 		{
-		// 			deletenode(this_node->right->data);
-		// 			this_node->right = NULL;
-		// 		}
-		// 		else
-		// 		{
-		// 			if (this_node->right == NULL)
-		// 			{
-		// 				this_node->right = n_alloc.allocate(1);
-		// 				this_node->right->parent = this_node;
-		// 				this_node->right->left = NULL;
-		// 				this_node->right->right = NULL;
-		// 			}
-		// 			else
-		// 				t_alloc.destroy(&this_node->right->data);
-		// 			assignTree(this_node->right, that_node->right);
-		// 		}
-		// 	};
-
-			node *create(node *now, value_type& data)
+			node *create(value_type data)
 			{
-				if (size == 0)
-					n_alloc.construct(&root->data, data);
-				else
-				{
-					node* tmp = n_alloc.allocate(1);
-					n_alloc.construct(&tmp->data, data);
-					tmp->parent = now;
-					tmp->left = NULL;
-					tmp->right = NULL;
-					tmp->color = false; // BLACK = false
-					//tmp->data = data;
-					size++;
-					return (tmp);
-				}
-				size++;	
-				return (root);
+				node* node = n_alloc.allocate(1);
+				node->parent = nullptr;
+				node->left = nullptr;
+				node->right = nullptr;
+				node->color = false; // BLACK = false
+				node->data = data;
+				return (node);
 			}
 
-			node* insertnode(node* now, value_type data)
+			void insertnode(value_type data)
 			{
-				if (now == NULL || size == 0)
-					return (create(now, data));
+				node *node = create(data);
 
-				now->color = true;
-				now->left = nil;
-				now->right = nil;
-				if (!root)
-					root = now;
-				insertvalue(root, now);
-				insertcheck(root, now);
-				return (now);
+				node->color = true;
+				node->left = nil;
+				node->right = nil;
+
+				insertvalue(root, node);
+				insertcheck(root, node);
 			}
 
 			void insertvalue(node *parent, node *node)
 			{
-				if (parent == NULL)
+				if (parent == nullptr)
 					parent = node;
 				if (parent->data < node->data)
 				{
@@ -227,20 +145,18 @@ namespace ft
 					else
 						insertvalue(parent->left, node);
 				}
-				//else
-				//	t_alloc.deallocate(node);
 			}
 
 			void insertcheck(node *root, node *now)
-			{	
+			{
 				//부모가 red이면 자식은 black
 				while (now != root && now->parent->color == true)
-				{	
+				{ 
 					//부모 노드가 조부모의 왼쪽 자식인 경우
 					if (now->parent == now->parent->parent->left)
 					{ 
 						node *uncle = now->parent->parent->right;
-						
+
 						//부모, 삼촌 노드가 red
 						if (uncle->color == true)
 						{ 
@@ -294,10 +210,8 @@ namespace ft
 
 			node *search(node *node, value_type data)
 			{
-				if (node == NULL)
-					return (NULL);
-				if (node == nil)
-					return (nil);
+				if (node == nullptr)
+					return (nullptr);
 				if (node->data > data)
 					return (search(node->left, data));
 				else if (node->data < data)
@@ -305,14 +219,10 @@ namespace ft
 				return (node);
 			}
 
-			node *searchnode(value_type data)
+			void minsearch(node *node)
 			{
-				node* tmp = search(root, data);
-				return (tmp);
-			}
-
-			node* minsearch(node *node)
-			{
+				if (node == nullptr)
+					return ;
 				if (node == nil)
 					return (nil);
 				if (node->left == nil && node->right == nil)
@@ -326,14 +236,14 @@ namespace ft
 
 			void deletenode(value_type data)
 			{
-				if (root == NULL)
+				if (root == nullptr)
 					return ;
 
-				node *del = NULL;
-				node *replace = NULL;
+				node *del = nullptr;
+				node *replace = nullptr;
 				node *target = search(root, data);
 
-				if (target == NULL)
+				if (target == nullptr)
 					return;
 				if (target->left == nil || target->right == nil)
 					del = target;
@@ -350,10 +260,10 @@ namespace ft
 
 				replace->parent = del->parent;
 
-				if (del->parent == NULL)
+				if (del->parent == nullptr)
 				{
 					if (replace == nil)
-						root = NULL;
+						root = nullptr;
 					else
 						root = replace;
 				}
@@ -368,13 +278,13 @@ namespace ft
 				if (del->color == false)
 					checkdelete(root, replace);
 
-				//t_alloc.deallocate(del);
-				//del = 0;
+				n_alloc.deallocate(del);
+				del = 0;
 			}
 
 			void checkdelete(node *root, node *replace)
 			{
-				node *sibling = NULL;
+				node *sibling = nullptr;
 
 				while (replace->parent && replace->color == false)
 				{
@@ -478,7 +388,7 @@ namespace ft
 				if (now->right != nil)
 					now->right->parent = now;
 				r_child->parent = now->parent;
-				if (now->parent == NULL)
+				if (now->parent == nullptr)
 					root = r_child;
 				else
 				{
@@ -502,7 +412,7 @@ namespace ft
 				if (l_child->right != nil)
 					l_child->right->parent = now;
 				l_child->parent = now->parent;
-				if (now->parent == NULL)
+				if (now->parent == nullptr)
 					root = l_child;
 				else
 				{
@@ -517,8 +427,8 @@ namespace ft
 
 			node* find_min(node* node)
 			{
-				if (node == NULL)
-					return (NULL);
+				if (node == nullptr)
+					return (nullptr);
 				if (node == nil)
 					return (nil);
 				else if (node->left == nil)
@@ -534,8 +444,8 @@ namespace ft
 
 			node* find_max(node* node)
 			{
-				if (node == NULL)
-					return (NULL);
+				if (node == nullptr)
+					return (nullptr);
 				if (node == nil)
 					return (nil);
 				else if (node->right == nil)

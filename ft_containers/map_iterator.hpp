@@ -9,11 +9,11 @@ namespace ft
     class map_iterator
     {
         public:
-			typedef T				value_type;
-			typedef T&				reference;
-			typedef T*				pointer;
-			typedef std::ptrdiff_t	size_type;
-			typedef RBnode<T>*		node;
+			typedef T					value_type;
+			typedef T&					reference;
+			typedef T*					pointer;
+			typedef std::ptrdiff_t		size_type;
+			typedef RBnode<T>			node;
 
 		protected:
 			pointer ptr;
@@ -21,7 +21,10 @@ namespace ft
 
 		public:
 			map_iterator(void) : ptr() {};
-			map_iterator(pointer p) : ptr(p) {};
+			map_iterator(pointer p) : n_ptr(p)
+			{
+				ptr = n_ptr;
+			};
 			map_iterator(const map_iterator &iter) {*this = iter;};
 			~map_iterator() {};
 			operator map_iterator<const T> () const
