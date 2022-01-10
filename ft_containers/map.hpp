@@ -1,29 +1,29 @@
 #ifndef MAP_HPP
 # define MAP_HPP
 
-# include "map_iterator.hpp"
+# include "RBT.hpp"
 
 namespace ft
 {
-    template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<pair<Key,T> > >
+	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> > >
     class map
     {
         public:
             typedef Key										key_type;
             typedef T										mapped_type;
-            typedef ft::pair<key_type, mapped_type>			value_type;
+            typedef ft::pair<const key_type, mapped_type>	value_type;
 			typedef Compare									key_compare;
 			typedef Alloc									allocator_type;
 			typedef T&										reference;
 			typedef const T&								const_reference;
 			typedef T*										pointer;
 			typedef const T *								const_pointer;
-			typedef std::ptrdiff_t								size_type;
-			typedef ft::map_iterator<value_type>				iterator;
-			typedef ft::map_iterator<const value_type>			const_iterator;
+			typedef std::ptrdiff_t							size_type;
+			typedef map_iterator<value_type>				iterator;
+			typedef map_iterator<const value_type>			const_iterator;
 			typedef ft::reverse_map_iterator<value_type>		reverse_iterator;
 			typedef ft::reverse_map_iterator<const value_type>	const_reverse_iterator;
-			class value_compare : public std::binary_function<value_type,value_type,bool>
+			class value_compare : public std::binary_function<value_type, value_type, bool>
 			{   // in C++98, it is required to inherit binary_function<value_type,value_type,bool>
 				friend class map;
 				protected:
@@ -42,8 +42,8 @@ namespace ft
 			typedef RBtree<value_type, value_compare, allocator_type> tree_type;
 			tree_type	tree;
 
-			typedef struct RBnode<value_type> node;
-			value_type	val;
+			//typedef struct RBnode<value_type> node;
+			//value_type	val;
 			//allocator_type	t_alloc;
 			// key_compare		comp;
 
@@ -54,7 +54,7 @@ namespace ft
 			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : \
 									tree(value_compare(comp), alloc)
 			{
-				insert(first, last);
+				tree.insert(first, last);
 			};
 			map (const map& x) : tree(x.tree)
             {
@@ -73,8 +73,7 @@ namespace ft
 
 			mapped_type& operator[] (const key_type& k)
 			{
-				val = insert(ft::make_pair(k,mapped_type()));
-				return (val.second);
+ 				return ((*((tree.insert(ft::make_pair(k, mapped_type()))).first)).second); 
 			}
 
 		//Iterator
@@ -119,34 +118,21 @@ namespace ft
 			}
 
 		// Modifiers
-			ft::pair<Key, T> insert (const value_type& val)
+			ft::pair<iterator, bool> insert (const value_type& val)
 			{
-				node *tmp = tree.search(tree.root, val);
-
-				if (tmp)
-				 	return (ft::make_pair(val.first, val.second));
-				tree.insertnode(val);
-				return (ft::make_pair(val.first, val.second));
+				pair<iterator, bool>	temp = tree.insert(val);
+				return (ft::make_pair(iterator(temp.first), temp.second));
 			}
 
 			iterator insert (iterator position, const value_type& val)
 			{
-				(void)position;
-				node *tmp = tree.serarch(position, val);
-				if (tmp)
-					return (iterator(*tmp));
-				tmp = tree.insertnode(val);
-				return (iterator(*tmp));
+				return (tree.insert(position, val)); 
 			}
 
 			template <class InputIterator>
   			void insert (InputIterator first, InputIterator last)
 			{
-				while (first != last)
-				{
-					tree.root = tree.insertnode(*first);
-					++first;
-				}
+				tree.insert(first, last);
 			}
     };
 }
