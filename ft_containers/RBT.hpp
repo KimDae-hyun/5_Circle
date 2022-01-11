@@ -21,7 +21,7 @@ namespace ft
 		bool 			color; // RED = true, BLACK = false
 		value_type		data;
 
-		RBnode(value_type& other) : left(nullptr), right(nullptr), parent(nullptr), data(other) {}
+		RBnode(value_type& other) : left(NULL), right(NULL), parent(NULL), data(other) {}
 
 		RBnode(const node& n) : parent(n.parent), left(n.left), right(n.right), color(n.color), data(n.data) {}
 
@@ -153,6 +153,7 @@ namespace ft
 			}
 			iterator_&	findright(void)
 			{
+				std::cout << "n_ptr " << n_ptr->data.first << std::endl;
 				if (n_ptr->right)
 				{
 					n_ptr = n_ptr->right;
@@ -183,17 +184,16 @@ namespace ft
 			typedef RBnode<V>									node;
 			typedef typename A::template rebind<node>::other	node_allocator;
 
-			//value_type		t_val;
+		private:
 			value_compare	t_comp;
 			allocator_type	t_alloc;
 			node_allocator	n_alloc;
-			size_type		size;
+			size_type		t_size;
 			node			*root;
-			//node			*NULL;
 
 		public:
 			RBtree(value_compare const& comp = value_compare(), allocator_type const& alloc = allocator_type(), node_allocator const& node_a = node_allocator())
-			: t_comp(comp), t_alloc(alloc), n_alloc(node_a), size(0)
+			: t_comp(comp), t_alloc(alloc), n_alloc(node_a), t_size(0)
 			{
 				root = n_alloc.allocate(1);
 				root->left = NULL;
@@ -202,48 +202,48 @@ namespace ft
 				root->color = true;
 			}
 			
-			RBtree(const RBtree& tree) : t_comp(tree.comp), t_alloc(tree.t_alloc), n_alloc(tree.n_alloc), size(tree.size)
+			RBtree(const RBtree& tree) : t_comp(tree.comp), t_alloc(tree.t_alloc), n_alloc(tree.n_alloc), t_size(tree.t_size)
 			{
 				root = n_alloc.allocate(1);
 				root->parent = NULL;
 				root->color = true;
-				if (tree.root.left != NULL)
-				{
-					node *root = n_alloc.allcate(1);
-					root->parent = this->root;
-					this->root->left = root;
-					this->root->right = root;
-					copytree(&root, tree.root.left);
-				}
-				else
-				{
-					root->left = NULL;
-					root->right = NULL;
-				}	
+				// if (t_size != 0)
+				// {
+				// 	node *root = n_alloc.allcate(1);
+				// 	root->parent = this->root;
+				// 	this->root->left = root;
+				// 	this->root->right = root;
+				// 	copytree(&root, tree.root.left);
+				// }
+				// else
+				// {
+				// 	root->left = NULL;
+				// 	root->right = NULL;
+				// }	
 			}
 			~RBtree() {};
 
-			void	copyTree(node** n_this, node* const& n_that)
-			{
-				t_alloc.construct(n_this->data, n_that->data);
+			// void	copyTree(node** n_this, node* const& n_that)
+			// {
+			// 	t_alloc.construct(n_this->data, n_that->data);
 
-				if ((*n_that)->left == NULL)
-					(*n_this)->left = NULL;
-				else if ((*n_that)->left != NULL)
-				{
-					(*n_this)->left = n_alloc.allocate(1);
-					(*n_this)->left->parent = (*n_this);
-					copyTree((*n_this)->left, n_that->left);
-				}
-				if ((*n_that)->right == NULL)
-					(*n_this)->right = NULL;
-				else if ((*n_that)->right != NULL)
-				{
-					(*n_this)->right = n_alloc.allocate(1);
-					(*n_this)->right->parent = (*n_this);
-					copyTree((*n_this)->right, n_that->right);
-				}
-			};
+			// 	if ((*n_that)->left == NULL)
+			// 		(*n_this)->left = NULL;
+			// 	else if ((*n_that)->left != NULL)
+			// 	{
+			// 		(*n_this)->left = n_alloc.allocate(1);
+			// 		(*n_this)->left->parent = (*n_this);
+			// 		copyTree((*n_this)->left, n_that->left);
+			// 	}
+			// 	if ((*n_that)->right == NULL)
+			// 		(*n_this)->right = NULL;
+			// 	else if ((*n_that)->right != NULL)
+			// 	{
+			// 		(*n_this)->right = n_alloc.allocate(1);
+			// 		(*n_this)->right->parent = (*n_this);
+			// 		copyTree((*n_this)->right, n_that->right);
+			// 	}
+			// };
 
 			pair<iterator, bool>	insert(const value_type& val)
 			{
@@ -255,7 +255,7 @@ namespace ft
 				node*	prev = (node*)position.n_ptr;
 				node*	next = (node*)(++position).n_ptr;
 
-				if ((position != end()) && (size && prev->data <= val && next->data >= val))
+				if ((position.n_ptr != end().n_ptr) && (t_size && prev->data <= val && next->data >= val))
 				{
 					node*	n_new;
 					n_new = create(val);
@@ -286,61 +286,32 @@ namespace ft
 				node* node = n_alloc.allocate(1);
 
 				t_alloc.construct(&node->data, data);
+				node->parent = NULL;
 				node->left = NULL;
 				node->right = NULL;
 				node->color = true;
-				++size;
+				++t_size;
 				return (node);
 			}
 
 			pair<iterator, bool> insertnode(value_type val)
 			{
-				node *innode;
-				
-				if (!root->left)
-				{
-					innode = n_alloc.allocate(1);
-					t_alloc.construct(&innode->data, val);
-					innode->color = false;
-					innode->parent = root;
-					innode->left = NULL;
-					innode->right = NULL;
-					root->left = innode;
-					root->right = innode;
-					innode->parent = root;
-					size++;
-					return (pair<iterator, bool>(iterator(innode), true));
-				}
-				node *next = root->left;
-				node *n_parent;
-				while (next)
-				{
-					n_parent = next;
-					if (t_comp(next->data, val))
-						next = next->right;
-					else
-					{
-						if (!t_comp(next->data, val) && !t_comp(val, next->data))
-							return (pair<iterator, bool>(iterator(next), false));
-						next = next->left;
-					}
-				}
-				innode = create(val);
-				innode->parent = n_parent;
-				if (innode->parent->right == next)
-					innode->parent->right = innode;
-				else
-					innode->parent->left = innode;
-				if (innode->parent->color == true)
-					insertcheck(root, innode);/// 기존 코드 사용 
-				return (pair<iterator, bool>(iterator(innode), true));
+				node *node = create(val);
+
+				t_alloc.construct(&node->data, val);
+				node->color = true;
+				node->left = NULL;
+				node->right = NULL;
+				if (t_size == 1)
+					root = node;
+				insertvalue(root, node);
+				insertcheck(root, node);
+				return (pair<iterator, bool>(iterator(node), true));
 			}
 
 			void insertvalue(node *parent, node *node)
 			{
-				if (parent == nullptr)
-					parent = node;
-				if (parent->data < node->data)
+				if (parent->data.first < node->data.first)
 				{
 					if (parent->right == NULL)
 					{
@@ -350,7 +321,7 @@ namespace ft
 					else
 						insertvalue(parent->right, node);
 				}
-				else if (parent->data > node->data)
+				else if (parent->data.first > node->data.first)
 				{
 					if (parent->left == NULL)
 					{
@@ -365,15 +336,15 @@ namespace ft
 			void insertcheck(node *root, node *now)
 			{
 				//부모가 red이면 자식은 black
-				while (now != root && now->parent->color == true)
-				{ 
+				while (now != root && now->parent->color == true && now->parent->parent)
+				{
 					//부모 노드가 조부모의 왼쪽 자식인 경우
 					if (now->parent == now->parent->parent->left)
-					{ 
+					{
 						node *uncle = now->parent->parent->right;
 
 						//부모, 삼촌 노드가 red
-						if (uncle->color == true)
+						if (uncle && uncle->color == true)
 						{ 
 							now->parent->color = false;
 							uncle->color = false;
@@ -399,7 +370,7 @@ namespace ft
 					{ //부모 노드가 조부모의 오른쪽 자식인 경우 왼쪽과 반대로
 						node *uncle = now->parent->parent->left;
 
-						if (uncle->color == true)
+						if (uncle && uncle->color == true)
 						{
 							now->parent->color = false;
 							uncle->color = false;
@@ -416,6 +387,7 @@ namespace ft
 							now->parent->color = false;
 							now->parent->parent->color = true;
 							leftrotate(root, now->parent->parent);
+							//now = now->parent;
 						}
 					}
 				}
@@ -423,42 +395,29 @@ namespace ft
 				// root 노드는 항상 black
 			}
 
-			node *search(node *node, value_type data)
+			node* minsearch(node *node)
 			{
-				if (node == nullptr)
-					return (nullptr);
-				if (node->data > data)
-					return (search(node->left, data));
-				else if (node->data < data)
-					return (search(node->right, data));
-				return (node);
+				if (node == NULL)
+					return (node->parent);
+				if (node->left == NULL && node->right == NULL)
+					return (node);
+				if (node->left == NULL)
+					return (node);
+				if (node->right == NULL)
+					return (node->left);
+				return (minsearch(node->right));
 			}
-
-			// void minsearch(node *node)
-			// {
-			// 	if (node == nullptr)
-			// 		return ;
-			// 	if (node == NULL)
-			// 		return (NULL);
-			// 	if (node->left == NULL && node->right == NULL)
-			// 		return (node);
-			// 	if (node->left == NULL)
-			// 		return (node->right);
-			// 	if (node->right == NULL)
-			// 		return (node);
-			// 	return (minsearch(node->right));
-			// }
 
 			void deletenode(value_type data)
 			{
-				if (root == nullptr)
+				if (root == NULL)
 					return ;
 
-				node *del = nullptr;
-				node *replace = nullptr;
-				node *target = search(root, data);
-
-				if (target == nullptr)
+				node *del = NULL; //지워질 노드
+				node *replace = NULL; //위치가 바뀌어질 노드
+				node *target = search(root, data); //데이터가 바뀔 노드
+				
+				if (target == NULL)
 					return;
 				if (target->left == NULL || target->right == NULL)
 					del = target;
@@ -470,15 +429,17 @@ namespace ft
 
 				if (del->left != NULL)
 					replace = del->left;
-				else
+				else if (del->right != NULL)
 					replace = del->right;
-
+				else
+					replace = del;
+				
 				replace->parent = del->parent;
 
-				if (del->parent == nullptr)
+				if (del->parent == NULL)
 				{
 					if (replace == NULL)
-						root = nullptr;
+						root = NULL;
 					else
 						root = replace;
 				}
@@ -493,13 +454,15 @@ namespace ft
 				if (del->color == false)
 					checkdelete(root, replace);
 
-				n_alloc.deallocate(del);
-				del = 0;
+				t_alloc.destroy(&del->data);
+				n_alloc.deallocate(del, 1);
+				del = NULL;
+				--t_size;
 			}
 
 			void checkdelete(node *root, node *replace)
 			{
-				node *sibling = nullptr;
+				node *sibling = NULL;
 
 				while (replace->parent && replace->color == false)
 				{
@@ -511,8 +474,8 @@ namespace ft
 						{
 							if (sibling->color == false && sibling->left->color == false && sibling->right->color == false)
 							{
-								sibling->color == true;
-								replace->color == false;
+								sibling->color = true;
+								replace->color = false;
 							}
 						}
 						if (sibling->color == true) // 형제 노드가 red
@@ -523,7 +486,7 @@ namespace ft
 						}
 						else // 형제 노드가 black
 						{
-							if (sibling->left->color == false && sibling->right->colot == false) // 조카 노드 둘다 black
+							if (sibling->left->color == false && sibling->right->color == false) // 조카 노드 둘다 black
 							{
 								sibling->color = true;
 								replace = replace->parent;
@@ -553,8 +516,8 @@ namespace ft
 						{
 							if (sibling->color == false && sibling->left->color == false && sibling->right->color == false)
 							{
-								sibling->color == true;
-								replace->color == false;
+								sibling->color = true;
+								replace->color = false;
 							}
 						}
 						if (sibling->color == true) // 형제 노드가 red
@@ -565,7 +528,7 @@ namespace ft
 						}
 						else // 형제 노드가 black
 						{
-							if (sibling->left->color == false && sibling->right->colot == false) // 조카 노드 둘다 black
+							if (sibling->left->color == false && sibling->right->color == false) // 조카 노드 둘다 black
 							{
 								sibling->color = true;
 								replace = replace->parent;
@@ -588,7 +551,6 @@ namespace ft
 						}
 					}
 				}
-
 				replace->color = false;
 			}
 
@@ -603,7 +565,7 @@ namespace ft
 				if (now->right != NULL)
 					now->right->parent = now;
 				r_child->parent = now->parent;
-				if (now->parent == nullptr)
+				if (now->parent == NULL)
 					root = r_child;
 				else
 				{
@@ -614,6 +576,7 @@ namespace ft
 				}	
 				r_child->left = now;
 				now->parent = r_child;
+				now = r_child;
 			}
 
 			void rightrotate(node *root, node *now)
@@ -627,7 +590,7 @@ namespace ft
 				if (l_child->right != NULL)
 					l_child->right->parent = now;
 				l_child->parent = now->parent;
-				if (now->parent == nullptr)
+				if (now->parent == NULL)
 					root = l_child;
 				else
 				{
@@ -640,56 +603,191 @@ namespace ft
 				now->parent = l_child;
 			}
 
-			node* find_min(node* node)
-			{
-				if (node == nullptr)
-					return (nullptr);
-				if (node == NULL)
-					return (NULL);
-				else if (node->left == NULL)
-					return (node);
-				else
-					return (find_min(node->left));
-			}
-
-			// node* begin(void)
-			// {
-			// 	return (find_min(root));
-			// }
-
-			node* find_max(node* node)
-			{
-				if (node == nullptr)
-					return (nullptr);
-				if (node == NULL)
-					return (NULL);
-				else if (node->right == NULL)
-					return (node);
-				else
-					return (find_max(node->right));
-			}
-
-			// node* end(void)
-			// {
-			// 	return (find_max(root));
-			// }
-
 			iterator	begin(void)
-				{ return (iterator(root).findleft()); };
+			{
+				return (iterator(root).findleft());
+			};
+
 			const_iterator	begin(void) const
-				{ return (const_iterator(iterator(root)).findleft()); };
+			{
+				return (const_iterator(iterator(root)).findleft());
+			};
+
 			iterator	end(void)
-				{ return (iterator(root)); };
+			{
+				return ((iterator(root)).findright());
+			};
+
 			const_iterator	end(void) const
-				{ return (const_iterator(iterator(root))); };
+			{
+				return (const_iterator((iterator(root)).findright()));
+			};
+
 			reverse_iterator	rbegin(void)
-				{ return (reverse_iterator(iterator(root))); };
+			{
+				return (reverse_iterator((iterator(root)).findright()));
+			};
+
 			const_reverse_iterator	rbegin(void) const
-				{ return (const_reverse_iterator(iterator(root))); };
+			{
+				return (const_reverse_iterator((iterator(root)).findright()));
+			};
+
 			reverse_iterator	rend(void)
-				{ return (reverse_iterator(iterator(root).findleft())); };
+			{
+				return (reverse_iterator(iterator(root).findleft()));
+			};
+
 			const_reverse_iterator	rend(void) const
-				{ return (const_reverse_iterator(iterator(root).findleft())); };
+			{
+				return (const_reverse_iterator(iterator(root).findleft()));
+			};
+			
+			bool empty() const
+			{
+				return (t_size == 0);
+			}
+
+			size_type size() const
+			{
+				return (t_size);
+			}
+
+			size_type max_size() const
+			{
+				return (n_alloc.max_size());
+			}
+
+			void swap(tree& t)
+			{
+				node *t_tmp = root;
+				size_type s_tmp = t_size;
+
+				root = t.root;
+				t.root = t_tmp;
+				t_size = t.t_size;
+				t.t_size = s_tmp;
+			}
+
+			void del_tree(node *n)
+			{
+				if (n)
+				{
+					del_tree(node->left);
+					del_tree(node->right);
+					t_alloc.destroy(&n->data);
+					n_alloc.deallocate(n, 1);
+				}
+			}
+
+			void clear(void)
+			{
+				deleteTree(root);
+				root->left = NULL;
+				root->right = NULL;
+				t_alloc.destroy(&root->data);
+				n_alloc.deallocate(root, 1);
+				t_size = 0;
+			}
+
+			value_compare value_comp() const
+			{
+				return (t_comp);
+			}
+
+			iterator find(const value_type &val)
+			{
+				node *check = root;
+
+				while (check)
+				{
+					if (!t_comp(check->data, val) && !t_comp(val, check->data))
+						break;
+					if (t_comp(check->data, val))
+						check = check->right;
+					else
+						check = check->left;
+				}
+				if (!check)
+					return (end());
+				return (iterator(check));
+			}
+
+			const_iterator find(const value_type &val) const
+			{
+				node *check = root;
+
+				while (check)
+				{
+					if (!t_comp(check->data, val) && !t_comp(val, check->data))
+						break;
+					if (t_comp(check->data, val))
+						check = check->right;
+					else
+						check = check->left;
+				}
+				if (!check)
+					return (end());
+				return (const_iterator(iterator(check)));
+			}
+
+			size_type count (const value_type &val) const
+			{
+				node *check = root;
+
+				while (check)
+				{
+					if (!t_comp(check->data, val) && !t_comp(val, check->data))
+						break;
+					if (t_comp(check->data, val))
+						check = check->right;
+					else
+						check = check->left;
+				}
+				if (!check)
+					return (0);
+				return (1);
+			}
+
+			iterator lower_bound (const value_type &val)
+			{
+				iterator it = begin();
+
+				while (t_comp(*it, val) && it != end())
+					it++;
+				return (it);
+			}
+
+			const_iterator lower_bound (const value_type &val) const
+			{
+				iterator it = begin();
+
+				while (t_comp(*it, val) && it != end())
+					it++;
+				return (it);
+			}
+
+			iterator upper_bound (const value_type &val)
+			{
+				iterator it = begin();
+
+				while (t_comp(*it, val) && it != end())
+					it++;
+				if (!t_comp(*it, val) && !t_comp(val, *it))
+					it++;
+				return (it);
+			}
+
+			const_iterator upper_bound (const value_type &val) const
+			{
+				iterator it = begin();
+
+				while (t_comp(*it, val) && it != end())
+					it++;
+				if (!t_comp(*it, val) && !t_comp(val, *it))
+					it++;
+				return (it);
+			}
      };
 }
 

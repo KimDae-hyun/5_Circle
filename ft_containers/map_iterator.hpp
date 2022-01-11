@@ -48,21 +48,21 @@ namespace ft
 				return (*this);
 			}
 
-			bool	operator==(const map_iterator &iter) const
-			{
-				if (*this == iter)
-					return (1);
-				else
-					return (0);
-			}
+			// bool	operator==(const map_iterator &iter) const
+			// {
+			// 	if (*this == iter)
+			// 		return (1);
+			// 	else
+			// 		return (0);
+			// }
 
-			bool	operator!=(const map_iterator &iter) const
-			{
-				if (*this != iter)
-					return (1);
-				else
-					return (0);
-			}
+			// bool	operator!=(const map_iterator &iter) const
+			// {
+			// 	if (*this != iter)
+			// 		return (1);
+			// 	else
+			// 		return (0);
+			// }
  
             reference	operator*() const
 			{
@@ -100,7 +100,12 @@ namespace ft
 				return (temp);
 			}
     };
-	
+	template <class T>
+	bool	operator==(const map_iterator<T> &it1, const map_iterator<T> &it2)
+	{
+		return (it1.n_ptr == it2.n_ptr);
+	}
+
 	template <class T>
    	bool operator!=(const map_iterator<T>& it1, const map_iterator<T>& it2)
 	{
@@ -153,13 +158,13 @@ namespace ft
 					return (0);
 			}
 
-			bool	operator!=(const reverse_map_iterator<const T> &iter) const
-			{
-				if (this->ptr != iter.getptr())
-					return (1);
-				else
-					return (0);
-			}
+			// bool	operator!=(const reverse_map_iterator<const T> &iter) const
+			// {
+			// 	if (this->ptr != iter.getptr())
+			// 		return (1);
+			// 	else
+			// 		return (0);
+			// }
 
             reference	operator*()
 			{
@@ -172,25 +177,6 @@ namespace ft
 			{
                 return (&(operator*()));
             }
-
-			reverse_map_iterator operator+(int n) const
-			{
-				reverse_map_iterator copy(*this);
-				copy.ptr = copy.ptr - n;
-				return (copy);
-			}
-
-			reverse_map_iterator operator-(int n) const
-			{
-				reverse_map_iterator copy(*this);
-				copy.ptr = copy.ptr + n;
-				return (copy);
-			}
-
-			size_type operator-(const reverse_map_iterator& it) const
-			{
-				return (it.ptr - ptr);
-			}
 
 			reverse_map_iterator& operator++()
 			{
@@ -218,65 +204,16 @@ namespace ft
 				return (copy);
 			}
 
-			bool	operator<(const reverse_map_iterator<const T> &iter) const
-			{
-				if (this->ptr > iter.getptr())
-					return (1);
-				else
-					return (0);
-			}
-
-			bool	operator>(const reverse_map_iterator<const T> &iter) const
-			{
-				if (this->ptr < iter.getptr())
-					return (1);
-				else
-					return (0);
-			}
-
-			bool	operator<=(const reverse_map_iterator<const T> &iter) const
-			{
-				if (this->ptr >= iter.getptr())
-					return (1);
-				else
-					return (0);
-			}
-
-			bool	operator>=(const reverse_map_iterator<const T> &iter) const
-			{
-				if (this->ptr <= iter.getptr())
-					return (1);
-				else
-					return (0);
-			}
-			
-			reverse_map_iterator& operator+=(const int n)
-			{
-				ptr = ptr - n;
-				return (*this);
-			}
-
-			reverse_map_iterator& operator-=(const int n)
-			{
-				ptr = ptr + n;
-				return (*this);
-			}
-
 			reference	operator[](int n) const
 			{
 				return (*(*this + n));
 			}
-			
-			pointer	getptr() const
-			{
-				return (ptr);
-			}
     };
 	
-	// template <class T>
-	// reverse_map_iterator<T> operator+(size_t n, const reverse_map_iterator<T> &it)
-	// {
-	// 	return reverse_map_iterator<T>(it.getptr() - n);
-	// }
+	template <class T>
+   	bool operator!=(const reverse_map_iterator<T>& it1, const reverse_map_iterator<T>& it2)
+	{
+		return (it1.n_ptr != it2.n_ptr);
+	}
 }
 #endif
