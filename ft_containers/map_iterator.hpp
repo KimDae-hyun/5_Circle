@@ -100,6 +100,7 @@ namespace ft
 				return (temp);
 			}
     };
+
 	template <class T>
 	bool	operator==(const map_iterator<T> &it1, const map_iterator<T> &it2)
 	{

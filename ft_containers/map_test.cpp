@@ -3,51 +3,51 @@
 
 int main(void)
 {
-	{
-    std::map<char, int> first;
+// 	{
+// 		std::map<char, int> first;
 
-	first['a'] = 10;
-	first['b'] = 20;
-	
-	std::map<char, int> second (first.begin(), first.end());
+// 		first['a'] = 10;
+// 		first['b'] = 20;
+// 		first['c'] = 30;
+		
+// 		std::map<char, int> second (first.begin(), first.end());
 
-	first.erase('a');
-	first.erase('b');
+// 		// first.erase('a');
+// 		// first.erase('b');
 
-	for (std::map<char, int>::iterator i = first.begin(); i != first.end(); i++)
-	{
-		std::cout << "here\n";
-		std::cout << i->first << " = " << i->second << '\n';
-	}
-	}
+// 		for (std::map<char, int>::iterator i = first.begin(); i != first.end(); i++)
+// 		{
+// 			std::cout << i->first << " = " << i->second << '\n';
+// 		z}z
+// 	}
 
-	std::cout << "==============\n";
+// 	std::cout << "==============\n";
 
 	ft::map<char, int> first;
 
-
-	first['b'] = 10;
-	first['a'] = 20;
+	first['a'] = 10;
+	first['b'] = 20;
 	first['c'] = 30;
 
-	ft::map<char, int> second (first.begin(), first.end());
+	//ft::map<char, int>::iterator i = first.upper_bound('a');
 
-	//first.erase('a');
-	//first.erase('a');
+//	std::cout << i->first << std::endl;
+	//ft::map<char, int> second (first.begin(), first.end());
+
+	// first.erase('a');
+	// first.erase('b');
 	for (ft::map<char, int>::iterator i = first.begin(); i != first.end(); i++)
 		std::cout << i->first << " = " << i->second << '\n';
 
 	// std::cout << (first.begin() == first.end()) << " ??\n";
 
-	// ft::map<char, int>::iterator i = first.begin();
-	// std::cout << i->first << '\n';
-	// i++;
-	// std::cout << i->first << '\n';
-	// i++;
-	// std::cout << i->first << '\n';
+	ft::map<char, int>::iterator i = first.begin();
+	std::cout << i->first << '\n';
+	i++;
+	std::cout << i->first << '\n';
+	i++;
+	std::cout << i->first << '\n';
 
-	// ft::map<char, int>::iterator it = first.end();
-	// std::cout << it->first << '\n';
 	// std::cout << "==============\n";
 
 

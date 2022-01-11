@@ -6,6 +6,9 @@
 
 namespace ft
 {
+	template <class T>
+	class map_iterator;
+
 	template <class T, class A = std::allocator<T> >
 	struct RBnode
 	{
@@ -80,6 +83,7 @@ namespace ft
 				this->n_ptr = iter.n_ptr;
 				return (*this);
 			}
+
 			// template	<typename _Tp>
 			// iterator_&	operator=(tree_iterator<_Tp> const& iter)
 			// {
@@ -104,6 +108,8 @@ namespace ft
 					n_ptr = n_ptr->parent;
 				if (n_ptr->parent)
 					n_ptr = n_ptr->parent;
+				else
+					n_ptr = NULL;
 				return (*this);
 			};
 
@@ -139,8 +145,9 @@ namespace ft
 			};
 
 			pointer		operator->(void) const
-				{ return (&this->n_ptr->data); };
-
+			{
+				return (&this->n_ptr->data);
+			};
 
 			iterator_&	findleft(void)
 			{
@@ -151,9 +158,9 @@ namespace ft
 				}
 				return (*this);
 			}
+
 			iterator_&	findright(void)
 			{
-				std::cout << "n_ptr " << n_ptr->data.first << std::endl;
 				if (n_ptr->right)
 				{
 					n_ptr = n_ptr->right;
@@ -207,43 +214,43 @@ namespace ft
 				root = n_alloc.allocate(1);
 				root->parent = NULL;
 				root->color = true;
-				// if (t_size != 0)
-				// {
-				// 	node *root = n_alloc.allcate(1);
-				// 	root->parent = this->root;
-				// 	this->root->left = root;
-				// 	this->root->right = root;
-				// 	copytree(&root, tree.root.left);
-				// }
-				// else
-				// {
-				// 	root->left = NULL;
-				// 	root->right = NULL;
-				// }	
+				if (t_size != 0)
+				{
+					node *root = n_alloc.allcate(1);
+					root->parent = this->root;
+					this->root->left = root;
+					this->root->right = root;
+					copytree(&root, tree.root.left);
+				}
+				else
+				{
+					root->left = NULL;
+					root->right = NULL;
+				}	
 			}
 			~RBtree() {};
 
-			// void	copyTree(node** n_this, node* const& n_that)
-			// {
-			// 	t_alloc.construct(n_this->data, n_that->data);
+			void	copyTree(node** n_this, node* const& n_that)
+			{
+				t_alloc.construct(n_this->data, n_that->data);
 
-			// 	if ((*n_that)->left == NULL)
-			// 		(*n_this)->left = NULL;
-			// 	else if ((*n_that)->left != NULL)
-			// 	{
-			// 		(*n_this)->left = n_alloc.allocate(1);
-			// 		(*n_this)->left->parent = (*n_this);
-			// 		copyTree((*n_this)->left, n_that->left);
-			// 	}
-			// 	if ((*n_that)->right == NULL)
-			// 		(*n_this)->right = NULL;
-			// 	else if ((*n_that)->right != NULL)
-			// 	{
-			// 		(*n_this)->right = n_alloc.allocate(1);
-			// 		(*n_this)->right->parent = (*n_this);
-			// 		copyTree((*n_this)->right, n_that->right);
-			// 	}
-			// };
+				if ((*n_that)->left == NULL)
+					(*n_this)->left = NULL;
+				else if ((*n_that)->left != NULL)
+				{
+					(*n_this)->left = n_alloc.allocate(1);
+					(*n_this)->left->parent = (*n_this);
+					copyTree((*n_this)->left, n_that->left);
+				}
+				if ((*n_that)->right == NULL)
+					(*n_this)->right = NULL;
+				else if ((*n_that)->right != NULL)
+				{
+					(*n_this)->right = n_alloc.allocate(1);
+					(*n_this)->right->parent = (*n_this);
+					copyTree((*n_this)->right, n_that->right);
+				}
+			};
 
 			pair<iterator, bool>	insert(const value_type& val)
 			{
@@ -387,7 +394,6 @@ namespace ft
 							now->parent->color = false;
 							now->parent->parent->color = true;
 							leftrotate(root, now->parent->parent);
-							//now = now->parent;
 						}
 					}
 				}
@@ -408,6 +414,17 @@ namespace ft
 				return (minsearch(node->right));
 			}
 
+			node *search(node *node, value_type data)
+			{
+				if (node == NULL)
+					return (NULL);
+				if (node->data.first > data.first)
+					return (search(node->left, data));
+				else if (node->data.first < data.first)
+					return (search(node->right, data));
+				return (node);
+			}
+
 			void deletenode(value_type data)
 			{
 				if (root == NULL)
@@ -416,7 +433,7 @@ namespace ft
 				node *del = NULL; //지워질 노드
 				node *replace = NULL; //위치가 바뀌어질 노드
 				node *target = search(root, data); //데이터가 바뀔 노드
-				
+
 				if (target == NULL)
 					return;
 				if (target->left == NULL || target->right == NULL)
@@ -565,8 +582,9 @@ namespace ft
 				if (now->right != NULL)
 					now->right->parent = now;
 				r_child->parent = now->parent;
+				r_child->left = now;
 				if (now->parent == NULL)
-					root = r_child;
+					this->root = r_child;
 				else
 				{
 					if (now == now->parent->left)
@@ -574,7 +592,6 @@ namespace ft
 					else
 						now->parent->right = r_child;
 				}	
-				r_child->left = now;
 				now->parent = r_child;
 				now = r_child;
 			}
@@ -590,8 +607,9 @@ namespace ft
 				if (l_child->right != NULL)
 					l_child->right->parent = now;
 				l_child->parent = now->parent;
+				l_child->right = now;
 				if (now->parent == NULL)
-					root = l_child;
+					this->root = l_child;
 				else
 				{
 					if (now == now->parent->left)
@@ -599,8 +617,8 @@ namespace ft
 					else
 						now->parent->right = l_child;
 				}	
-				l_child->right = now;
 				now->parent = l_child;
+				now = l_child;
 			}
 
 			iterator	begin(void)
@@ -615,22 +633,22 @@ namespace ft
 
 			iterator	end(void)
 			{
-				return ((iterator(root)).findright());
+				return (++iterator(root).findright());
 			};
 
 			const_iterator	end(void) const
 			{
-				return (const_iterator((iterator(root)).findright()));
+				return (const_iterator(++iterator(root).findright()));
 			};
 
 			reverse_iterator	rbegin(void)
 			{
-				return (reverse_iterator((iterator(root)).findright()));
+				return (reverse_iterator(++iterator(root).findright()));
 			};
 
 			const_reverse_iterator	rbegin(void) const
 			{
-				return (const_reverse_iterator((iterator(root)).findright()));
+				return (const_reverse_iterator(++iterator(root)).findright()));
 			};
 
 			reverse_iterator	rend(void)
@@ -753,7 +771,7 @@ namespace ft
 			{
 				iterator it = begin();
 
-				while (t_comp(*it, val) && it != end())
+				while (t_comp(*it, val) && it.n_ptr != end().n_ptr)
 					it++;
 				return (it);
 			}
@@ -762,7 +780,7 @@ namespace ft
 			{
 				iterator it = begin();
 
-				while (t_comp(*it, val) && it != end())
+				while (t_comp(*it, val) && it.n_ptr != end().n_ptr)
 					it++;
 				return (it);
 			}
@@ -771,7 +789,7 @@ namespace ft
 			{
 				iterator it = begin();
 
-				while (t_comp(*it, val) && it != end())
+				while (t_comp(*it, val) && it.n_ptr != end().n_ptr)
 					it++;
 				if (!t_comp(*it, val) && !t_comp(val, *it))
 					it++;
@@ -782,7 +800,7 @@ namespace ft
 			{
 				iterator it = begin();
 
-				while (t_comp(*it, val) && it != end())
+				while (t_comp(*it, val) && it.n_ptr != end().n_ptr)
 					it++;
 				if (!t_comp(*it, val) && !t_comp(val, *it))
 					it++;
