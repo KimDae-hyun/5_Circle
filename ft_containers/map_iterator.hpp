@@ -43,8 +43,8 @@ namespace ft
 			iterator_& operator=(const iterator_ &iter)
 			{
 				// if (this != &iter)
-				// 	ptr = iter.ptr;
-				*static_cast<t_iter*>(this) = static_cast<t_iter>(iter);
+				 	this->n_ptr = iter.n_ptr;
+				// *static_cast<t_iter*>(this) = static_cast<t_iter>(iter);
 				return (*this);
 			}
 
@@ -72,10 +72,10 @@ namespace ft
 			iterator_& operator++()
 			{
 				//++(*static_cast<t_iter*>(this));
-				if (this->n_ptr->right)
+				if (this->n_ptr->right->data.first)
 				{
 					this->n_ptr = this->n_ptr->right;
-					while (this->n_ptr->left)
+					while (this->n_ptr->left->data.first)
 						this->n_ptr = this->n_ptr->left;
 					return (*this);
 				}
@@ -83,16 +83,18 @@ namespace ft
 					this->n_ptr = this->n_ptr->parent;
 				if (this->n_ptr->parent)
 					this->n_ptr = this->n_ptr->parent;
+				else
+					this->n_ptr = this->n_ptr->nil;
 				return (*this);
 			}
 
 			iterator_& operator--()
 			{
 				//--(*static_cast<t_iter*>(this));
-				if (this->n_ptr->left)
+				if (this->n_ptr->left->data.first)
 				{
 					this->n_ptr = this->n_ptr->left;
-					while (this->n_ptr->right)
+					while (this->n_ptr->right->data.first)
 						this->n_ptr = this->n_ptr->right;
 					return (*this);
 				}
@@ -100,6 +102,8 @@ namespace ft
 					this->n_ptr = this->n_ptr->parent;
 				if (this->n_ptr->parent)
 					this->n_ptr = this->n_ptr->parent;
+				else
+					this->n_ptr = this->n_ptr->nil;
 				return (*this);
 			}
 
@@ -108,17 +112,20 @@ namespace ft
 				iterator_	temp = *this;
 
 				// ++*this;
-				if (this->n_ptr->right)
+				if (this->n_ptr->right->data.first)
 				{
 					this->n_ptr = this->n_ptr->right;
-					while (this->n_ptr->left)
+					while (this->n_ptr->left->data.first)
 						this->n_ptr = this->n_ptr->left;
 					return (temp);
 				}
+
 				while (this->n_ptr->parent && this->n_ptr->parent->right == this->n_ptr)
 					this->n_ptr = this->n_ptr->parent;
 				if (this->n_ptr->parent)
 					this->n_ptr = this->n_ptr->parent;
+				else
+					this->n_ptr = this->n_ptr->nil;
 				return (temp);
 			}
 
@@ -127,10 +134,10 @@ namespace ft
 				iterator_	temp = *this;
 
 				//--*this;
-				if (this->n_ptr->left)
+				if (this->n_ptr->left->data.first)
 				{
 					this->n_ptr = this->n_ptr->left;
-					while (this->n_ptr->right)
+					while (this->n_ptr->right->data.first)
 						this->n_ptr = this->n_ptr->right;
 					return (temp);
 				}
@@ -138,6 +145,8 @@ namespace ft
 					this->n_ptr = this->n_ptr->parent;
 				if (this->n_ptr->parent)
 					this->n_ptr = this->n_ptr->parent;
+				else
+					this->n_ptr = this->n_ptr->nil;
 				return (temp);
 			}
     };

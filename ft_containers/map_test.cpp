@@ -14,18 +14,15 @@ int main(void)
 
 // // // 		// first.erase('a');
 // // // 		// first.erase('b');
-// 	int n = 0;
-// 	std::map<char, int>::iterator i;
+// 		std::map<char, int>::iterator i;
 // 	for (i = first.begin(); i != first.end(); i++)
-// 	{
-// 		n++;
-// 		std::cout << "for " << n << " : " << i->first << " / " << &i << std::endl;
-// 		if (n == 3)
-// 			break;
-// 	}
-// 	std::cout << n << " : " << i->first << " / " << &i << std::endl;
+// 		std::cout << "for "<< " : " << i->first << " / " << &i << std::endl;
+// 	std::cout << " : " << i->first << " / " << &i << std::endl;
 // 	i = first.end();
-// 	std::cout << n << " : " << i->first << " / " << &i << std::endl;
+// 	std::cout << " : " << i->first << " / " << &i << std::endl;
+// 	i--;
+// 	std::cout << " : " << i->first << " / " << &i << std::endl;
+
 // // 		std::map<char, int>::iterator it = first.begin();
 // // 		std::cout << it->first << &it << '\n';
 // // 		it++;
@@ -56,22 +53,26 @@ int main(void)
 	//int n = 0;
 	ft::map<char, int>::iterator i;
 
-	// std::cout << i->second << std::endl;
+	//std::cout << i->second << std::endl;
 	for (i = first.begin(); i != first.end(); i++)
 	{
 		//n++;
-		std::cout << "for " << " : " << i->first << " / " << &i.n_ptr->parent << std::endl;
-		
+		std::cout << "for " << " : " << i->first << " / " << &i << std::endl;
+		std::cout << (i != first.end()) << " ??\n";
+
 		// if (n > 4)
 		// 	break;
 	}
-	std::cout << "for " << " : " << i->first << " / " << &i.n_ptr->parent << std::endl;
+	// std::cout << "for " << " : " << i->first << " / " << &i << std::endl;
 
 	// std::cout << (i != first.end()) << " ??\n";
 
 	// std::cout << n << " : " << i->first << " / " << &i << std::endl;
 	// i = first.end();
-	// std::cout << n << " : " << i->first << " / " << &i << std::endl;
+	// std::cout << " : " << i->first << " / " << &i << std::endl;
+	//++i;
+	// --i;
+	// std::cout << " : " << i->first << " / " << &i << std::endl;
 
 	// 	//std::cout << i->first << " = " << i->second << '\n';
 		
@@ -82,9 +83,12 @@ int main(void)
 	// std::cout << it->first << " / " << &i << '\n';
 	// it++;
 	// std::cout << it->first << " / " << &i << '\n';
-
-
-
+	// it++;
+	// std::cout << it->first << " / " << &i << '\n';
+	// it++;
+	// std::cout << it->first << " / " << &i << '\n';
+	// it++;
+	// std::cout << it->first << " / " << &i << '\n';
 	// std::cout << "==============\n";
 
 
