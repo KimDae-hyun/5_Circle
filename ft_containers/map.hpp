@@ -5,13 +5,13 @@
 
 namespace ft
 {
-	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<Key,T> > >
+	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> > >
     class map
     {
         public:
             typedef Key										key_type;
             typedef T										mapped_type;
-            typedef ft::pair<key_type, mapped_type>	value_type;
+            typedef ft::pair<const key_type, mapped_type>	value_type;
 			typedef Compare									key_compare;
 			typedef Alloc									allocator_type;
 			typedef T&										reference;
@@ -222,12 +222,12 @@ namespace ft
 
 			iterator upper_bound (const key_type& k)
 			{
-				return (iterator(tree.lower_bound(ft::make_pair(k, mapped_type()))));
+				return (iterator(tree.upper_bound(ft::make_pair(k, mapped_type()))));
 			}
 
 			const_iterator upper_bound (const key_type& k) const
 			{
-				return (const_iterator(tree.lower_bound(ft::make_pair(k, mapped_type()))));
+				return (const_iterator(tree.upper_bound(ft::make_pair(k, mapped_type()))));
 			}
 
 			pair<const_iterator,const_iterator> equal_range (const key_type& k) const

@@ -3,50 +3,87 @@
 
 int main(void)
 {
-// 	{
+//   	{
 // 		std::map<char, int> first;
 
 // 		first['a'] = 10;
 // 		first['b'] = 20;
 // 		first['c'] = 30;
 		
-// 		std::map<char, int> second (first.begin(), first.end());
+// // // 		std::map<char, int> second (first.begin(), first.end());
 
-// 		// first.erase('a');
-// 		// first.erase('b');
-
-// 		for (std::map<char, int>::iterator i = first.begin(); i != first.end(); i++)
-// 		{
-// 			std::cout << i->first << " = " << i->second << '\n';
-// 		z}z
+// // // 		// first.erase('a');
+// // // 		// first.erase('b');
+// 	int n = 0;
+// 	std::map<char, int>::iterator i;
+// 	for (i = first.begin(); i != first.end(); i++)
+// 	{
+// 		n++;
+// 		std::cout << "for " << n << " : " << i->first << " / " << &i << std::endl;
+// 		if (n == 3)
+// 			break;
 // 	}
+// 	std::cout << n << " : " << i->first << " / " << &i << std::endl;
+// 	i = first.end();
+// 	std::cout << n << " : " << i->first << " / " << &i << std::endl;
+// // 		std::map<char, int>::iterator it = first.begin();
+// // 		std::cout << it->first << &it << '\n';
+// // 		it++;
+// // 		std::cout << it->first << &it << '\n';
+// // 		it++;
+// // 		std::cout << it->first << &it << '\n';
+//   	}
 
-// 	std::cout << "==============\n";
+ 	std::cout << "==============\n";
 
 	ft::map<char, int> first;
 
 	first['a'] = 10;
 	first['b'] = 20;
 	first['c'] = 30;
+	first['d'] = 40;
+	first['e'] = 50;
+
 
 	//ft::map<char, int>::iterator i = first.upper_bound('a');
 
 //	std::cout << i->first << std::endl;
 	//ft::map<char, int> second (first.begin(), first.end());
 
-	// first.erase('a');
-	// first.erase('b');
-	for (ft::map<char, int>::iterator i = first.begin(); i != first.end(); i++)
-		std::cout << i->first << " = " << i->second << '\n';
 
-	// std::cout << (first.begin() == first.end()) << " ??\n";
+	//first.erase('a');
+	//first.erase('b');
+	//int n = 0;
+	ft::map<char, int>::iterator i;
 
-	ft::map<char, int>::iterator i = first.begin();
-	std::cout << i->first << '\n';
-	i++;
-	std::cout << i->first << '\n';
-	i++;
-	std::cout << i->first << '\n';
+	// std::cout << i->second << std::endl;
+	for (i = first.begin(); i != first.end(); i++)
+	{
+		//n++;
+		std::cout << "for " << " : " << i->first << " / " << &i.n_ptr->parent << std::endl;
+		
+		// if (n > 4)
+		// 	break;
+	}
+	std::cout << "for " << " : " << i->first << " / " << &i.n_ptr->parent << std::endl;
+
+	// std::cout << (i != first.end()) << " ??\n";
+
+	// std::cout << n << " : " << i->first << " / " << &i << std::endl;
+	// i = first.end();
+	// std::cout << n << " : " << i->first << " / " << &i << std::endl;
+
+	// 	//std::cout << i->first << " = " << i->second << '\n';
+		
+
+	// ft::map<char, int>::iterator it = first.begin();
+	// std::cout << it->first  << " / " << &i << '\n';
+	// it++;
+	// std::cout << it->first << " / " << &i << '\n';
+	// it++;
+	// std::cout << it->first << " / " << &i << '\n';
+
+
 
 	// std::cout << "==============\n";
 

@@ -35,11 +35,11 @@ namespace ft
 			map_iterator(const reverse_map_iterator<iterator_>& riter) : t_iter(riter) {};
 			~map_iterator() {};
 
-			// operator iterator_<const T> () const
+			// operator map_iterator<const T> () const
 			// {
-			// 	return (iterator_<const T>(ptr));
+			// 	return (map_iterator<const T>());
 			// }
-			
+
 			iterator_& operator=(const iterator_ &iter)
 			{
 				// if (this != &iter)
@@ -48,21 +48,16 @@ namespace ft
 				return (*this);
 			}
 
-			// bool	operator==(const map_iterator &iter) const
-			// {
-			// 	if (*this == iter)
-			// 		return (1);
-			// 	else
-			// 		return (0);
-			// }
+			bool	operator==(const map_iterator &iter) const
+			{
+				return (this->n_ptr == iter.n_ptr);
+			}
 
-			// bool	operator!=(const map_iterator &iter) const
-			// {
-			// 	if (*this != iter)
-			// 		return (1);
-			// 	else
-			// 		return (0);
-			// }
+			bool	operator!=(const map_iterator &iter) const
+			{
+				// std::cout << "this " << this->n_ptr << " / iter " << iter.n_ptr << std::endl;
+				return (this->n_ptr != iter.n_ptr);
+			}
  
             reference	operator*() const
 			{
@@ -76,42 +71,88 @@ namespace ft
 
 			iterator_& operator++()
 			{
-				++(*static_cast<t_iter*>(this));
+				//++(*static_cast<t_iter*>(this));
+				if (this->n_ptr->right)
+				{
+					this->n_ptr = this->n_ptr->right;
+					while (this->n_ptr->left)
+						this->n_ptr = this->n_ptr->left;
+					return (*this);
+				}
+				while (this->n_ptr->parent && this->n_ptr->parent->right == this->n_ptr)
+					this->n_ptr = this->n_ptr->parent;
+				if (this->n_ptr->parent)
+					this->n_ptr = this->n_ptr->parent;
 				return (*this);
 			}
 
 			iterator_& operator--()
 			{
-				--(*static_cast<t_iter*>(this));
+				//--(*static_cast<t_iter*>(this));
+				if (this->n_ptr->left)
+				{
+					this->n_ptr = this->n_ptr->left;
+					while (this->n_ptr->right)
+						this->n_ptr = this->n_ptr->right;
+					return (*this);
+				}
+				while (this->n_ptr->parent&& this->n_ptr->parent->left == this->n_ptr)
+					this->n_ptr = this->n_ptr->parent;
+				if (this->n_ptr->parent)
+					this->n_ptr = this->n_ptr->parent;
 				return (*this);
 			}
 
 			iterator_ operator++(int)
 			{
 				iterator_	temp = *this;
-				++*this;
+
+				// ++*this;
+				if (this->n_ptr->right)
+				{
+					this->n_ptr = this->n_ptr->right;
+					while (this->n_ptr->left)
+						this->n_ptr = this->n_ptr->left;
+					return (temp);
+				}
+				while (this->n_ptr->parent && this->n_ptr->parent->right == this->n_ptr)
+					this->n_ptr = this->n_ptr->parent;
+				if (this->n_ptr->parent)
+					this->n_ptr = this->n_ptr->parent;
 				return (temp);
 			}
 
 			iterator_ operator--(int)
 			{
 				iterator_	temp = *this;
-				--*this;
+
+				//--*this;
+				if (this->n_ptr->left)
+				{
+					this->n_ptr = this->n_ptr->left;
+					while (this->n_ptr->right)
+						this->n_ptr = this->n_ptr->right;
+					return (temp);
+				}
+				while (this->n_ptr->parent&& this->n_ptr->parent->left == this->n_ptr)
+					this->n_ptr = this->n_ptr->parent;
+				if (this->n_ptr->parent)
+					this->n_ptr = this->n_ptr->parent;
 				return (temp);
 			}
     };
 
-	template <class T>
-	bool	operator==(const map_iterator<T> &it1, const map_iterator<T> &it2)
-	{
-		return (it1.n_ptr == it2.n_ptr);
-	}
+	// template <class T>
+	// bool	operator==(const map_iterator<T> &it1, const map_iterator<T> &it2)
+	// {
+	// 	return (it1.n_ptr == it2.n_ptr);
+	// }
 
-	template <class T>
-   	bool operator!=(const map_iterator<T>& it1, const map_iterator<T>& it2)
-	{
-		return (it1.n_ptr != it2.n_ptr);
-	}
+	// template <class T>
+   	// bool operator!=(const map_iterator<T>& it1, const map_iterator<T>& it2)
+	// {
+	// 	return (it1.n_ptr != it2.n_ptr);
+	// }
 
     template <class T>
     class reverse_map_iterator
