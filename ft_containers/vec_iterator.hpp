@@ -23,6 +23,7 @@ namespace ft
 			vector_iterator(pointer p) : ptr(p) {};
 			vector_iterator(const vector_iterator &iter) {*this = iter;};
 			~vector_iterator() {};
+
 			operator vector_iterator<const T> () const
 			{
 				return (vector_iterator<const T>(ptr));
