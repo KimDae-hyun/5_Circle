@@ -19,10 +19,10 @@ namespace ft
 			typedef T*											pointer;
 			typedef const T *									const_pointer;
 			typedef size_t										size_type;
-			typedef ft::map_iterator<value_type>				iterator;
-			typedef ft::map_iterator<const value_type>			const_iterator;
-			typedef ft::reverse_map_iterator<value_type>		reverse_iterator;
-			typedef ft::reverse_map_iterator<const value_type>	const_reverse_iterator;
+			typedef ft::map_iterator<value_type, false>				iterator;
+			typedef ft::map_iterator<value_type, true>			const_iterator;
+			typedef ft::reverse_map_iterator<value_type, false>		reverse_iterator;
+			typedef ft::reverse_map_iterator<value_type, true>	const_reverse_iterator;
 			class value_compare : public std::binary_function<value_type, value_type, bool>
 			{   // in C++98, it is required to inherit binary_function<value_type,value_type,bool>
 				friend class map;
@@ -94,22 +94,22 @@ namespace ft
 
 			reverse_iterator rbegin()
 			{
-				return (reverse_iterator(tree.end()));
+				return (reverse_iterator(tree.rbegin()));
 			}
 
 			const_reverse_iterator rbegin() const
 			{
-				return (const_reverse_iterator(tree.end()));
+				return (const_reverse_iterator(tree.rbegin()));
 			}
 
 			reverse_iterator rend()
 			{
-				return (reverse_iterator(tree.begin()));
+				return (reverse_iterator(tree.rend()));
 			}
 
 			const_reverse_iterator rend() const
 			{
-				return (const_reverse_iterator(tree.begin()));
+				return (const_reverse_iterator(tree.rend()));
 			}
 
 		// Capacity
@@ -252,8 +252,8 @@ namespace ft
 	{
 		if (lhs.size() != rhs.size())
 			return (false);
-		ft::tree_iterator<ft::pair<const Key, T> > it1 = lhs.tree.begin();
-		ft::tree_iterator<ft::pair<const Key, T> >it2 = rhs.tree.begin();
+		ft::tree_iterator<ft::pair<const Key, T>, false > it1 = lhs.tree.begin();
+		ft::tree_iterator<ft::pair<const Key, T>, false >it2 = rhs.tree.begin();
 		while (it1 != lhs.tree.end() && it2 != rhs.tree.end())
 		{
 			if (it1->first != it2->first)
@@ -285,8 +285,8 @@ namespace ft
 		else
 			size = lhs.size();
 		
-		ft::tree_iterator<ft::pair<const Key, T> > it1 = lhs.tree.begin();
-		ft::tree_iterator<ft::pair<const Key, T> > it2 = rhs.tree.begin();
+		ft::tree_iterator<ft::pair<const Key, T>, false > it1 = lhs.tree.begin();
+		ft::tree_iterator<ft::pair<const Key, T>, false > it2 = rhs.tree.begin();
 		
 		i = -1;
 		while (++i < size)
@@ -318,8 +318,8 @@ namespace ft
 		else
 			size = lhs.size();
 		
-		ft::tree_iterator<ft::pair<const Key, T> > it1 = lhs.tree.begin();
-		ft::tree_iterator<ft::pair<const Key, T> > it2 = rhs.tree.begin();
+		ft::tree_iterator<ft::pair<const Key, T>, false > it1 = lhs.tree.begin();
+		ft::tree_iterator<ft::pair<const Key, T>, false > it2 = rhs.tree.begin();
 		
 		i = -1;
 		while (++i < size)

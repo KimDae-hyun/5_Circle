@@ -6,21 +6,18 @@
 
 namespace ft
 {
-	template <class T>
+	template <class T, bool B>
 	class map_iterator;
 
-	template <typename T>
+	template <typename T, bool B>
 	class tree_iterator;
 
-	template <class T, class A = std::allocator<T> >
+	template <class T>
 	struct RBnode
 	{
 		typedef T		value_type;
-		typedef A		allocator_type;
 		typedef RBnode	node;
 
-		static allocator_type	n_alloc;
-		
 		RBnode			*parent;
 		RBnode			*left;
 		RBnode			*right;
@@ -71,15 +68,15 @@ namespace ft
 			typedef const V&									const_reference;
 			typedef V*											pointer;
 			typedef const V*									const_pointer;
-			typedef tree_iterator<value_type>					iterator;
-			typedef tree_iterator<const value_type>				const_iterator;
-			typedef reverse_map_iterator<value_type>			reverse_iterator;
-			typedef reverse_map_iterator<const value_type>		const_reverse_iterator;
+			typedef tree_iterator<value_type, false>					iterator;
+			typedef tree_iterator<value_type, true>				const_iterator;
+			typedef reverse_map_iterator<value_type, false>			reverse_iterator;
+			typedef reverse_map_iterator<value_type, true>		const_reverse_iterator;
+			typedef ptrdiff_t										difference_type;
 			typedef size_t										size_type;
 			typedef RBtree										tree;
 			typedef RBnode<V>									node;
 			typedef std::allocator<node>						node_allocator;
-			//typedef typename A::allocator(node)					node_allocator;
 
 		private:
 			value_compare	t_comp;
@@ -236,7 +233,7 @@ namespace ft
 			{
 				if (parent->data.first < node->data.first)
 				{
-					if (parent->right == nil)
+					if (parent->right == nil || !parent->right)
 					{
 						parent->right = node;
 						node->parent = parent;
@@ -566,7 +563,7 @@ namespace ft
 
 			const_iterator	end(void) const
 			{
-				return (++(const_iterator(iterator(root)).findright()));
+				return (++(const_iterator(iterator(root).findright())));
 			};
 
 			reverse_iterator	rbegin(void)
@@ -601,7 +598,10 @@ namespace ft
 
 			size_type max_size() const
 			{
-				return (n_alloc.max_size());
+				if (n_alloc.max_size() < (size_t)std::numeric_limits<difference_type>::max())
+					return (n_alloc.max_size());
+				return (std::numeric_limits<difference_type>::max());
+				//return (n_alloc.max_size());
 			}
 
 			void swap(tree& t)
@@ -701,7 +701,7 @@ namespace ft
 			{
 				iterator it = begin();
 
-				while (t_comp(*it, val) && it.n_ptr != end().n_ptr)
+				while (it.n_ptr != end().n_ptr && t_comp(*it, val))
 					it++;
 				return (it);
 			}
@@ -709,8 +709,8 @@ namespace ft
 			const_iterator lower_bound (const value_type &val) const
 			{
 				const_iterator it = begin();
-
-				while (t_comp(*it, val) && it.n_ptr != end().n_ptr)
+				
+				while (it.n_ptr != end().n_ptr && t_comp(*it, val))
 					it++;
 				return (it);
 			}
@@ -719,9 +719,9 @@ namespace ft
 			{
 				iterator it = begin();
 
-				while (t_comp(*it, val) && it.n_ptr != end().n_ptr)
+				while (it.n_ptr != end().n_ptr && !t_comp(*it, val))
 					it++;
-				if (!t_comp(*it, val) && !t_comp(val, *it))
+				if (it.n_ptr != end().n_ptr && !t_comp(*it, val) && !t_comp(val, *it))
 					it++;
 				return (it);
 			}
@@ -730,19 +730,19 @@ namespace ft
 			{
 				const_iterator it = begin();
 
-				while (t_comp(*it, val) && it.n_ptr != end().n_ptr)
+				while (it.n_ptr != end().n_ptr && !t_comp(*it, val))
 					it++;
-				if (!t_comp(*it, val) && !t_comp(val, *it))
+				if (it.n_ptr != end().n_ptr && !t_comp(*it, val) && !t_comp(val, *it))
 					it++;
 				return (it);
 			}
     };
 
-	template <typename T>
+	template <typename T, bool B>
 	class tree_iterator
 	{
 		 	private:
-				typedef tree_iterator<T>	iterator_;
+				typedef tree_iterator<T, B>	iterator_;
 				typedef RBnode<T>			node_;
 
 			public:
@@ -752,24 +752,18 @@ namespace ft
 				typedef std::ptrdiff_t		size_type;
 
 				node_ *n_ptr;
-				node_ *end;
+				//node_ *end;
 
 			public:
 				tree_iterator(void) : n_ptr(NULL) {};
-				tree_iterator(const iterator_& iter) : n_ptr(iter.n_ptr) {};
 				tree_iterator(node_ *node) : n_ptr(node) {};
-				template <typename Tp>
-				tree_iterator(tree_iterator<const Tp>& iter) : n_ptr(iter.n_ptr) {};
-			
+				template <typename _T, bool _B>
+				tree_iterator(const tree_iterator<_T, _B>& iter) : n_ptr(iter.n_ptr) {};
+				
 				iterator_&	operator=(iterator_ const& iter)
 				{
 					this->n_ptr = iter.n_ptr;
 					return (*this);
-				}
-
-				operator tree_iterator<const T> () const
-				{
-					return (tree_iterator<const T>());
 				}
 
 				// template	<typename _Tp>
@@ -800,10 +794,7 @@ namespace ft
 					if (n_ptr->parent)
 						n_ptr = n_ptr->parent;
 					else
-					{
-						end = n_ptr;
 						n_ptr = n_ptr->nil;
-					}
 					return (*this);
 				};
 
@@ -816,7 +807,7 @@ namespace ft
 
 				iterator_&	operator--(void)
 				{
-					if (!n_ptr)
+					if (!n_ptr || n_ptr->left == n_ptr->nil || n_ptr->left == NULL)
 						return (*this);
 					if (n_ptr->left->data.first)
 					{
@@ -830,10 +821,7 @@ namespace ft
 					if (n_ptr->parent)
 						n_ptr = n_ptr->parent;
 					else
-					{
-						end = n_ptr;
 						n_ptr = n_ptr->nil;
-					}
 					return (*this);
 				};
 
@@ -851,7 +839,7 @@ namespace ft
 
 				iterator_&	findleft(void)
 				{
-					if (!n_ptr)
+					if (!n_ptr || n_ptr->left == n_ptr->nil)
 						return (*this);
 					if (n_ptr->left && n_ptr->left->left)
 					{
