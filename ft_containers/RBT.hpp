@@ -8,9 +8,9 @@ namespace ft
 {
 	template <class T, bool B>
 	class map_iterator;
-
-	template <typename T, bool B>
-	class tree_iterator;
+	
+	template <class T, bool B>
+    class reverse_map_iterator;
 
 	template <class T>
 	struct RBnode
@@ -24,37 +24,6 @@ namespace ft
 		RBnode			*nil;
 		bool 			color; // RED = true, BLACK = false
 		value_type		data;
-
-		RBnode(value_type& other) : left(NULL), right(NULL), parent(NULL), data(other), nil(0) {}
-
-		RBnode(const node& n) : parent(n.parent), left(n.left), right(n.right), color(n.color), data(n.data), nil(n.nil) {}
-
-		~RBnode() {} 
-
-		// node& operator =(const node& n)
-		// {
-		// 	if (*this != n)
-		// 	{
-		// 		this->left = n.left;
-		// 		this->right = n.right;
-		// 		this->parent = n.parent;
-		// 		this->value = n.value;
-		// 		this->data = n.data;
-		// 	}
-		// 	return (*this);
-		// }
-
-		// bool operator ==(const RBnode &node)
-		// {
-		// 	if (this->value == node->value)
-		// 		return (true);
-		// 	return (false);
-		// }
-
-		// bool operator !=(const RBnode &node)
-		// {
-		// 	return (!(*this == node));
-		// }
 	};
 
     template <class V, class C, class A>
@@ -68,11 +37,11 @@ namespace ft
 			typedef const V&									const_reference;
 			typedef V*											pointer;
 			typedef const V*									const_pointer;
-			typedef tree_iterator<value_type, false>					iterator;
-			typedef tree_iterator<value_type, true>				const_iterator;
-			typedef reverse_map_iterator<value_type, false>			reverse_iterator;
+			typedef map_iterator<value_type, false>				iterator;
+			typedef map_iterator<value_type, true>				const_iterator;
+			typedef reverse_map_iterator<value_type, false>		reverse_iterator;
 			typedef reverse_map_iterator<value_type, true>		const_reverse_iterator;
-			typedef ptrdiff_t										difference_type;
+			typedef std::ptrdiff_t								difference_type;
 			typedef size_t										size_type;
 			typedef RBtree										tree;
 			typedef RBnode<V>									node;
@@ -107,19 +76,8 @@ namespace ft
 				root = n_alloc.allocate(1);
 				root->parent = NULL;
 				root->color = true;
-				// if (t_size != 0)
-				// {
-				// 	node *root = n_alloc.allcate(1);
-				// 	root->parent = this->root;
-				// 	this->root->left = root;
-				// 	this->root->right = root;
-				// 	copytree(&root, tree.root.left);
-				// }
-				// else
-				// {
-					root->left = NULL;
-					root->right = NULL;
-				// }
+				root->left = NULL;
+				root->right = NULL;
 				nil = n_alloc.allocate(1);
 				nil->left = NULL;
 				nil->right = NULL;
@@ -128,32 +86,6 @@ namespace ft
 			}
 			~RBtree() {};
 
-			node* getend(void)
-			{
-				return (nil);
-			}
-			// void	copyTree(node** n_this, node* const& n_that)
-			// {
-			// 	t_alloc.construct(n_this->data, n_that->data);
-
-			// 	if ((*n_that)->left == NULL)
-			// 		(*n_this)->left = NULL;
-			// 	else if ((*n_that)->left != NULL)
-			// 	{
-			// 		(*n_this)->left = n_alloc.allocate(1);
-			// 		(*n_this)->left->parent = (*n_this);
-			// 		copyTree((*n_this)->left, n_that->left);
-			// 	}
-			// 	if ((*n_that)->right == NULL)
-			// 		(*n_this)->right = NULL;
-			// 	else if ((*n_that)->right != NULL)
-			// 	{
-			// 		(*n_this)->right = n_alloc.allocate(1);
-			// 		(*n_this)->right->parent = (*n_this);
-			// 		copyTree((*n_this)->right, n_that->right);
-			// 	}
-			// };
-
 			pair<iterator, bool>	insert(const value_type& val)
 			{
 				return (insertnode(val));
@@ -161,10 +93,10 @@ namespace ft
 
 			iterator	insert(iterator position, const value_type& val)
 			{
-				node*	prev = (node*)position.n_ptr;
-				node*	next = (node*)(++position).n_ptr;
+				node*	prev = (node*)position.getptr();
+				node*	next = (node*)(++position).getptr();
 
-				if ((position.n_ptr != end().n_ptr) && (t_size && prev->data <= val && next->data >= val))
+				if ((position.getptr() != end().getptr()) && (t_size && prev->data <= val && next->data >= val))
 				{
 					node*	n_new;
 					n_new = create(val);
@@ -211,21 +143,6 @@ namespace ft
 					root = node;
 				insertvalue(root, node);
 				insertcheck(node);
-				// if (t_size == 4)
-				// {
-				// 	std::cout << root->left->data.first << " : " << root->left->color << "  /  " <<
-				// 	root->data.first << " : " << root->color << "  /  " <<
-				// 	root->right->data.first << " : " << root->right->color << "  /  " <<
-				// 	root->right->right->data.first << " : " << root->right->right->color << std::endl;
-				// }
-				// if (t_size == 5)
-				// {
-				// 	std::cout << root->left->data.first << " : " << root->left->color << "  /  " <<
-				// 	root->data.first << " : " << root->color << "  /  " <<
-				// 	root->right->left->data.first << " : " << root->right->left->color << "  /  " <<
-				// 	root->right->data.first << " : " << root->right->color << "  /  " <<
-				// 	root->right->right->data.first << " : " << root->right->right->color << std::endl;
-				// }
 				return (pair<iterator, bool>(iterator(node), true));
 			}
 
@@ -323,12 +240,8 @@ namespace ft
 					return (node);
 				if (node == nil)
 					return (nil);
-				// if (node->left == nil && node->right == nil)
-				// 	return (node);
 				if (node->left == nil)
 					return (node);
-				// if (node->right == nil)
-				// 	return (node->left);
 				return (minsearch(node->left));
 			}
 
@@ -701,7 +614,7 @@ namespace ft
 			{
 				iterator it = begin();
 
-				while (it.n_ptr != end().n_ptr && t_comp(*it, val))
+				while (it.getptr() != end().getptr() && t_comp(*it, val))
 					it++;
 				return (it);
 			}
@@ -710,7 +623,7 @@ namespace ft
 			{
 				const_iterator it = begin();
 				
-				while (it.n_ptr != end().n_ptr && t_comp(*it, val))
+				while (it.getptr() != end().getptr() && t_comp(*it, val))
 					it++;
 				return (it);
 			}
@@ -719,9 +632,9 @@ namespace ft
 			{
 				iterator it = begin();
 
-				while (it.n_ptr != end().n_ptr && !t_comp(*it, val))
+				while (it.getptr() != end().getptr() && !t_comp(*it, val))
 					it++;
-				if (it.n_ptr != end().n_ptr && !t_comp(*it, val) && !t_comp(val, *it))
+				if (it.getptr() != end().getptr() && !t_comp(*it, val) && !t_comp(val, *it))
 					it++;
 				return (it);
 			}
@@ -730,137 +643,13 @@ namespace ft
 			{
 				const_iterator it = begin();
 
-				while (it.n_ptr != end().n_ptr && !t_comp(*it, val))
+				while (it.getptr() != end().getptr() && !t_comp(*it, val))
 					it++;
-				if (it.n_ptr != end().n_ptr && !t_comp(*it, val) && !t_comp(val, *it))
+				if (it.getptr() != end().getptr() && !t_comp(*it, val) && !t_comp(val, *it))
 					it++;
 				return (it);
 			}
     };
-
-	template <typename T, bool B>
-	class tree_iterator
-	{
-		 	private:
-				typedef tree_iterator<T, B>	iterator_;
-				typedef RBnode<T>			node_;
-
-			public:
-				typedef T					value_type;
-				typedef T&					reference;
-				typedef T*					pointer;
-				typedef std::ptrdiff_t		size_type;
-
-				node_ *n_ptr;
-				//node_ *end;
-
-			public:
-				tree_iterator(void) : n_ptr(NULL) {};
-				tree_iterator(node_ *node) : n_ptr(node) {};
-				template <typename _T, bool _B>
-				tree_iterator(const tree_iterator<_T, _B>& iter) : n_ptr(iter.n_ptr) {};
-				
-				iterator_&	operator=(iterator_ const& iter)
-				{
-					this->n_ptr = iter.n_ptr;
-					return (*this);
-				}
-
-				// template	<typename _Tp>
-				// iterator_&	operator=(tree_iterator<_Tp> const& iter)
-				// {
-				// 	this->n_ptr = ((iterator_*)(&iter))->n_ptr;
-				// 	return (*this);
-				// };
-
-				reference	operator*(void)
-				{
-					return (this->n_ptr->data);
-				};
-
-				iterator_&	operator++(void)
-				{
-					if (!n_ptr || n_ptr->right == n_ptr->nil)
-						return (*this);
-					if (n_ptr->right->data.first)
-					{
-						n_ptr = n_ptr->right;
-						while (n_ptr->left->data.first)
-							n_ptr = n_ptr->left;
-						return (*this);
-					}
-					while (n_ptr->parent && n_ptr->parent->right == n_ptr)
-						n_ptr = n_ptr->parent;
-					if (n_ptr->parent)
-						n_ptr = n_ptr->parent;
-					else
-						n_ptr = n_ptr->nil;
-					return (*this);
-				};
-
-				iterator_	operator++(int)
-				{
-					iterator_	temp = *this;
-					++*this;
-					return (temp);
-				};
-
-				iterator_&	operator--(void)
-				{
-					if (!n_ptr || n_ptr->left == n_ptr->nil || n_ptr->left == NULL)
-						return (*this);
-					if (n_ptr->left->data.first)
-					{
-						n_ptr = n_ptr->left;
-						while (n_ptr->right->data.first)
-							n_ptr = n_ptr->right;
-						return (*this);
-					}
-					while (n_ptr->parent&& n_ptr->parent->left == n_ptr)
-						n_ptr = n_ptr->parent;
-					if (n_ptr->parent)
-						n_ptr = n_ptr->parent;
-					else
-						n_ptr = n_ptr->nil;
-					return (*this);
-				};
-
-				iterator_	operator--(int)
-				{
-					iterator_	temp = *this;
-					--*this;
-					return (temp);
-				};
-
-				pointer		operator->(void) const
-				{
-					return (&this->n_ptr->data);
-				};
-
-				iterator_&	findleft(void)
-				{
-					if (!n_ptr || n_ptr->left == n_ptr->nil)
-						return (*this);
-					if (n_ptr->left && n_ptr->left->left)
-					{
-						n_ptr = n_ptr->left;
-						findleft();
-					}
-					return (*this);
-				}
-
-				iterator_&	findright(void)
-				{
-					if (!n_ptr || n_ptr->right == n_ptr->nil)
-						return (*this);
-					else if (n_ptr->right->data.first)
-					{
-						n_ptr = n_ptr->right;
-						findright();
-					}
-					return (*this);
-				}
-	 };
 }
 
 #endif
