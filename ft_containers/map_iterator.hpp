@@ -30,9 +30,10 @@ namespace ft
 
 			protected:
 				node_ *n_ptr;
+				node_ *end;
 
 			public:
-				map_iterator(void) : n_ptr() {};
+				map_iterator(void) : n_ptr(), end() {};
 				map_iterator(node_ *node) : n_ptr(node) {};
 				//map_iterator(const map_iterator& iter) {*this = iter;};
 				template <typename _T, bool _B>
@@ -64,21 +65,33 @@ namespace ft
 
 				iterator_&	operator++(void)
 				{
-					if (!n_ptr || n_ptr->right == n_ptr->nil)
-						return (*this);
-					if (n_ptr->right->data.first)
+					// if ((!n_ptr || !n_ptr->right) && n_ptr->parent)
+					// 	return (*this);
+					// if (n_ptr->right->data.first)
+					// {
+					// 	n_ptr = n_ptr->right;
+					// 	while (n_ptr->left->data.first)
+					// 		n_ptr = n_ptr->left;
+					// 	return (*this);
+					// }
+					// while (n_ptr->parent && n_ptr->parent->right == n_ptr)
+					// 	n_ptr = n_ptr->parent;
+					// if (n_ptr->parent)
+					// 	n_ptr = n_ptr->parent;
+					// else
+					// 	n_ptr = NULL;
+					// return (*this);
+
+					if (n_ptr->right)
 					{
 						n_ptr = n_ptr->right;
-						while (n_ptr->left->data.first)
-							n_ptr = n_ptr->left;
+						findleft();
 						return (*this);
 					}
 					while (n_ptr->parent && n_ptr->parent->right == n_ptr)
 						n_ptr = n_ptr->parent;
 					if (n_ptr->parent)
 						n_ptr = n_ptr->parent;
-					else
-						n_ptr = n_ptr->nil;
 					return (*this);
 				};
 
@@ -91,21 +104,38 @@ namespace ft
 
 				iterator_&	operator--(void)
 				{
-					if (!n_ptr || n_ptr->left == n_ptr->nil || n_ptr->left == NULL)
-						return (*this);
-					if (n_ptr->left->data.first)
+					// if (!n_ptr || !n_ptr->left)
+					// {
+					// 	findright();
+					// 	return (*this);
+					// }
+					// if (n_ptr->left->data.first)
+					// {
+					// 	n_ptr = n_ptr->left;
+					// 	while (n_ptr->right->data.first)
+					// 		n_ptr = n_ptr->right;
+					// 	return (*this);
+					// }
+					// while (n_ptr->parent&& n_ptr->parent->left == n_ptr)
+					// 	n_ptr = n_ptr->parent;
+					// if (n_ptr->parent)
+					// 	n_ptr = n_ptr->parent;
+					// else
+					// 	n_ptr = NULL;
+					// return (*this);
+
+					if (n_ptr->left)
 					{
 						n_ptr = n_ptr->left;
-						while (n_ptr->right->data.first)
-							n_ptr = n_ptr->right;
+						findright();
 						return (*this);
 					}
-					while (n_ptr->parent&& n_ptr->parent->left == n_ptr)
+					while (n_ptr->parent && n_ptr->parent->left == n_ptr)
 						n_ptr = n_ptr->parent;
 					if (n_ptr->parent)
 						n_ptr = n_ptr->parent;
 					else
-						n_ptr = n_ptr->nil;
+						n_ptr = NULL;
 					return (*this);
 				};
 
@@ -123,7 +153,7 @@ namespace ft
 
 				iterator_&	findleft(void)
 				{
-					if (!n_ptr || n_ptr->left == n_ptr->nil)
+					if (!n_ptr || !n_ptr->left)
 						return (*this);
 					if (n_ptr->left && n_ptr->left->left)
 					{
@@ -135,13 +165,19 @@ namespace ft
 
 				iterator_&	findright(void)
 				{
-					if (!n_ptr || n_ptr->right == n_ptr->nil)
+					if (!n_ptr || !n_ptr->right)
+					{
+						if (!end)
+							n_ptr = end;
 						return (*this);
+					}
 					else if (n_ptr->right->data.first)
 					{
 						n_ptr = n_ptr->right;
 						findright();
 					}
+					if (!n_ptr->right)
+						end = n_ptr;
 					return (*this);
 				}
 

@@ -21,7 +21,6 @@ namespace ft
 		RBnode			*parent;
 		RBnode			*left;
 		RBnode			*right;
-		RBnode			*nil;
 		bool 			color; // RED = true, BLACK = false
 		value_type		data;
 	};
@@ -53,7 +52,6 @@ namespace ft
 			node_allocator	n_alloc;
 			size_type		t_size;
 			node			*root;
-			node			*nil;
 
 		public:
 			RBtree(value_compare const& comp = value_compare(), allocator_type const& alloc = allocator_type(), node_allocator const& node_a = node_allocator())
@@ -64,11 +62,6 @@ namespace ft
 				root->right = NULL;
 				root->parent = NULL;
 				root->color = true;
-				nil = n_alloc.allocate(1);
-				nil->left = NULL;
-				nil->right = NULL;
-				nil->parent = NULL;
-				nil->color = false;
 			}
 			
 			RBtree(const RBtree& tree) : t_comp(tree.t_comp), t_alloc(tree.t_alloc), n_alloc(tree.n_alloc), t_size(tree.t_size)
@@ -78,11 +71,6 @@ namespace ft
 				root->color = true;
 				root->left = NULL;
 				root->right = NULL;
-				nil = n_alloc.allocate(1);
-				nil->left = NULL;
-				nil->right = NULL;
-				nil->parent = NULL;
-				nil->color = false;
 			}
 			~RBtree() {};
 
@@ -96,6 +84,7 @@ namespace ft
 				node*	prev = (node*)position.getptr();
 				node*	next = (node*)(++position).getptr();
 
+			
 				if ((position.getptr() != end().getptr()) && (t_size && prev->data <= val && next->data >= val))
 				{
 					node*	n_new;
@@ -115,7 +104,7 @@ namespace ft
 			};
 
 			template <class InputIterator>
-			void	insert(InputIterator first, InputIterator last)
+			void insert(InputIterator first, InputIterator last)
 			{
 				iterator it = begin();
 				for (InputIterator itt = first; itt != last; ++itt)
@@ -128,8 +117,8 @@ namespace ft
 
 				t_alloc.construct(&node->data, data);
 				node->parent = NULL;
-				node->left = nil;
-				node->right = nil;
+				node->left = NULL;
+				node->right = NULL;
 				node->color = true;
 				++t_size;
 				return (node);
@@ -150,7 +139,7 @@ namespace ft
 			{
 				if (parent->data.first < node->data.first)
 				{
-					if (parent->right == nil || !parent->right)
+					if (parent->right == NULL || !parent->right)
 					{
 						parent->right = node;
 						node->parent = parent;
@@ -160,7 +149,7 @@ namespace ft
 				}
 				else if (parent->data.first > node->data.first)
 				{
-					if (parent->left == nil)
+					if (parent->left == NULL)
 					{
 						parent->left = node;
 						node->parent = parent;
@@ -224,9 +213,6 @@ namespace ft
 							now->parent->color = false;
 							now->parent->parent->color = true;
 							leftrotate(now->parent->parent);
-							// std::cout << "1\n";
-							// std::cout << root->left->data.first << root->data.first << root->right->data.first <<  std:: endl;
-							// std::cout << "1\n";
 						}
 					}
 				}
@@ -236,11 +222,7 @@ namespace ft
 
 			node* minsearch(node *node)
 			{
-				if (node == NULL)
-					return (node);
-				if (node == nil)
-					return (nil);
-				if (node->left == nil)
+				if (node == NULL || node->left == NULL)
 					return (node);
 				return (minsearch(node->left));
 			}
@@ -267,7 +249,7 @@ namespace ft
 
 				if (target == NULL)
 					return;
-				if (target->left == nil && target->right == nil)
+				if (target->left == NULL && target->right == NULL)
 					del = target;
 				else
 				{
@@ -275,16 +257,18 @@ namespace ft
 					t_alloc.construct(&target->data, del->data);
 				}
 
-				if (del->left != nil)
+				if (del->left != NULL)
 					replace = del->left;
-				else
+				else if (del->right != NULL)
 					replace = del->right;
-				
+				else
+					replace = del;
+
 				replace->parent = del->parent;
 
 				if (del->parent == NULL)
 				{
-					if (replace == nil)
+					if (replace == NULL)
 						root = NULL;
 					else
 						root = replace;
@@ -296,7 +280,7 @@ namespace ft
 					else
 						del->parent->right = replace;
 				}
-
+				std::cout << "color " << del->color << std::endl;
 				if (del->color == false)
 					checkdelete(replace);
 
@@ -304,6 +288,15 @@ namespace ft
 				n_alloc.deallocate(del, 1);
 				del = NULL;
 				--t_size;
+
+				if (t_size == 4)
+				{
+					std::cout << root->left->right->data.first << " : " << root->left->right->color << "  /  " <<
+					root->left->data.first << " : " << root->left->color << "  /  " <<
+					root->data.first << " : " << root->color << "  /  " <<
+					root->right->data.first << " : " << root->right->color << "  /  " << std::endl;
+					//root->right->right->data.first << " : " << root->right->right->color << 
+				}
 
 				// std::cout << root->left->data.first << " : " << root->left->color << "  /  " <<
 				// root->data.first << " : " << root->color << "  /  " <<
@@ -414,7 +407,7 @@ namespace ft
 				node *r_child = now->right;
 
 				now->right = r_child->left;
-				if (now->right != nil)
+				if (now->right != NULL)
 					now->right->parent = now;
 				if (now->parent == NULL)
 				{
@@ -442,7 +435,7 @@ namespace ft
 				node *l_child = now->left;
 
 				now->left = l_child->right;
-				if (l_child->right != nil)
+				if (l_child->right != NULL)
 					l_child->right->parent = now;
 				l_child->parent = now->parent;
 				l_child->right = now;
@@ -530,7 +523,7 @@ namespace ft
 
 			void del_tree(node *n)
 			{
-				if (n->nil)
+				if (!n)
 				{
 					del_tree(n->left);
 					del_tree(n->right);
@@ -632,9 +625,7 @@ namespace ft
 			{
 				iterator it = begin();
 
-				while (it.getptr() != end().getptr() && !t_comp(*it, val))
-					it++;
-				if (it.getptr() != end().getptr() && !t_comp(*it, val) && !t_comp(val, *it))
+				while (it.getptr() != end().getptr() && !t_comp(val, *it))
 					it++;
 				return (it);
 			}
@@ -643,11 +634,14 @@ namespace ft
 			{
 				const_iterator it = begin();
 
-				while (it.getptr() != end().getptr() && !t_comp(*it, val))
-					it++;
-				if (it.getptr() != end().getptr() && !t_comp(*it, val) && !t_comp(val, *it))
+				while (it.getptr() != end().getptr() && !t_comp(val, *it))
 					it++;
 				return (it);
+			}
+
+			node *getroot()
+			{
+				return (root);
 			}
     };
 }

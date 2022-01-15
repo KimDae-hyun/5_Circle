@@ -9,20 +9,20 @@ namespace ft
     class map
     {
         public:
-            typedef Key											key_type;
-            typedef T											mapped_type;
-            typedef ft::pair<const key_type, mapped_type>		value_type;
-			typedef Compare										key_compare;
-			typedef Alloc										allocator_type;
-			typedef T&											reference;
-			typedef const T&									const_reference;
-			typedef T*											pointer;
-			typedef const T *									const_pointer;
-			typedef size_t										size_type;
-			typedef ft::map_iterator<value_type, false>			iterator;
-			typedef ft::map_iterator<value_type, true>			const_iterator;
-			typedef ft::reverse_map_iterator<value_type, false>	reverse_iterator;
-			typedef ft::reverse_map_iterator<value_type, true>	const_reverse_iterator;
+            typedef Key													key_type;
+            typedef T													mapped_type;
+            typedef ft::pair<const key_type, mapped_type>				value_type;
+			typedef Compare												key_compare;
+			typedef Alloc												allocator_type;
+			typedef T&													reference;
+			typedef const T&											const_reference;
+			typedef T*													pointer;
+			typedef const T *											const_pointer;
+			typedef size_t												size_type;
+			typedef ft::map_iterator<value_type, false>					iterator;
+			typedef ft::map_iterator<value_type, true>					const_iterator;
+			typedef ft::reverse_map_iterator<value_type, false>			reverse_iterator;
+			typedef ft::reverse_map_iterator<value_type, true>			const_reverse_iterator;
 			class value_compare : public std::binary_function<value_type, value_type, bool>
 			{   // in C++98, it is required to inherit binary_function<value_type,value_type,bool>
 				friend class map;

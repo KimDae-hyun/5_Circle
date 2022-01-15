@@ -76,26 +76,39 @@ int main(void)
 
 	ft::map<char, int>::iterator i1;
 
-	std::cout << "before \n";
-
 	for (i1 = first.begin(); i1 != first.end(); i1++)
 		std::cout << "???" << i1->first << " : " << i1->second << std::endl;
-	std::cout << "after \n";
 	std::cout << first.max_size() << std::endl;
 	// ft::map<char, int>::iterator i = first.upper_bound('a');
 	//std::cout << i->first << std::endl;
+
+
 	ft::map<char, int> second (first.begin(), first.end());
+	std::cout << "after \n";
+	std::cout << "123\n";
 
 	first.erase('a');
+		std::cout << "123\n";
+
 	first.erase('b');
+		std::cout << "123\n";
+
 	first.erase('c');
+		std::cout << "123\n";
+
 	first.erase('d');
+		std::cout << "123\n";
+
 	first.erase('e');
-	std::cout << "123\n";
+		std::cout << "123\n";
+
+
 	ft::map<char, int>::const_iterator i;
+
 	std::cout << "123\n";
 	i = first.begin();
 	std::cout << "1\n";
+
 	ft::map<char, int>::const_iterator it = first.end();
 	std::cout << "1\n";
 	std::cout << "begin " << &i << " end " << &it << std::endl;
