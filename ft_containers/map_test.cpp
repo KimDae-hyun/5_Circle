@@ -76,6 +76,10 @@ int main(void)
 
 	ft::map<char, int>::iterator i1;
 
+	i1 = first.begin();
+	i1 = first.end();
+
+
 	for (i1 = first.begin(); i1 != first.end(); i1++)
 		std::cout << "???" << i1->first << " : " << i1->second << std::endl;
 	std::cout << first.max_size() << std::endl;

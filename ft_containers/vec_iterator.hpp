@@ -208,18 +208,12 @@ namespace ft
 
 			bool	operator==(const reverse_iterator<const T> &iter) const
 			{
-				if (this->ptr == iter.getptr())
-					return (1);
-				else
-					return (0);
+				return (this->ptr == iter.getptr());
 			}
 
 			bool	operator!=(const reverse_iterator<const T> &iter) const
 			{
-				if (this->ptr != iter.getptr())
-					return (1);
-				else
-					return (0);
+				return (this->ptr != iter.getptr());
 			}
 
             reference	operator*()
@@ -281,34 +275,22 @@ namespace ft
 
 			bool	operator<(const reverse_iterator<const T> &iter) const
 			{
-				if (this->ptr > iter.getptr())
-					return (1);
-				else
-					return (0);
+				return (this->ptr > iter.getptr());
 			}
 
 			bool	operator>(const reverse_iterator<const T> &iter) const
 			{
-				if (this->ptr < iter.getptr())
-					return (1);
-				else
-					return (0);
+				return (this->ptr < iter.getptr());
 			}
 
 			bool	operator<=(const reverse_iterator<const T> &iter) const
 			{
-				if (this->ptr >= iter.getptr())
-					return (1);
-				else
-					return (0);
+				return (this->ptr >= iter.getptr());
 			}
 
 			bool	operator>=(const reverse_iterator<const T> &iter) const
 			{
-				if (this->ptr <= iter.getptr())
-					return (1);
-				else
-					return (0);
+				return (this->ptr <= iter.getptr());
 			}
 			
 			reverse_iterator& operator+=(const int n)
@@ -339,6 +321,48 @@ namespace ft
 	{
 		return reverse_iterator<T>(it.getptr() - n);
 	}
+
+	template <class Iterator>
+	typename reverse_iterator<Iterator>::size_type operator- ( const reverse_iterator<Iterator>& lhs,	const reverse_iterator<Iterator>& rhs)
+	{
+		return (lhs.getptr() - rhs.getptr());
+	}
+
+	template <class Iterator>
+	bool operator== (const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
+	{
+		return (lhs.getptr() == rhs.getptr());
+	}
+
+	template <class Iterator>
+	bool operator!= (const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
+	{
+		return (!(lhs.getptr() == rhs.getptr()));
+	}
+
+	template <class Iterator>
+	bool operator<  (const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
+	{
+		return (lhs.getptr() > rhs.getptr());
+	}
+
+	template <class Iterator>
+	bool operator<= (const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
+	{
+		return (lhs.getptr() >= rhs.getptr());
+	}
+
+	template <class Iterator>
+	bool operator>  (const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
+	{
+		return (lhs.getptr() < rhs.getptr());
+	}
+
+	template <class Iterator>
+	bool operator>= (const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
+	{
+		return (lhs.getptr() <= rhs.getptr());
+	}	
 }
 
 #endif

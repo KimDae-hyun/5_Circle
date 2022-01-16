@@ -222,7 +222,9 @@ namespace ft
 
 			node* minsearch(node *node)
 			{
-				if (node == NULL || node->left == NULL)
+				if (node == NULL)
+					return (NULL);
+				if (node->left == NULL)
 					return (node);
 				return (minsearch(node->left));
 			}
@@ -247,6 +249,15 @@ namespace ft
 				node *replace = NULL; //대체될 노드
 				node *target = search(root, data); //데이터가 바뀔 노드
 
+				// if (t_size == 5)
+				// {
+				// 	std::cout << root->left->data.first << " : " << root->left->color << "  /  " <<
+				// 	root->data.first << " : " << root->color << "  /  " <<
+				// 	root->right->left->data.first << " : " << root->right->left->color << "  /  " <<
+				// 	root->right->data.first << " : " << root->right->color << "  /  " << 
+				// 	root->right->right->data.first << " : " << root->right->right->color << std::endl;
+				// }
+				std::cout << "root " << root->data.first << " target " << target->data.first << std::endl;
 				if (target == NULL)
 					return;
 				if (target->left == NULL && target->right == NULL)
@@ -262,7 +273,14 @@ namespace ft
 				else if (del->right != NULL)
 					replace = del->right;
 				else
+				{
 					replace = del;
+					// replace = n_alloc.allocate(1);
+					// replace->parent = NULL;
+					// replace->left = NULL;
+					// replace->right = NULL;
+					// replace->color = false;
+				}
 
 				replace->parent = del->parent;
 
@@ -280,9 +298,10 @@ namespace ft
 					else
 						del->parent->right = replace;
 				}
-				std::cout << "color " << del->color << std::endl;
+				std::cout << "color1 " << del->color  << " replace " << replace->data.first  << std::endl;
 				if (del->color == false)
 					checkdelete(replace);
+				std::cout << "color2 " << del->color << std::endl;
 
 				t_alloc.destroy(&del->data);
 				n_alloc.deallocate(del, 1);
@@ -291,18 +310,26 @@ namespace ft
 
 				if (t_size == 4)
 				{
-					std::cout << root->left->right->data.first << " : " << root->left->right->color << "  /  " <<
-					root->left->data.first << " : " << root->left->color << "  /  " <<
-					root->data.first << " : " << root->color << "  /  " <<
-					root->right->data.first << " : " << root->right->color << "  /  " << std::endl;
+					std::cout << root->left->left->data.first << " : " << root->left->left->color << " / " 
+					<< root->left->data.first << " : "<< root->left->color << " / "
+					<< root->data.first << " : " << root->color << " / "
+					<< root->right->data.first << " : " << root->right->color<< std::endl;
+
+					// std::cout << root->left->right->data.first << " : " << root->left->right->color << "  /  " <<
+					// root->left->data.first << " : " << root->left->color << "  /  " <<
+					// root->data.first << " : " << root->color << "  /  " <<
+					// root->right->data.first << " : " << root->right->color << "  /  " << std::endl;
 					//root->right->right->data.first << " : " << root->right->right->color << 
 				}
 
-				// std::cout << root->left->data.first << " : " << root->left->color << "  /  " <<
-				// root->data.first << " : " << root->color << "  /  " <<
-				// root->right->left->data.first << " : " << root->right->left->color << "  /  " <<
-				// root->right->data.first << " : " << root->right->color << "  /  " << 
-				// root->right->right->data.first << " : " << root->right->right->color << std::endl;
+				// if (t_size == 5)
+				// {
+				// 	std::cout << root->left->data.first << " : " << root->left->color << "  /  " <<
+				// 	root->data.first << " : " << root->color << "  /  " <<
+				// 	root->right->left->data.first << " : " << root->right->left->color << "  /  " <<
+				// 	root->right->data.first << " : " << root->right->color << "  /  " << 
+				// 	root->right->right->data.first << " : " << root->right->right->color << std::endl;
+				// }
 			}
 
 			void checkdelete(node *replace)
@@ -311,18 +338,19 @@ namespace ft
 
 				while (replace->parent && replace->color == false)
 				{
+					std::cout << "replace " << replace->data.first << std::endl;
 					if (replace == replace->parent->left) // 이중 흑색 노드가 부모의 왼쪽 
 					{
 						sibling = replace->parent->right;
 
-						if (replace->parent->color == true)
-						{
-							if (sibling->color == false && sibling->left->color == false && sibling->right->color == false)
-							{
-								sibling->color = true;
-								replace->color = false;
-							}
-						}
+						// if (replace->parent->color == true)
+						// {
+						// 	if (sibling->color == false && sibling->left->color == false && sibling->right->color == false)
+						// 	{
+						// 		sibling->color = true;
+						// 		replace->color = false;
+						// 	}
+						// }
 						if (sibling->color == true) // 형제 노드가 red
 						{
 							sibling->color = false;
@@ -357,14 +385,14 @@ namespace ft
 					{
 						sibling = replace->parent->left;
 					
-						if (replace->parent->color == true)
-						{
-							if (sibling->color == false && sibling->left->color == false && sibling->right->color == false)
-							{
-								sibling->color = true;
-								replace->color = false;
-							}
-						}
+						// if (replace->parent->color == true)
+						// {
+						// 	if (sibling->color == false && sibling->left->color == false && sibling->right->color == false)
+						// 	{
+						// 		sibling->color = true;
+						// 		replace->color = false;
+						// 	}
+						// }
 						if (sibling->color == true) // 형제 노드가 red
 						{
 							sibling->color = false;
