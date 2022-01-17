@@ -12,14 +12,20 @@ namespace ft
     template <class V, class C, class A>
     class RBtree;
 
-	template <class T, bool B>
+	template <typename T>
+	class const_map_iterator;
+
+	template <class T>
     class reverse_map_iterator;
 
-	template <typename T, bool B>
+    template <class T>
+    class reverse_const_iterator;
+
+	template <typename T>
 	class map_iterator
 	{
 		 	private:
-				typedef map_iterator<T, B>	iterator_;
+				typedef map_iterator<T>	iterator_;
 				typedef RBnode<T>			node_;
 
 			public:
@@ -30,19 +36,18 @@ namespace ft
 
 			protected:
 				node_ *n_ptr;
-				node_ *end;
 
 			public:
-				map_iterator(void) : n_ptr(), end() {};
+				map_iterator(void) : n_ptr() {};
 				map_iterator(node_ *node) : n_ptr(node) {};
-				//map_iterator(const map_iterator& iter) {*this = iter;};
-				template <typename _T, bool _B>
-				map_iterator(const map_iterator<_T, _B>& iter) {*this = iter;};
-		 		map_iterator(const reverse_map_iterator<T, false>& riter) {*this = riter;};
+				map_iterator(const iterator_& iter) {*this = iter;};
+				//map_iterator(const map_iterator<T>& iter) {this->n_ptr = iter.getptr();};
+				template <typename _T>
+				map_iterator(const map_iterator<_T>& iter) {*this = iter;};
+		 		map_iterator(const reverse_map_iterator<T>& riter) {*this = riter;};
 				~map_iterator() {};
 
-				template <typename _T, bool _B>
-				iterator_&	operator= (const map_iterator<_T, _B> &iter)
+				iterator_&	operator= (const iterator_ &iter)
 				{
 					this->n_ptr = iter.getptr();
 					return (*this);
@@ -63,12 +68,19 @@ namespace ft
 					return (this->n_ptr->data);
 				};
 
+                reference operator*() const{
+                    return this->n_ptr->data;
+                }
+
 				iterator_&	operator++(void)
 				{
-					if (n_ptr->right)
+					if (!n_ptr || n_ptr->right == n_ptr->nil)
+						return (*this);
+					if (n_ptr->right->data.first)
 					{
 						n_ptr = n_ptr->right;
-						findleft();
+						while (n_ptr->left->data.first)
+							n_ptr = n_ptr->left;
 						return (*this);
 					}
 					while (n_ptr->parent && n_ptr->parent->right == n_ptr)
@@ -76,7 +88,7 @@ namespace ft
 					if (n_ptr->parent)
 						n_ptr = n_ptr->parent;
 					else
-						n_ptr = NULL;
+						n_ptr = n_ptr->nil;
 					return (*this);
 				};
 
@@ -89,18 +101,21 @@ namespace ft
 
 				iterator_&	operator--(void)
 				{
-					if (n_ptr->left)
+					if (!n_ptr || n_ptr->left == n_ptr->nil || n_ptr->left == NULL)
+						return (*this);
+					if (n_ptr->left->data.first)
 					{
 						n_ptr = n_ptr->left;
-						findright();
+						while (n_ptr->right->data.first)
+							n_ptr = n_ptr->right;
 						return (*this);
 					}
-					while (n_ptr->parent && n_ptr->parent->left == n_ptr)
+					while (n_ptr->parent&& n_ptr->parent->left == n_ptr)
 						n_ptr = n_ptr->parent;
 					if (n_ptr->parent)
 						n_ptr = n_ptr->parent;
 					else
-						n_ptr = NULL;
+						n_ptr = n_ptr->nil;
 					return (*this);
 				};
 
@@ -118,9 +133,9 @@ namespace ft
 
 				iterator_&	findleft(void)
 				{
-					if (!n_ptr || !n_ptr->left)
+					if (!n_ptr || n_ptr->left == n_ptr->nil)
 						return (*this);
-					if (n_ptr->left)
+					if (n_ptr->left && n_ptr->left->left)
 					{
 						n_ptr = n_ptr->left;
 						findleft();
@@ -130,19 +145,13 @@ namespace ft
 
 				iterator_&	findright(void)
 				{
-					if (!n_ptr || !n_ptr->right)
-					{
-						if (!end)
-							n_ptr = end;
+					if (!n_ptr || n_ptr->right == n_ptr->nil)
 						return (*this);
-					}
-					if (n_ptr->right->data.first)
+					else if (n_ptr->right->data.first)
 					{
 						n_ptr = n_ptr->right;
 						findright();
 					}
-					if (!n_ptr->right)
-						end = n_ptr;
 					return (*this);
 				}
 
@@ -152,12 +161,155 @@ namespace ft
 				}
 	 };
 
-    template <class T, bool B>
-    class reverse_map_iterator : public map_iterator<T, B>
+	template <typename T>
+	class const_map_iterator
+	{
+		 	private:
+				typedef const_map_iterator<T>	iterator_;
+				typedef RBnode<T>			node_;
+
+			public:
+				typedef T					value_type;
+				typedef T&					reference;
+				typedef T*					pointer;
+				typedef std::ptrdiff_t		size_type;
+
+			protected:
+				node_ *n_ptr;
+
+			public:
+				const_map_iterator(void) : n_ptr() {};
+				const_map_iterator(node_ *node) : n_ptr(node) {};
+				const_map_iterator(const iterator_& iter) {this->n_ptr = iter.getptr();};
+				const_map_iterator(iterator_& iter) {this->n_ptr = iter.getptr();};
+                const_map_iterator(const map_iterator<T>& iter) {this->n_ptr = iter.getptr();};
+				template <typename _T>
+				const_map_iterator(const const_map_iterator<_T>& iter) {*this = iter;};
+		 		const_map_iterator(const reverse_const_iterator<T>& riter) {*this = riter;};
+				~const_map_iterator() {};
+
+				iterator_&	operator= (const iterator_ &iter)
+				{
+					this->n_ptr = iter.getptr();
+					return (*this);
+				}
+
+
+				bool	operator==(const iterator_ &iter)
+				{
+					return (this->n_ptr == iter.n_ptr);
+				}
+
+				bool	operator!=(const iterator_ &iter)
+				{
+					return (this->n_ptr != iter.n_ptr);
+				}
+
+				reference	operator*(void) 
+				{
+					return (this->n_ptr->data);
+				};
+
+				reference	operator*(void) const 
+				{
+					return (this->n_ptr->data);
+				};
+
+				pointer		operator->(void) const
+				{
+					return (&this->n_ptr->data);
+				};
+
+				iterator_&	operator++(void)
+				{
+					if (!n_ptr || n_ptr->right == n_ptr->nil)
+						return (*this);
+					if (n_ptr->right->data.first)
+					{
+						n_ptr = n_ptr->right;
+						while (n_ptr->left->data.first)
+							n_ptr = n_ptr->left;
+						return (*this);
+					}
+					while (n_ptr->parent && n_ptr->parent->right == n_ptr)
+						n_ptr = n_ptr->parent;
+					if (n_ptr->parent)
+						n_ptr = n_ptr->parent;
+					else
+						n_ptr = n_ptr->nil;
+					return (*this);
+				};
+
+				iterator_	operator++(int)
+				{
+					iterator_	temp = *this;
+					++*this;
+					return (temp);
+				};
+
+				iterator_&	operator--(void)
+				{
+					if (!n_ptr || n_ptr->left == n_ptr->nil || n_ptr->left == NULL)
+						return (*this);
+					if (n_ptr->left->data.first)
+					{
+						n_ptr = n_ptr->left;
+						while (n_ptr->right->data.first)
+							n_ptr = n_ptr->right;
+						return (*this);
+					}
+					while (n_ptr->parent&& n_ptr->parent->left == n_ptr)
+						n_ptr = n_ptr->parent;
+					if (n_ptr->parent)
+						n_ptr = n_ptr->parent;
+					else
+						n_ptr = n_ptr->nil;
+					return (*this);
+				};
+
+				iterator_	operator--(int)
+				{
+					iterator_	temp = *this;
+					--*this;
+					return (temp);
+				};
+
+				iterator_&	findleft(void)
+				{
+					if (!n_ptr || n_ptr->left == n_ptr->nil)
+						return (*this);
+					if (n_ptr->left && n_ptr->left->left)
+					{
+						n_ptr = n_ptr->left;
+						findleft();
+					}
+					return (*this);
+				}
+
+				iterator_&	findright(void)
+				{
+					if (!n_ptr || n_ptr->right == n_ptr->nil)
+						return (*this);
+					else if (n_ptr->right->data.first)
+					{
+						n_ptr = n_ptr->right;
+						findright();
+					}
+					return (*this);
+				}
+
+				node_*	getptr() const
+				{
+					return (n_ptr);
+				}
+	};
+
+    template <class T>
+    class reverse_map_iterator : public map_iterator<T>
     {
 		protected:
-			typedef reverse_map_iterator<T, B>		iterator_;
-			typedef map_iterator<T, B>	t_iter;
+			typedef reverse_map_iterator<T>		iterator_;
+			typedef map_iterator<T>	t_iter;
 
         public:
 			typedef typename t_iter::value_type		value_type;
@@ -165,14 +317,16 @@ namespace ft
 			typedef typename t_iter::pointer		pointer;
 			typedef typename t_iter::size_type		size_type;
 
+
 		public:
 			reverse_map_iterator(void) : t_iter() {};
 			reverse_map_iterator(const t_iter& p) : t_iter(p) {};
-			template	<class _T, bool _B>
-			reverse_map_iterator(const reverse_map_iterator<_T, _B> &iter) : t_iter(iter) {};
+			reverse_map_iterator(const reverse_map_iterator &iter) {*this = iter;};
+			template	<class _T>
+			reverse_map_iterator(const reverse_map_iterator<_T> &iter) : t_iter(iter) {};
 			~reverse_map_iterator() {};
 
-			reverse_map_iterator<T, B> base() const
+			reverse_map_iterator<T> base() const
 			{
 				return (*this);
 			}
@@ -185,12 +339,12 @@ namespace ft
 
 			bool	operator==(const reverse_map_iterator &iter) const
 			{
-				return (this->n_ptr == iter.getptr());
+				return (this->n_ptr == iter.n_ptr);
 			}
 
 			bool	operator!=(const reverse_map_iterator &iter) const
 			{
-				return (this->n_ptr != iter.getptr());
+				return (this->n_ptr != iter.n_ptr);
 			}
  
             reference	operator*() const
@@ -232,52 +386,86 @@ namespace ft
 			}
     };
 
-	// template <class T, bool B>
-	// reverse_map_iterator<T, B> operator+(size_t n, const reverse_map_iterator<T, B> &it)
-	// {
-	// 	return reverse_map_iterator<T, B>(it.getptr() - n);
-	// }
+       template <class T>
+    class reverse_const_iterator : public const_map_iterator<T>
+    {
+		protected:
+			typedef reverse_const_iterator<T>		iterator_;
+			typedef const_map_iterator<T>	t_iter;
 
-	// template <class Iterator, bool B>
-	// typename reverse_map_iterator<Iterator, B>::size_type operator- ( const reverse_map_iterator<Iterator, B>& lhs,	const reverse_map_iterator<Iterator, B>& rhs)
-	// {
-	// 	return (lhs.getptr() - rhs.getptr());
-	// }
+        public:
+			typedef typename t_iter::value_type		value_type;
+			typedef typename t_iter::reference		reference;
+			typedef typename t_iter::pointer		pointer;
+			typedef typename t_iter::size_type		size_type;
 
-	// template <class Iterator, bool B>
-	// bool operator== (const reverse_map_iterator<Iterator, B>& lhs, const reverse_map_iterator<Iterator, B>& rhs)
-	// {
-	// 	return (lhs.getptr() == rhs.getptr());
-	// }
 
-	// template <class Iterator, bool B>
-	// bool operator!= (const reverse_map_iterator<Iterator, B>& lhs, const reverse_map_iterator<Iterator, B>& rhs)
-	// {
-	// 	return (!(lhs.getptr() == rhs.getptr()));
-	// }
+		public:
+			reverse_const_iterator(void) : t_iter() {};
+			reverse_const_iterator(const t_iter& p) : t_iter(p) {};
+			reverse_const_iterator(const reverse_const_iterator &iter) {*this = iter;};
+			template	<class _T>
+			reverse_const_iterator(const reverse_const_iterator<_T> &iter) : t_iter(iter) {};
+			~reverse_const_iterator() {};
 
-	// template <class Iterator, bool B>
-	// bool operator<  (const reverse_map_iterator<Iterator, B>& lhs, const reverse_map_iterator<Iterator, B>& rhs)
-	// {
-	// 	return (lhs.getptr() > rhs.getptr());
-	// }
+			reverse_const_iterator<T> base() const
+			{
+				return (*this);
+			}
 
-	// template <class Iterator, bool B>
-	// bool operator<= (const reverse_map_iterator<Iterator, B>& lhs, const reverse_map_iterator<Iterator, B>& rhs)
-	// {
-	// 	return (lhs.getptr() >= rhs.getptr());
-	// }
+			iterator_& operator= (const iterator_ &iter)
+			{
+			 	this->n_ptr = iter.n_ptr;
+				return (*this);
+			}
 
-	// template <class Iterator, bool B>
-	// bool operator>  (const reverse_map_iterator<Iterator, B>& lhs, const reverse_map_iterator<Iterator, B>& rhs)
-	// {
-	// 	return (lhs.getptr() < rhs.getptr());
-	// }
+			bool	operator==(const reverse_const_iterator &iter) const
+			{
+				return (this->n_ptr == iter.n_ptr);
+			}
 
-	// template <class Iterator, bool B>
-	// bool operator>= (const reverse_map_iterator<Iterator, B>& lhs, const reverse_map_iterator<Iterator, B>& rhs)
-	// {
-	// 	return (lhs.getptr() <= rhs.getptr());
-	// }	
+			bool	operator!=(const reverse_const_iterator &iter) const
+			{
+				return (this->n_ptr != iter.n_ptr);
+			}
+ 
+            reference	operator*() const
+			{
+				return (*(static_cast<t_iter>(--base())));
+            }
+
+            pointer		operator->() const
+			{
+                return (&(*(static_cast<t_iter>(*this))));
+            }
+
+			iterator_& operator++()
+			{
+				--*static_cast<t_iter*>(this);
+				return (*this);
+			}
+
+			iterator_& operator--()
+			{
+				++*static_cast<t_iter*>(this);
+				return (*this);
+			}
+
+			iterator_ operator++(int)
+			{
+				iterator_	temp = *this;
+
+				--*this;
+				return (temp);
+			}
+
+			iterator_ operator--(int)
+			{
+				iterator_	temp = *this;
+
+				++*this;
+				return (temp);
+			}
+    };
 }
 #endif

@@ -9,20 +9,20 @@ namespace ft
     class map
     {
         public:
-            typedef Key													key_type;
-            typedef T													mapped_type;
-            typedef ft::pair<const key_type, mapped_type>				value_type;
-			typedef Compare												key_compare;
-			typedef Alloc												allocator_type;
-			typedef T&													reference;
-			typedef const T&											const_reference;
-			typedef T*													pointer;
-			typedef const T *											const_pointer;
-			typedef size_t												size_type;
-			typedef ft::map_iterator<value_type, false>					iterator;
-			typedef ft::map_iterator<value_type, true>					const_iterator;
-			typedef ft::reverse_map_iterator<value_type, false>			reverse_iterator;
-			typedef ft::reverse_map_iterator<value_type, true>			const_reverse_iterator;
+            typedef Key											key_type;
+            typedef T											mapped_type;
+            typedef ft::pair<const key_type, mapped_type>		value_type;
+			typedef Compare										key_compare;
+			typedef Alloc										allocator_type;
+			typedef T&											reference;
+			typedef const T&									const_reference;
+			typedef T*											pointer;
+			typedef const T *									const_pointer;
+			typedef size_t										size_type;
+			typedef ft::map_iterator<value_type>			    iterator;
+			typedef ft::const_map_iterator<value_type>	const_iterator;
+			typedef ft::reverse_map_iterator<value_type>	    reverse_iterator;
+			typedef ft::reverse_map_iterator<value_type>	const_reverse_iterator;
 			class value_compare : public std::binary_function<value_type, value_type, bool>
 			{   // in C++98, it is required to inherit binary_function<value_type,value_type,bool>
 				friend class map;
@@ -252,9 +252,9 @@ namespace ft
 	{
 		if (lhs.size() != rhs.size())
 			return (false);
-		ft::map_iterator<ft::pair<const Key, T>, false > it1 = lhs.tree.begin();
-		ft::map_iterator<ft::pair<const Key, T>, false >it2 = rhs.tree.begin();
-		while (it1 != lhs.tree.end() && it2 != rhs.tree.end())
+		ft::map_iterator<ft::pair<const Key, T> > it1 = lhs.begin();
+		ft::map_iterator<ft::pair<const Key, T> >it2 = rhs.begin();
+		while (it1 != lhs.end() && it2 != rhs.end())
 		{
 			if (it1->first != it2->first)
 				return (false);
@@ -263,7 +263,7 @@ namespace ft
 			it1++;
 			it2++;
 		}
-		if (it1 != lhs.tree.end() || it2 != rhs.tree.end())
+		if (it1 != lhs.end() || it2 != rhs.end())
 			return (false);
 		return (true);
 	}
@@ -285,8 +285,8 @@ namespace ft
 		else
 			size = lhs.size();
 		
-		ft::map_iterator<ft::pair<const Key, T>, false > it1 = lhs.tree.begin();
-		ft::map_iterator<ft::pair<const Key, T>, false > it2 = rhs.tree.begin();
+		ft::map_iterator<ft::pair<const Key, T> > it1 = lhs.begin();
+		ft::map_iterator<ft::pair<const Key, T> > it2 = rhs.begin();
 		
 		i = -1;
 		while (++i < size)
@@ -318,8 +318,8 @@ namespace ft
 		else
 			size = lhs.size();
 		
-		ft::map_iterator<ft::pair<const Key, T>, false > it1 = lhs.tree.begin();
-		ft::map_iterator<ft::pair<const Key, T>, false > it2 = rhs.tree.begin();
+		ft::map_iterator<ft::pair<const Key, T> > it1 = lhs.begin();
+		ft::map_iterator<ft::pair<const Key, T> > it2 = rhs.begin();
 		
 		i = -1;
 		while (++i < size)

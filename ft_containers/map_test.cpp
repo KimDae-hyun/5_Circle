@@ -88,23 +88,23 @@ int main(void)
 
 
 	ft::map<char, int> second (first.begin(), first.end());
-	std::cout << "after \n";
-	std::cout << "123\n";
+	// std::cout << "after \n";
+	// std::cout << "123\n";
 
-	first.erase('a');
-		std::cout << "123\n";
+	// first.erase('a');
+	// 	std::cout << "123\n";
 
-	first.erase('b');
-		std::cout << "123\n";
+	// first.erase('b');
+	// 	std::cout << "123\n";
 
-	first.erase('c');
-		std::cout << "123\n";
+	// first.erase('c');
+	// 	std::cout << "123\n";
 
-	first.erase('d');
-		std::cout << "123\n";
+	// first.erase('d');
+	// 	std::cout << "123\n";
 
-	first.erase('e');
-		std::cout << "123\n";
+	// first.erase('e');
+	// 	std::cout << "123\n";
 
 
 	ft::map<char, int>::const_iterator i;
