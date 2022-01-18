@@ -20,7 +20,7 @@ namespace ft
 			typedef const T *									const_pointer;
 			typedef size_t										size_type;
 			typedef ft::map_iterator<value_type>			    iterator;
-			typedef ft::const_map_iterator<value_type>	const_iterator;
+			typedef ft::map_iterator<value_type>	const_iterator;
 			typedef ft::reverse_map_iterator<value_type>	    reverse_iterator;
 			typedef ft::reverse_map_iterator<value_type>	const_reverse_iterator;
 			class value_compare : public std::binary_function<value_type, value_type, bool>
@@ -42,11 +42,6 @@ namespace ft
 			typedef RBtree<value_type, value_compare, allocator_type> tree_type;
 			tree_type	tree;
 
-			//typedef struct RBnode<value_type> node;
-			//value_type	val;
-			//allocator_type	t_alloc;
-			// key_compare		comp;
-
 		public:
 			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : \
 									tree(value_compare(comp), alloc) {};
@@ -64,11 +59,13 @@ namespace ft
 
 			map& operator= (const map& x)
 			{
-				if (this != &x)
-				{
-					tree = x.tree;
-				}
-				return (*this);
+				tree.n_alloc = x.tree.n_alloc;
+				tree.t_alloc = x.tree.t_alloc;
+				tree.t_comp = x.tree.t_comp;
+				tree.clear();
+				for (iterator i = x.begin(); i != x.end(); i++)
+					tree.insert(*i);
+				return *this;
 			}
 
 		//Iterator

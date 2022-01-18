@@ -38,7 +38,7 @@ namespace ft
 			typedef V*											pointer;
 			typedef const V*									const_pointer;
 			typedef map_iterator<value_type>				iterator;
-			typedef const_map_iterator<value_type>				const_iterator;
+			typedef map_iterator<value_type>				const_iterator;
 			typedef reverse_map_iterator<value_type>		reverse_iterator;
 			typedef reverse_map_iterator<value_type>		const_reverse_iterator;
 			typedef std::ptrdiff_t								difference_type;
@@ -144,7 +144,7 @@ namespace ft
 					root = node;
 				b = insertvalue(root, node);
                 if (b == true)
-				    insertcheck(node);
+					insertcheck(node);
 				return (pair<iterator, bool>(iterator(node), b));
 			}
 
@@ -152,26 +152,31 @@ namespace ft
 			{
 				if (parent->data.first < node->data.first)
 				{
-					if (parent->right == nil || !parent->right)
+					if (parent->right == nil/* || !parent->right*/)
 					{
 						parent->right = node;
 						node->parent = parent;
 					}
 					else
-						insertvalue(parent->right, node);
+						return (insertvalue(parent->right, node));
 				}
 				else if (parent->data.first > node->data.first)
 				{
-					if (parent->left == nil)
+					if (parent->left == nil/* || !parent->left*/)
 					{
 						parent->left = node;
 						node->parent = parent;
 					}
 					else
-						insertvalue(parent->left, node);
+						return (insertvalue(parent->left, node));
 				}
                 else
                 {
+					// t_alloc.destroy(&node->data);
+					// n_alloc.deallocate(node, 1);
+					// node = NULL;
+					// --t_size;
+					node = parent;
                     return (false);
                 }
                 return (true);
@@ -255,7 +260,7 @@ namespace ft
 			node *search(node *node, value_type data)
 			{
 				if (node == NULL)
-					return (node);
+					return (NULL);
 				if (node->data.first > data.first)
 					return (search(node->left, data));
 				else if (node->data.first < data.first)
@@ -329,14 +334,14 @@ namespace ft
 					{
 						sibling = replace->parent->right;
 
-						if (replace->parent->color == true)
-						{
-							if (sibling->color == false && sibling->left->color == false && sibling->right->color == false)
-							{
-								sibling->color = true;
-								replace->color = false;
-							}
-						}
+						// if (replace->parent->color == true)
+						// {
+						// 	if (sibling->color == false && sibling->left->color == false && sibling->right->color == false)
+						// 	{
+						// 		sibling->color = true;
+						// 		replace->color = false;
+						// 	}
+						// }
 						if (sibling->color == true) // 형제 노드가 red
 						{
 							sibling->color = false;
@@ -371,14 +376,14 @@ namespace ft
 					{
 						sibling = replace->parent->left;
 					
-						if (replace->parent->color == true)
-						{
-							if (sibling->color == false && sibling->left->color == false && sibling->right->color == false)
-							{
-								sibling->color = true;
-								replace->color = false;
-							}
-						}
+						// if (replace->parent->color == true)
+						// {
+						// 	if (sibling->color == false && sibling->left->color == false && sibling->right->color == false)
+						// 	{
+						// 		sibling->color = true;
+						// 		replace->color = false;
+						// 	}
+						// }
 						if (sibling->color == true) // 형제 노드가 red
 						{
 							sibling->color = false;
@@ -422,7 +427,7 @@ namespace ft
 
 				now->right = r_child->left;
 				if (now->right != nil)
-					now->right->parent = now;
+					r_child->left->parent = now;
 				if (now->parent == NULL)
 				{
 					this->root = r_child;
@@ -430,15 +435,15 @@ namespace ft
 				}
 				else
 				{
-					r_child->parent = now->parent;
+					//r_child->parent = now->parent;
 					if (now == now->parent->left)
 						now->parent->left = r_child;
 					else
 						now->parent->right = r_child;
 				}
-				now->parent = r_child;
 				r_child->left = now;
-				now = r_child;
+				now->parent = r_child;
+				//now = r_child;
 			}
 
 			void rightrotate(node *now)
@@ -452,7 +457,6 @@ namespace ft
 				if (l_child->right != nil)
 					l_child->right->parent = now;
 				l_child->parent = now->parent;
-				l_child->right = now;
 				if (now->parent == NULL)
 					this->root = l_child;
 				else
@@ -461,9 +465,10 @@ namespace ft
 						now->parent->left = l_child;
 					else
 						now->parent->right = l_child;
-				}	
+				}
+				l_child->right = now;	
 				now->parent = l_child;
-				now = l_child;
+				//now = l_child;
 			}
 
 			iterator	begin(void)

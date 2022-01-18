@@ -10,11 +10,14 @@ namespace ft
     template <class T>
     class vector_iterator
     {
-        protected:
-			typedef T				value_type;
-			typedef T&				reference;
-			typedef T*				pointer;
-			typedef std::ptrdiff_t	size_type;
+		public:
+			typedef ft::iterator_traits<T*> v_traits;
+
+        public:
+			typedef typename v_traits::value_type		value_type;
+			typedef typename v_traits::reference		reference;
+			typedef	typename v_traits::pointer			pointer;
+			typedef typename v_traits::difference_type	size_type;
 
 		protected:
 			pointer	ptr;
@@ -172,11 +175,19 @@ namespace ft
     template <class T>
     class reverse_iterator
     {
+		public:
+			typedef ft::iterator_traits<T*> v_traits;
+
         public:
-			typedef T	value_type;
-			typedef T&	reference;
-			typedef T*	pointer;
-			typedef std::ptrdiff_t	size_type;
+			typedef typename v_traits::value_type		value_type;
+			typedef typename v_traits::reference		reference;
+			typedef	typename v_traits::pointer			pointer;
+			typedef typename v_traits::difference_type	size_type;
+        // public:
+		// 	typedef T	value_type;
+		// 	typedef T&	reference;
+		// 	typedef T*	pointer;
+		// 	typedef std::ptrdiff_t	size_type;
 
 		private:
 			pointer	ptr;

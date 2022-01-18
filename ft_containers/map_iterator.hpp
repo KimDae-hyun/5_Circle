@@ -3,6 +3,7 @@
 
 # include "utils.hpp"
 # include "RBT.hpp"
+# include "iterator_traits.hpp"
 
 namespace ft
 {
@@ -24,15 +25,16 @@ namespace ft
 	template <typename T>
 	class map_iterator
 	{
-		 	private:
-				typedef map_iterator<T>	iterator_;
-				typedef RBnode<T>			node_;
+		public:
+			typedef ft::iterator_traits<T*> m_traits;
+			typedef map_iterator<T>	iterator_;
+			typedef RBnode<T>			node_;
 
-			public:
-				typedef T					value_type;
-				typedef T&					reference;
-				typedef T*					pointer;
-				typedef std::ptrdiff_t		size_type;
+		public:
+			typedef typename m_traits::value_type		value_type;
+			typedef typename m_traits::reference		reference;
+			typedef	typename m_traits::pointer			pointer;
+			typedef typename m_traits::difference_type	size_type;
 
 			protected:
 				node_ *n_ptr;
@@ -74,12 +76,10 @@ namespace ft
 
 				iterator_&	operator++(void)
 				{
-					if (!n_ptr || n_ptr->right == n_ptr->nil)
-						return (*this);
-					if (n_ptr->right->data.first)
+					if (n_ptr->right && n_ptr->right->parent)
 					{
 						n_ptr = n_ptr->right;
-						while (n_ptr->left->data.first)
+						while (n_ptr->left && n_ptr->left->parent)
 							n_ptr = n_ptr->left;
 						return (*this);
 					}
@@ -87,8 +87,6 @@ namespace ft
 						n_ptr = n_ptr->parent;
 					if (n_ptr->parent)
 						n_ptr = n_ptr->parent;
-					else
-						n_ptr = n_ptr->nil;
 					return (*this);
 				};
 
@@ -101,12 +99,10 @@ namespace ft
 
 				iterator_&	operator--(void)
 				{
-					if (!n_ptr || n_ptr->left == n_ptr->nil || n_ptr->left == NULL)
-						return (*this);
-					if (n_ptr->left->data.first)
+					if (n_ptr->left && n_ptr->left->parent)
 					{
 						n_ptr = n_ptr->left;
-						while (n_ptr->right->data.first)
+						while (n_ptr->right && n_ptr->right->parent)
 							n_ptr = n_ptr->right;
 						return (*this);
 					}
@@ -114,8 +110,6 @@ namespace ft
 						n_ptr = n_ptr->parent;
 					if (n_ptr->parent)
 						n_ptr = n_ptr->parent;
-					else
-						n_ptr = n_ptr->nil;
 					return (*this);
 				};
 
@@ -133,9 +127,9 @@ namespace ft
 
 				iterator_&	findleft(void)
 				{
-					if (!n_ptr || n_ptr->left == n_ptr->nil)
-						return (*this);
-					if (n_ptr->left && n_ptr->left->left)
+					// if (!n_ptr || n_ptr->left == n_ptr->nil)
+					// 	return (*this);
+					if (n_ptr->left && n_ptr->left->parent)
 					{
 						n_ptr = n_ptr->left;
 						findleft();
@@ -145,9 +139,9 @@ namespace ft
 
 				iterator_&	findright(void)
 				{
-					if (!n_ptr || n_ptr->right == n_ptr->nil)
+					/*if (!n_ptr || n_ptr->right == n_ptr->nil)
 						return (*this);
-					else if (n_ptr->right->data.first)
+					else */if (n_ptr->right && n_ptr->right->parent)
 					{
 						n_ptr = n_ptr->right;
 						findright();
@@ -164,15 +158,16 @@ namespace ft
 	template <typename T>
 	class const_map_iterator
 	{
-		 	private:
-				typedef const_map_iterator<T>	iterator_;
-				typedef RBnode<T>			node_;
+		public:
+			typedef ft::iterator_traits<T*> m_traits;
+			typedef const_map_iterator<T>	iterator_;
+			typedef RBnode<T>			node_;
 
-			public:
-				typedef T					value_type;
-				typedef T&					reference;
-				typedef T*					pointer;
-				typedef std::ptrdiff_t		size_type;
+		public:
+			typedef typename m_traits::value_type		value_type;
+			typedef typename m_traits::reference		reference;
+			typedef	typename m_traits::pointer			pointer;
+			typedef typename m_traits::difference_type	size_type;
 
 			protected:
 				node_ *n_ptr;
@@ -305,30 +300,33 @@ namespace ft
 	};
 
     template <class T>
-    class reverse_map_iterator : public map_iterator<T>
+    class reverse_map_iterator
     {
-		protected:
-			typedef reverse_map_iterator<T>		iterator_;
-			typedef map_iterator<T>	t_iter;
-
-        public:
-			typedef typename t_iter::value_type		value_type;
-			typedef typename t_iter::reference		reference;
-			typedef typename t_iter::pointer		pointer;
-			typedef typename t_iter::size_type		size_type;
-
+		public:
+			typedef ft::iterator_traits<T*> m_traits;
+			typedef reverse_map_iterator<T>	iterator_;
+			typedef RBnode<T>			node_;
 
 		public:
-			reverse_map_iterator(void) : t_iter() {};
-			reverse_map_iterator(const t_iter& p) : t_iter(p) {};
-			reverse_map_iterator(const reverse_map_iterator &iter) {*this = iter;};
+			typedef typename m_traits::value_type		value_type;
+			typedef typename m_traits::reference		reference;
+			typedef	typename m_traits::pointer			pointer;
+			typedef typename m_traits::difference_type	size_type;
+		
+			protected:
+				node_ *n_ptr;
+
+		public:
+			reverse_map_iterator(void){};
+			reverse_map_iterator(const iterator_& p) : n_ptr(p.getptr()) {};
+			reverse_map_iterator(const map_iterator<T> &iter) : n_ptr(iter.getptr()) {};
 			template	<class _T>
-			reverse_map_iterator(const reverse_map_iterator<_T> &iter) : t_iter(iter) {};
+			reverse_map_iterator(const reverse_map_iterator<const _T> &iter) : iterator_(iter) {};
 			~reverse_map_iterator() {};
 
-			reverse_map_iterator<T> base() const
+			map_iterator<T> base() const
 			{
-				return (*this);
+				return (this->n_ptr);
 			}
 
 			iterator_& operator= (const iterator_ &iter)
@@ -349,23 +347,23 @@ namespace ft
  
             reference	operator*() const
 			{
-				return (*(static_cast<t_iter>(--base())));
+				return (*(--base()));
             }
 
             pointer		operator->() const
 			{
-                return (&(*(static_cast<t_iter>(*this))));
+                return (&(operator*()));
             }
 
 			iterator_& operator++()
 			{
-				--*static_cast<t_iter*>(this);
+				--*static_cast<iterator_*>(this);
 				return (*this);
 			}
 
 			iterator_& operator--()
 			{
-				++*static_cast<t_iter*>(this);
+				++*static_cast<iterator_*>(this);
 				return (*this);
 			}
 
@@ -384,28 +382,36 @@ namespace ft
 				++*this;
 				return (temp);
 			}
+			
+			node_*	getptr() const
+			{
+				return (n_ptr);
+			}
     };
 
        template <class T>
-    class reverse_const_iterator : public const_map_iterator<T>
+    class reverse_const_iterator
     {
-		protected:
-			typedef reverse_const_iterator<T>		iterator_;
-			typedef const_map_iterator<T>	t_iter;
-
-        public:
-			typedef typename t_iter::value_type		value_type;
-			typedef typename t_iter::reference		reference;
-			typedef typename t_iter::pointer		pointer;
-			typedef typename t_iter::size_type		size_type;
-
+		public:
+			typedef ft::iterator_traits<T*> m_traits;
+			typedef reverse_const_iterator<T>	iterator_;
+			typedef RBnode<T>			node_;
 
 		public:
-			reverse_const_iterator(void) : t_iter() {};
-			reverse_const_iterator(const t_iter& p) : t_iter(p) {};
-			reverse_const_iterator(const reverse_const_iterator &iter) {*this = iter;};
+			typedef typename m_traits::value_type		value_type;
+			typedef typename m_traits::reference		reference;
+			typedef	typename m_traits::pointer			pointer;
+			typedef typename m_traits::difference_type	size_type;
+
+			protected:
+				node_ *n_ptr;
+
+		public:
+			reverse_const_iterator(void) : iterator_() {};
+			reverse_const_iterator(const iterator_& p) : iterator_(p) {};
+			reverse_const_iterator(const const_map_iterator<T> &iter) {*this = iter;};
 			template	<class _T>
-			reverse_const_iterator(const reverse_const_iterator<_T> &iter) : t_iter(iter) {};
+			reverse_const_iterator(const reverse_const_iterator<const _T> &iter) : iterator_(iter) {};
 			~reverse_const_iterator() {};
 
 			reverse_const_iterator<T> base() const
@@ -431,23 +437,23 @@ namespace ft
  
             reference	operator*() const
 			{
-				return (*(static_cast<t_iter>(--base())));
+				return (*(static_cast<iterator_>(--base())));
             }
 
             pointer		operator->() const
 			{
-                return (&(*(static_cast<t_iter>(*this))));
+                return (&(*(static_cast<iterator_>(*this))));
             }
 
 			iterator_& operator++()
 			{
-				--*static_cast<t_iter*>(this);
+				--*static_cast<iterator_*>(this);
 				return (*this);
 			}
 
 			iterator_& operator--()
 			{
-				++*static_cast<t_iter*>(this);
+				++*static_cast<iterator_*>(this);
 				return (*this);
 			}
 
@@ -465,6 +471,11 @@ namespace ft
 
 				++*this;
 				return (temp);
+			}
+			
+			node_*	getptr() const
+			{
+				return (n_ptr);
 			}
     };
 }
