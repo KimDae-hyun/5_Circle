@@ -117,9 +117,10 @@ namespace ft
 			template <class InputIterator>
 			void	insert(InputIterator first, InputIterator last)
 			{
-				iterator it = begin();
-				for (InputIterator itt = first; itt != last; ++itt)
-					it = insert(it, *itt);
+				for (; first != last; first++)
+				{
+					insert(*first);
+				}
 			};
 
 			node *create(value_type data)
@@ -143,8 +144,18 @@ namespace ft
 				if (t_size == 1)
 					root = node;
 				b = insertvalue(root, node);
+				// if (t_size == 5)
+				// {
+				// 	std::cout << root->right->right->parent->data.first << " / " << root->right->right->parent->parent->data.first << std::endl;
+				// 	std::cout << root->right->right->right->data.first << " / " << root->right->right->right->parent->data.first << std::endl;
+				// }
                 if (b == true)
 					insertcheck(node);
+				// if (t_size == 5)
+				// {
+				// 	std::cout << root->right->right->parent->data.first << " / " << root->right->right->parent->parent->data.first << std::endl;
+				// 	std::cout << root->right->right->parent->left->data.first << " / " << root->right->right->parent->right->data.first << std::endl;
+				// }
 				return (pair<iterator, bool>(iterator(node), b));
 			}
 
@@ -291,7 +302,7 @@ namespace ft
 					replace = del->left;
 				else
 					replace = del->right;
-				
+
 				replace->parent = del->parent;
 
 				if (del->parent == NULL)
@@ -317,11 +328,11 @@ namespace ft
 				del = NULL;
 				--t_size;
 
-				// std::cout << root->left->data.first << " : " << root->left->color << "  /  " <<
-				// root->data.first << " : " << root->color << "  /  " <<
-				// root->right->left->data.first << " : " << root->right->left->color << "  /  " <<
-				// root->right->data.first << " : " << root->right->color << "  /  " << 
-				// root->right->right->data.first << " : " << root->right->right->color << std::endl;
+				std::cout << root->left->data.first << " : " << root->left->color << "  /  " <<
+				root->data.first << " : " << root->color << "  /  " <<
+				root->right->left->data.first << " : " << root->right->left->color << "  /  " <<
+				root->right->data.first << " : " << root->right->color << "  /  " << 
+				root->right->right->data.first << " : " << root->right->right->color << std::endl;
 			}
 
 			void checkdelete(node *replace)
@@ -334,14 +345,6 @@ namespace ft
 					{
 						sibling = replace->parent->right;
 
-						// if (replace->parent->color == true)
-						// {
-						// 	if (sibling->color == false && sibling->left->color == false && sibling->right->color == false)
-						// 	{
-						// 		sibling->color = true;
-						// 		replace->color = false;
-						// 	}
-						// }
 						if (sibling->color == true) // 형제 노드가 red
 						{
 							sibling->color = false;
@@ -376,14 +379,6 @@ namespace ft
 					{
 						sibling = replace->parent->left;
 					
-						// if (replace->parent->color == true)
-						// {
-						// 	if (sibling->color == false && sibling->left->color == false && sibling->right->color == false)
-						// 	{
-						// 		sibling->color = true;
-						// 		replace->color = false;
-						// 	}
-						// }
 						if (sibling->color == true) // 형제 노드가 red
 						{
 							sibling->color = false;
@@ -420,14 +415,16 @@ namespace ft
 
 			void leftrotate(node *now)
 			{
-				if (now == NULL || now->right == NULL)
+				if (now == nil || now->right == nil)
 					return;
 
 				node *r_child = now->right;
 
-				now->right = r_child->left;
+				now->right = now->right->left;
 				if (now->right != nil)
-					r_child->left->parent = now;
+					now->right->parent = now;
+				r_child->left = now;
+				r_child->parent = now->parent;
 				if (now->parent == NULL)
 				{
 					this->root = r_child;
@@ -435,27 +432,26 @@ namespace ft
 				}
 				else
 				{
-					//r_child->parent = now->parent;
 					if (now == now->parent->left)
 						now->parent->left = r_child;
 					else
 						now->parent->right = r_child;
 				}
-				r_child->left = now;
 				now->parent = r_child;
 				//now = r_child;
 			}
 
 			void rightrotate(node *now)
 			{
-				if (now == NULL || now->left == NULL)
+				if (now == nil || now->left == nil)
 					return;
 
 				node *l_child = now->left;
 
-				now->left = l_child->right;
-				if (l_child->right != nil)
-					l_child->right->parent = now;
+				now->left = now->left->right;
+				if (now->left != nil)
+					now->left->parent = now;
+				l_child->right = now;	
 				l_child->parent = now->parent;
 				if (now->parent == NULL)
 					this->root = l_child;
@@ -466,7 +462,6 @@ namespace ft
 					else
 						now->parent->right = l_child;
 				}
-				l_child->right = now;	
 				now->parent = l_child;
 				//now = l_child;
 			}
@@ -531,13 +526,30 @@ namespace ft
 
 			void swap(tree& t)
 			{
-				node *t_tmp = root;
-				size_type s_tmp = t_size;
+				value_compare	tmp_comp = t_comp;
+				allocator_type	tmp_alloc = t_alloc;
+				node_allocator	tmp_n_all = n_alloc;
+				size_type		tmp_size = t_size;
+				node 			*tmp_root = root;
+				node			*tmp_nil = nil;
+
+				t_comp = t.t_comp;
+				t.t_comp = tmp_comp;
+
+				t_alloc = t.t_alloc;
+				t.t_alloc = tmp_alloc;
+
+				n_alloc = t.n_alloc;
+				t.n_alloc = tmp_n_all;
+
+				t_size = t.t_size;
+				t.t_size = tmp_size;
 
 				root = t.root;
-				t.root = t_tmp;
-				t_size = t.t_size;
-				t.t_size = s_tmp;
+				t.root = tmp_root;
+
+				nil = t.nil;
+				t.nil = tmp_nil;			
 			}
 
 			void del_tree(node *n)
@@ -660,6 +672,16 @@ namespace ft
 				if (it.getptr() != end().getptr() && !t_comp(*it, val) && !t_comp(val, *it))
 					it++;
 				return (it);
+			}
+
+			value_compare getcomp() const
+			{
+				return (t_comp);
+			}
+
+			allocator_type getalloc() const
+			{
+				return (t_alloc);
 			}
     };
 }

@@ -20,9 +20,9 @@ namespace ft
 			typedef const T *									const_pointer;
 			typedef size_t										size_type;
 			typedef ft::map_iterator<value_type>			    iterator;
-			typedef ft::map_iterator<value_type>	const_iterator;
+			typedef ft::const_map_iterator<value_type>			const_iterator;
 			typedef ft::reverse_map_iterator<value_type>	    reverse_iterator;
-			typedef ft::reverse_map_iterator<value_type>	const_reverse_iterator;
+			typedef ft::reverse_const_iterator<value_type>		const_reverse_iterator;
 			class value_compare : public std::binary_function<value_type, value_type, bool>
 			{   // in C++98, it is required to inherit binary_function<value_type,value_type,bool>
 				friend class map;
@@ -59,9 +59,6 @@ namespace ft
 
 			map& operator= (const map& x)
 			{
-				tree.n_alloc = x.tree.n_alloc;
-				tree.t_alloc = x.tree.t_alloc;
-				tree.t_comp = x.tree.t_comp;
 				tree.clear();
 				for (iterator i = x.begin(); i != x.end(); i++)
 					tree.insert(*i);
@@ -101,12 +98,12 @@ namespace ft
 
 			reverse_iterator rend()
 			{
-				return (reverse_iterator(tree.rend()));
+				return (reverse_iterator(--tree.rend()));
 			}
 
 			const_reverse_iterator rend() const
 			{
-				return (const_reverse_iterator(tree.rend()));
+				return (const_reverse_iterator(--tree.rend()));
 			}
 
 		// Capacity
@@ -158,7 +155,7 @@ namespace ft
 			size_type erase (const key_type& k)
 			{
 				tree.deletenode(ft::make_pair(k, mapped_type()));
-				return (tree.size());
+				return (1);
 			}
 
 			void erase (iterator first, iterator last)
@@ -249,8 +246,8 @@ namespace ft
 	{
 		if (lhs.size() != rhs.size())
 			return (false);
-		ft::map_iterator<ft::pair<const Key, T> > it1 = lhs.begin();
-		ft::map_iterator<ft::pair<const Key, T> >it2 = rhs.begin();
+		typename ft::map<Key, T, Compare, Alloc>::const_iterator it1 = lhs.begin();
+		typename ft::map<Key, T, Compare, Alloc>::const_iterator it2 = rhs.begin();
 		while (it1 != lhs.end() && it2 != rhs.end())
 		{
 			if (it1->first != it2->first)
@@ -282,8 +279,8 @@ namespace ft
 		else
 			size = lhs.size();
 		
-		ft::map_iterator<ft::pair<const Key, T> > it1 = lhs.begin();
-		ft::map_iterator<ft::pair<const Key, T> > it2 = rhs.begin();
+		typename ft::map<Key, T, Compare, Alloc>::const_iterator it1 = lhs.begin();
+		typename ft::map<Key, T, Compare, Alloc>::const_iterator it2 = rhs.begin();
 		
 		i = -1;
 		while (++i < size)
@@ -315,8 +312,8 @@ namespace ft
 		else
 			size = lhs.size();
 		
-		ft::map_iterator<ft::pair<const Key, T> > it1 = lhs.begin();
-		ft::map_iterator<ft::pair<const Key, T> > it2 = rhs.begin();
+		typename ft::map<Key, T, Compare, Alloc>::const_iterator it1 = lhs.begin();
+		typename ft::map<Key, T, Compare, Alloc>::const_iterator it2 = rhs.begin();
 		
 		i = -1;
 		while (++i < size)

@@ -55,16 +55,18 @@ int main(void)
 // 		std::cout << it->first << &it << '\n';
 //  	}
 
+
  	std::cout << "==============\n";
 
 	ft::map<char, int> first;
-	ft::map<char, int> second;
+	//ft::map<char, int> second;
 	first['a'] = 10;
 	first['b'] = 20;
-	first['c'] = 30;
-	first['d'] = 40;
-	first['e'] = 50;
-	//first['a'] = 10;
+	// first['c'] = 30;
+	// first['d'] = 40;
+	// first['e'] = 50;
+	// first['a'] = 10;
+
 
 // ft::map<int, std::string> first;
 
@@ -77,45 +79,24 @@ int main(void)
 
 	ft::map<char, int>::iterator i1;
 
-	i1 = first.begin();
-	
-	// std::cout << i1.getptr() << std::endl;
-	// i1 = first.end();
-	// std::cout << i1.getptr() << std::endl;
-	std::cout << (++i1)->first << i1.getptr() << std::endl;
-	std::cout << (++i1)->first << i1.getptr() << std::endl;
-		std::cout << (i1 == first.end()) << std::endl;
+	first.erase('a');
 
-	std::cout << (++i1)->first << i1.getptr() << std::endl;
-	std::cout << (++i1)->first << i1.getptr() << std::endl;
-	std::cout << (++i1)->first << i1.getptr() << std::endl;
+	// first.erase('b');
 
+	// first.erase('c');
 
-	// for (i1 = first.begin(); i1 != first.end(); i1++)
-	// 	std::cout << "???" << i1->first << " : " << i1->second << std::endl;
-	std::cout << first.size() << std::endl;
-	// ft::map<char, int>::iterator i = first.upper_bound('a');
-	//std::cout << i->first << std::endl;
+	// first.erase('d');
 
+	// first.erase('e');
 
-	//ft::map<char, int> second (first.begin(), first.end());
+	for (i1 = first.begin(); i1 != first.end(); i1++)
+		std::cout << "???" << i1->first << " : " << i1->second << std::endl;
+	// std::cout << first.size() << std::endl;
+
+	// ft::map<char, int> second (first.begin(), first.end());
 	// std::cout << "after \n";
 	// std::cout << "123\n";
 
-	// first.erase('a');
-	// 	std::cout << "123\n";
-
-	// first.erase('b');
-	// 	std::cout << "123\n";
-
-	// first.erase('c');
-	// 	std::cout << "123\n";
-
-	// first.erase('d');
-	// 	std::cout << "123\n";
-
-	// first.erase('e');
-	// 	std::cout << "123\n";
 
 
 	// ft::map<char, int>::iterator i;
