@@ -335,7 +335,7 @@ namespace ft
 	}
 
 	template <class Iterator>
-	typename reverse_iterator<Iterator>::size_type operator- ( const reverse_iterator<Iterator>& lhs,	const reverse_iterator<Iterator>& rhs)
+	typename reverse_iterator<Iterator>::size_type operator- ( const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
 	{
 		return (lhs.getptr() - rhs.getptr());
 	}

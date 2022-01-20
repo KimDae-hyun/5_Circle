@@ -78,7 +78,7 @@ namespace ft
 				iterator_&	operator++(void)
 				{
 					node_ *tmp = n_ptr;
-					
+
 					if (n_ptr->right && n_ptr->right->parent)
 					{
 						n_ptr = n_ptr->right;
@@ -97,6 +97,11 @@ namespace ft
 					}
 					if (n_ptr->parent)
 						n_ptr = n_ptr->parent;
+					else if (!n_ptr->parent && findright().getptr() == tmp)
+					{
+						n_ptr = tmp->right;
+						return (*this);
+					}
 					return (*this);
 				};
 
@@ -137,9 +142,9 @@ namespace ft
 
 				iterator_&	findleft(void)
 				{
-					// if (!n_ptr || n_ptr->left == n_ptr->nil)
-					// 	return (*this);
-					if (n_ptr->left && n_ptr->left->parent)
+					if (!n_ptr || !n_ptr->left)
+					 	return (*this);
+					if (n_ptr->left->left)
 					{
 						n_ptr = n_ptr->left;
 						findleft();
@@ -149,9 +154,11 @@ namespace ft
 
 				iterator_&	findright(void)
 				{
+					if (!n_ptr|| !n_ptr->right)
+					 	return (*this);
 					/*if (!n_ptr || n_ptr->right == n_ptr->nil)
 						return (*this);
-					else */if (n_ptr->right && n_ptr->right->parent)
+					else */if (n_ptr->right->right)
 					{
 						n_ptr = n_ptr->right;
 						findright();
@@ -241,6 +248,11 @@ namespace ft
 					}
 					if (n_ptr->parent)
 						n_ptr = n_ptr->parent;
+					else if (!n_ptr->parent && findright().getptr() == tmp)
+					{
+						n_ptr = tmp->right;
+						return (*this);
+					}
 					return (*this);
 				};
 
@@ -281,6 +293,8 @@ namespace ft
 
 				iterator_&	findleft(void)
 				{
+					if (!n_ptr || !n_ptr->left)
+					 	return (*this);
 					if (n_ptr->left && n_ptr->left->parent)
 					{
 						n_ptr = n_ptr->left;
@@ -291,6 +305,8 @@ namespace ft
 
 				iterator_&	findright(void)
 				{
+					if (!n_ptr|| !n_ptr->right)
+					 	return (*this);
 					if (n_ptr->right && n_ptr->right->parent)
 					{
 						n_ptr = n_ptr->right;
@@ -420,6 +436,8 @@ namespace ft
 
 			iterator_&	findleft(void)
 			{
+				if (!n_ptr || !n_ptr->left)
+					return (*this);
 				if (n_ptr->left && n_ptr->left->parent)
 				{
 					n_ptr = n_ptr->left;
@@ -430,6 +448,8 @@ namespace ft
 
 			iterator_&	findright(void)
 			{
+				if (!n_ptr|| !n_ptr->right)
+					return (*this);
 				if (n_ptr->right && n_ptr->right->parent)
 				{
 					n_ptr = n_ptr->right;
@@ -561,6 +581,8 @@ namespace ft
 
 			iterator_&	findleft(void)
 			{
+				if (!n_ptr || !n_ptr->left)
+				 	return (*this);
 				if (n_ptr->left && n_ptr->left->parent)
 				{
 					n_ptr = n_ptr->left;
@@ -571,6 +593,8 @@ namespace ft
 
 			iterator_&	findright(void)
 			{
+				if (!n_ptr|| !n_ptr->right)
+					return (*this);
 				if (n_ptr->right && n_ptr->right->parent)
 				{
 					n_ptr = n_ptr->right;

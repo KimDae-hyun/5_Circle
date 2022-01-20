@@ -62,12 +62,13 @@ int main(void)
 	//ft::map<char, int> second;
 	first['a'] = 10;
 	first['b'] = 20;
-	// first['c'] = 30;
-	// first['d'] = 40;
-	// first['e'] = 50;
-	// first['a'] = 10;
+	first['c'] = 30;
+	first['d'] = 40;
+	first['e'] = 50;
+	//first['a'] = 10;
 
-
+	ft::map<char, int> second(first);
+	
 // ft::map<int, std::string> first;
 
 	// 	first[42] = "fgzgxfn";
@@ -79,18 +80,41 @@ int main(void)
 
 	ft::map<char, int>::iterator i1;
 
-	first.erase('a');
+	// first.erase('a');
 
 	// first.erase('b');
 
-	// first.erase('c');
+	//first.erase('c');
 
 	// first.erase('d');
 
 	// first.erase('e');
 
-	for (i1 = first.begin(); i1 != first.end(); i1++)
-		std::cout << "???" << i1->first << " : " << i1->second << std::endl;
+	// i1 = first.end();
+	// i1--;
+	// std::cout << "main end " << i1->first << std::endl;
+	
+	// i1 = first.begin();
+	// std::cout << "main test " << i1.getptr() << " / " << i1->first << std::endl;
+	// i1++;
+	// std::cout << "main test " << i1.getptr() << " / " << i1->first << std::endl;
+	// i1++;
+	// std::cout << "main test " << i1.getptr() << " / " << i1->first << std::endl;
+	// i1++;
+	// std::cout << "main test " << i1.getptr() << " / " << i1->first << std::endl;
+	// i1++;
+	// std::cout << "main test " << i1.getptr() << " / " << i1->first << std::endl;
+	// i1++;
+	// std::cout << "main test " << i1.getptr() << " / " << i1->first << std::endl;
+	// i1--;
+	// std::cout << "main test " << i1.getptr() << " / " << i1->first << std::endl;
+	
+	// i1 = first.end();
+	// std::cout << "main test " << i1.getptr() << " / " << i1->first << std::endl;
+
+
+	for (i1 = second.begin(); i1 != second.end(); i1++)
+		std::cout << "main " << i1->first << " : " << i1->second << std::endl;
 	// std::cout << first.size() << std::endl;
 
 	// ft::map<char, int> second (first.begin(), first.end());

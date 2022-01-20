@@ -151,10 +151,12 @@ namespace ft
 				// }
                 if (b == true)
 					insertcheck(node);
-				// if (t_size == 5)
+				// if (t_size == 2)
 				// {
-				// 	std::cout << root->right->right->parent->data.first << " / " << root->right->right->parent->parent->data.first << std::endl;
-				// 	std::cout << root->right->right->parent->left->data.first << " / " << root->right->right->parent->right->data.first << std::endl;
+				// 	std::cout << root->right->data.first << " / " << root->data.first  << " . " << root->left->data.first  << " ? ?"<< std::endl;
+				// 	std::cout << root->right->parent->data.first << " / " << root->data.first  << " . " << root->left->parent  << " ? ?"<< std::endl;
+				// 	//std::cout << root->right->right->parent->data.first << " / " << root->right->right->parent->parent->data.first << std::endl;
+				// 	//std::cout << root->right->right->parent->left->data.first << " / " << root->right->right->parent->right->data.first << std::endl;
 				// }
 				return (pair<iterator, bool>(iterator(node), b));
 			}
@@ -263,9 +265,9 @@ namespace ft
 					return (node);
 				if (node == nil)
 					return (nil);
-				if (node->left == nil)
+				if (node->right == nil)
 					return (node);
-				return (minsearch(node->left));
+				return (minsearch(node->right));
 			}
 
 			node *search(node *node, value_type data)
@@ -281,7 +283,7 @@ namespace ft
 
 			void deletenode(value_type data)
 			{
-				if (root == NULL)
+				if (root == NULL || root == nil)
 					return ;
 
 				node *del = NULL; //지워질 노드
@@ -290,11 +292,14 @@ namespace ft
 
 				if (target == NULL)
 					return;
-				if (target->left == nil && target->right == nil)
+				if ((target->left == nil && target->right == nil) || (target->left == NULL && target->right == NULL))
 					del = target;
 				else
 				{
-					del = minsearch(target);
+					if (target->left != nil || target->left != NULL)
+						del = minsearch(target->left);
+					else
+						del = target->right;
 					t_alloc.construct(&target->data, del->data);
 				}
 
@@ -319,20 +324,36 @@ namespace ft
 					else
 						del->parent->right = replace;
 				}
-
+// std::cout << "root " << root->data.first << std::endl;
+// std::cout << "rep " << replace->data.first << std::endl;
+// std::cout << "del " << del->data.first << std::endl;
 				if (del->color == false)
 					checkdelete(replace);
-
+// std::cout << "root " << root->data.first << std::endl;
+// std::cout << "rep " << replace->data.first << std::endl;
+// std::cout << "del " << del->data.first << std::endl;
+				if (replace == nil)
+					replace->parent = NULL;
 				t_alloc.destroy(&del->data);
+				del->parent = NULL;
+				del->left = NULL;
+				del->right = NULL;
 				n_alloc.deallocate(del, 1);
 				del = NULL;
 				--t_size;
 
-				std::cout << root->left->data.first << " : " << root->left->color << "  /  " <<
-				root->data.first << " : " << root->color << "  /  " <<
-				root->right->left->data.first << " : " << root->right->left->color << "  /  " <<
-				root->right->data.first << " : " << root->right->color << "  /  " << 
-				root->right->right->data.first << " : " << root->right->right->color << std::endl;
+				// std::cout << "left " << begin().getptr()->right->data.first << std::endl;
+				// std::cout << root->left->right->data.first << " : " << root->left->right->color << "  /  " <<
+				// root->left->data.first << " : " << root->left->color << "  /  " <<
+				// root->data.first << " : " << root->color << "  /  " <<
+				// root->right->data.first << " : " << root->right->color << "  /  " << std::endl;
+				//root->right->right->data.first << " : " << root->right->right->color << std::endl;
+				
+				// std::cout << root->left->data.first << " : " << root->left->color << "  /  " <<
+				// root->data.first << " : " << root->color << "  /  " <<
+				// root->right->left->data.first << " : " << root->right->left->color << "  /  " <<
+				// root->right->data.first << " : " << root->right->color << "  /  " << 
+				// root->right->right->data.first << " : " << root->right->right->color << std::endl;
 			}
 
 			void checkdelete(node *replace)
@@ -360,7 +381,7 @@ namespace ft
 							}
 							else // 조카 노드들 중 하나라도 black이 아닌 경우
 							{
-								if (sibling->left->color == true)
+								if (sibling->left->color == true && sibling->right->color == false)
 								{
 									sibling->color = true;
 									sibling->left->color = false;
@@ -394,7 +415,7 @@ namespace ft
 							}
 							else // 조카 노드들 중 하나라도 black이 아닌 경우
 							{
-								if (sibling->right->color == true)
+								if (sibling->right->color == true && sibling->left->color == false)
 								{
 									sibling->color = true;
 									sibling->right->color = false;
@@ -478,7 +499,10 @@ namespace ft
 
 			iterator	end(void)
 			{
-				return (++(iterator(root).findright()));
+				iterator it = iterator(root).findright();
+
+				it.getptr()->right->parent = it.getptr();
+				return (++it);
 			};
 
 			const_iterator	end(void) const
