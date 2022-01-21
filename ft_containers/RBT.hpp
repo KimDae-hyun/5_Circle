@@ -71,8 +71,9 @@ namespace ft
 				nil->color = false;
 			}
 			
-			RBtree(const RBtree& tree) : t_comp(tree.t_comp), t_alloc(tree.t_alloc), n_alloc(tree.n_alloc), t_size(tree.t_size)
+			RBtree(const RBtree& tree) : t_comp(tree.t_comp), t_alloc(tree.t_alloc), n_alloc(tree.n_alloc), t_size(0)
 			{
+				iterator it = tree.begin();
 				root = n_alloc.allocate(1);
 				root->parent = NULL;
 				root->color = true;
@@ -83,6 +84,9 @@ namespace ft
 				nil->right = NULL;
 				nil->parent = NULL;
 				nil->color = false;
+
+				for (size_type i = 0; i < tree.t_size; i++)
+					insert(*it++);
 			}
 			~RBtree() {};
 
@@ -128,6 +132,7 @@ namespace ft
 				node* node = n_alloc.allocate(1);
 
 				t_alloc.construct(&node->data, data);
+
 				node->parent = NULL;
 				node->left = nil;
 				node->right = nil;
@@ -142,15 +147,22 @@ namespace ft
                 bool b;
 
 				if (t_size == 1)
+				{
 					root = node;
+					root->color = false;
+				}
 				b = insertvalue(root, node);
 				// if (t_size == 5)
 				// {
 				// 	std::cout << root->right->right->parent->data.first << " / " << root->right->right->parent->parent->data.first << std::endl;
 				// 	std::cout << root->right->right->right->data.first << " / " << root->right->right->right->parent->data.first << std::endl;
 				// }
+	
                 if (b == true)
+				{
 					insertcheck(node);
+					nil->parent = NULL; // insert되었을 때만 nil의 부모 초기화
+				}
 				// if (t_size == 2)
 				// {
 				// 	std::cout << root->right->data.first << " / " << root->data.first  << " . " << root->left->data.first  << " ? ?"<< std::endl;
@@ -188,8 +200,11 @@ namespace ft
 					// t_alloc.destroy(&node->data);
 					// n_alloc.deallocate(node, 1);
 					// node = NULL;
-					// --t_size;
-					node = parent;
+					
+					if (t_size == 1)
+						return (true);
+					node->data.second = parent->data.second;
+					t_size--;
                     return (false);
                 }
                 return (true);
@@ -199,7 +214,8 @@ namespace ft
 			{
 				//부모가 red이면 자식은 black
 				while (now != root && now->parent->color == true && now->parent->parent)
-				{
+				{				std::cout << " / " << std::endl;
+
 					//부모 노드가 조부모의 왼쪽 자식인 경우
 					if (now->parent == now->parent->parent->left)
 					{
@@ -501,13 +517,19 @@ namespace ft
 			{
 				iterator it = iterator(root).findright();
 
-				it.getptr()->right->parent = it.getptr();
+				if (t_size != 0)
+					it.getptr()->right->parent = it.getptr();
+
 				return (++it);
 			};
 
 			const_iterator	end(void) const
 			{
-				return (++(const_iterator(iterator(root).findright())));
+				const_iterator it = iterator(root).findright();
+
+				if (t_size != 0)
+					it.getptr()->right->parent = it.getptr();
+				return (++it);
 			};
 
 			reverse_iterator	rbegin(void)
@@ -595,6 +617,7 @@ namespace ft
 					del_tree(root);
 					root->left = NULL;
 					root->right = NULL;
+					root = NULL;
 				}
 				t_size = 0;
 			}

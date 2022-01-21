@@ -79,27 +79,37 @@ namespace ft
 				{
 					node_ *tmp = n_ptr;
 
-					if (n_ptr->right && n_ptr->right->parent)
+					if (!n_ptr || (!n_ptr->parent && !n_ptr->right && !n_ptr->left)) // 클리어 된 경우 (root == NULL)  '||' 은 tree 기본 생성자 호출 후 end()인 경우 root와 nil 구분을 위해 추가  
+						return (*this);
+					if (n_ptr->right && n_ptr->right->parent && n_ptr->right->parent->data.first == n_ptr->data.first)
 					{
 						n_ptr = n_ptr->right;
-						while (n_ptr->left && n_ptr->left->parent)
+						while (n_ptr->left && n_ptr->left->parent && n_ptr->left->parent->data.first == n_ptr->data.first)
+						{
+							if (!n_ptr->left->left) // 마지막 값에서 더 내려가는거 방지
+								break;
 							n_ptr = n_ptr->left;
+						}
 						return (*this);
 					}
 					while (n_ptr->parent && n_ptr->parent->right == n_ptr)
 					{
 						n_ptr = n_ptr->parent;
-						if (!n_ptr->parent && findright().getptr() == tmp)
-						{
-							n_ptr = tmp->right;
+						if (!n_ptr->parent)
+						{ //n_ptr이 마지막 값인 경우 nil의 부모가 마지막 값을 가리켜서 --를 가능하게 해준다. findright().getptr() 필요한가?
+							n_ptr = tmp; 
+							n_ptr->right->parent = n_ptr;
+							n_ptr = n_ptr->right;
 							return (*this);
 						}
 					}
 					if (n_ptr->parent)
 						n_ptr = n_ptr->parent;
-					else if (!n_ptr->parent && findright().getptr() == tmp)
+					else if (!n_ptr->parent) 
 					{
-						n_ptr = tmp->right;
+						n_ptr = tmp;
+						n_ptr->right->parent = n_ptr;
+						n_ptr = n_ptr->right;
 						return (*this);
 					}
 					return (*this);
@@ -114,6 +124,16 @@ namespace ft
 
 				iterator_&	operator--(void)
 				{
+					node_ *tmp = n_ptr;
+					
+					if (!n_ptr)
+						return (*this);
+					if (!n_ptr->left && !n_ptr->right)
+					{
+						n_ptr = n_ptr->parent;
+						n_ptr->right->parent = NULL;
+						return (*this);
+					}
 					if (n_ptr->left && n_ptr->left->parent)
 					{
 						n_ptr = n_ptr->left;
@@ -121,10 +141,26 @@ namespace ft
 							n_ptr = n_ptr->right;
 						return (*this);
 					}
-					while (n_ptr->parent&& n_ptr->parent->left == n_ptr)
+					while (n_ptr->parent && n_ptr->parent->left == n_ptr)
+					{
 						n_ptr = n_ptr->parent;
+						if (!n_ptr->parent) //findright().getptr() 필요한가?
+						{
+							n_ptr = tmp;
+							n_ptr->left = NULL;
+							n_ptr->left->parent = n_ptr; //제일 작은 값에서 --시 segfault유발
+							return (*this);
+						}
+					}
 					if (n_ptr->parent)
 						n_ptr = n_ptr->parent;
+					else if (!n_ptr->parent) //findright().getptr() 필요한가?
+					{
+						n_ptr = tmp;
+						n_ptr->left = NULL;
+						n_ptr->left->parent = n_ptr;
+						return (*this);
+					}
 					return (*this);
 				};
 
@@ -229,28 +265,38 @@ namespace ft
 				iterator_&	operator++(void)
 				{
 					node_ *tmp = n_ptr;
-					
-					if (n_ptr->right && n_ptr->right->parent)
+
+					if (!n_ptr || (!n_ptr->parent && !n_ptr->right && !n_ptr->left)) // 클리어 된 경우 (root == NULL)  '||' 은 tree 기본 생성자 호출 후 end()인 경우 root와 nil 구분을 위해 추가  
+						return (*this);
+					if (n_ptr->right && n_ptr->right->parent && n_ptr->right->parent->data.first == n_ptr->data.first)
 					{
 						n_ptr = n_ptr->right;
-						while (n_ptr->left && n_ptr->left->parent)
+						while (n_ptr->left && n_ptr->left->parent && n_ptr->left->parent->data.first == n_ptr->data.first)
+						{
+							if (!n_ptr->left->left) // 마지막 값에서 더 내려가는거 방지
+								break;
 							n_ptr = n_ptr->left;
+						}
 						return (*this);
 					}
 					while (n_ptr->parent && n_ptr->parent->right == n_ptr)
 					{
 						n_ptr = n_ptr->parent;
-						if (!n_ptr->parent && findright().getptr() == tmp)
-						{
-							n_ptr = tmp->right;
+						if (!n_ptr->parent)
+						{ //n_ptr이 마지막 값인 경우 nil의 부모가 마지막 값을 가리켜서 --를 가능하게 해준다. findright().getptr() 필요한가?
+							n_ptr = tmp; 
+							n_ptr->right->parent = n_ptr;
+							n_ptr = n_ptr->right;
 							return (*this);
 						}
 					}
 					if (n_ptr->parent)
 						n_ptr = n_ptr->parent;
-					else if (!n_ptr->parent && findright().getptr() == tmp)
+					else if (!n_ptr->parent) 
 					{
-						n_ptr = tmp->right;
+						n_ptr = tmp;
+						n_ptr->right->parent = n_ptr;
+						n_ptr = n_ptr->right;
 						return (*this);
 					}
 					return (*this);
@@ -265,6 +311,16 @@ namespace ft
 
 				iterator_&	operator--(void)
 				{
+					node_ *tmp = n_ptr;
+					
+					if (!n_ptr)
+						return (*this);
+					if (!n_ptr->left && !n_ptr->right)
+					{
+						n_ptr = n_ptr->parent;
+						n_ptr->right->parent = NULL;
+						return (*this);
+					}
 					if (n_ptr->left && n_ptr->left->parent)
 					{
 						n_ptr = n_ptr->left;
@@ -272,10 +328,26 @@ namespace ft
 							n_ptr = n_ptr->right;
 						return (*this);
 					}
-					while (n_ptr->parent&& n_ptr->parent->left == n_ptr)
+					while (n_ptr->parent && n_ptr->parent->left == n_ptr)
+					{
 						n_ptr = n_ptr->parent;
+						if (!n_ptr->parent) //findright().getptr() 필요한가?
+						{
+							n_ptr = tmp;
+							n_ptr->left = NULL;
+							n_ptr->left->parent = n_ptr; //제일 작은 값에서 --시 segfault유발
+							return (*this);
+						}
+					}
 					if (n_ptr->parent)
 						n_ptr = n_ptr->parent;
+					else if (!n_ptr->parent) //findright().getptr() 필요한가?
+					{
+						n_ptr = tmp;
+						n_ptr->left = NULL;
+						n_ptr->left->parent = n_ptr;
+						return (*this);
+					}
 					return (*this);
 				};
 

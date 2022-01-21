@@ -1,5 +1,7 @@
 #include <map>
 #include "map.hpp"
+#include <list>
+typedef std::pair<const int, int> T;
 
 int main(void)
 {
@@ -55,31 +57,42 @@ int main(void)
 // 		std::cout << it->first << &it << '\n';
 //  	}
 
-
- 	std::cout << "==============\n";
-
-	ft::map<char, int> first;
-	//ft::map<char, int> second;
-	first['a'] = 10;
-	first['b'] = 20;
-	first['c'] = 30;
-	first['d'] = 40;
-	first['e'] = 50;
-	//first['a'] = 10;
-
-	ft::map<char, int> second(first);
+	// std::list<T> lst;
+	// int lst_size = 7;
+	// for (int i = 0; i < lst_size; ++i)
+	// 	lst.push_back(T(lst_size - i, i));
 	
-// ft::map<int, std::string> first;
+	// std::cout << lst.begin()->first << std::endl;
+	// std::map<int, int> mp(lst.begin(), lst.end());
+	// std::map<int, int>::iterator it = mp.begin(), ite = mp.end();
+	// for (;it != ite; it++)
+	// {
+	// 	std::cout << it->first << " / " << it->second << std::endl;
+	// }
 
-	// 	first[42] = "fgzgxfn";
-	// 	first[25] = "funny";
-	// 	first[80] = "hey";
-	// 	first[12] = "no";
-	// 	first[27] = "bee";
-	// 	first[90] = "8";
+ 	// std::cout << "==============\n";
 
-	ft::map<char, int>::iterator i1;
+	// ft::map<char, int> first;
+	// ft::map<char, int> second;
+	// first['a'] = 10;
+	// first['b'] = 20;
+	// first['c'] = 30;
+	// first['d'] = 40;
+	// first['e'] = 50;
+	// first['a'] = 10;
 
+	// ft::map<char, int> second(first);
+	
+		ft::map<int, std::string> first;
+
+		// first[42] = "fgzgxfn";
+		// first[25] = "funny";
+		// first[80] = "hey";
+		// first[12] = "no";
+		// first[27] = "bee";
+		// first[90] = "8";
+
+	ft::map<int, std::string>::iterator i1 = first.end();
 	// first.erase('a');
 
 	// first.erase('b');
@@ -94,26 +107,25 @@ int main(void)
 	// i1--;
 	// std::cout << "main end " << i1->first << std::endl;
 	
-	// i1 = first.begin();
-	// std::cout << "main test " << i1.getptr() << " / " << i1->first << std::endl;
-	// i1++;
-	// std::cout << "main test " << i1.getptr() << " / " << i1->first << std::endl;
-	// i1++;
-	// std::cout << "main test " << i1.getptr() << " / " << i1->first << std::endl;
-	// i1++;
-	// std::cout << "main test " << i1.getptr() << " / " << i1->first << std::endl;
-	// i1++;
-	// std::cout << "main test " << i1.getptr() << " / " << i1->first << std::endl;
-	// i1++;
-	// std::cout << "main test " << i1.getptr() << " / " << i1->first << std::endl;
+	// i1 = first.end();
+	// std::cout << "main test "  << " / " << i1->first << std::endl;
 	// i1--;
-	// std::cout << "main test " << i1.getptr() << " / " << i1->first << std::endl;
+	// std::cout << "main test " << " / " << i1->first << std::endl;
+	// i1--;
+	// std::cout << "main test " << " / " << i1->first << std::endl;
+	// i1--;
+	// std::cout << "main test " << " / " << i1->first << std::endl;
+	// i1--;
+	// std::cout << "main test " << " / " << i1->first << std::endl;
+	// i1--;
+	// std::cout << "main test " << " / " << i1->first << std::endl;
+
 	
 	// i1 = first.end();
 	// std::cout << "main test " << i1.getptr() << " / " << i1->first << std::endl;
 
 
-	for (i1 = second.begin(); i1 != second.end(); i1++)
+	for (i1 = first.begin(); i1 != first.end(); i1++)
 		std::cout << "main " << i1->first << " : " << i1->second << std::endl;
 	// std::cout << first.size() << std::endl;
 
