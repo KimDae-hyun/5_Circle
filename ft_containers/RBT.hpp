@@ -71,8 +71,9 @@ namespace ft
 				nil->color = false;
 			}
 			
-			RBtree(const RBtree& tree) : t_comp(tree.t_comp), t_alloc(tree.t_alloc), n_alloc(tree.n_alloc), t_size(tree.t_size)
+			RBtree(const RBtree& tree) : t_comp(tree.t_comp), t_alloc(tree.t_alloc), n_alloc(tree.n_alloc), t_size(0)
 			{
+				iterator it = tree.begin();
 				root = n_alloc.allocate(1);
 				root->parent = NULL;
 				root->color = true;
@@ -83,6 +84,9 @@ namespace ft
 				nil->right = NULL;
 				nil->parent = NULL;
 				nil->color = false;
+
+				for (size_type i = 0; i < tree.t_size; i++)
+					insert(*it++);
 			}
 			~RBtree() {};
 
@@ -117,9 +121,10 @@ namespace ft
 			template <class InputIterator>
 			void	insert(InputIterator first, InputIterator last)
 			{
-				iterator it = begin();
-				for (InputIterator itt = first; itt != last; ++itt)
-					it = insert(it, *itt);
+				for (; first != last; first++)
+				{
+					insert(*first);
+				}
 			};
 
 			node *create(value_type data)
@@ -127,6 +132,7 @@ namespace ft
 				node* node = n_alloc.allocate(1);
 
 				t_alloc.construct(&node->data, data);
+
 				node->parent = NULL;
 				node->left = nil;
 				node->right = nil;
@@ -141,10 +147,29 @@ namespace ft
                 bool b;
 
 				if (t_size == 1)
+				{
 					root = node;
+					root->color = false;
+				}
 				b = insertvalue(root, node);
+				// if (t_size == 5)
+				// {
+				// 	std::cout << root->right->right->parent->data.first << " / " << root->right->right->parent->parent->data.first << std::endl;
+				// 	std::cout << root->right->right->right->data.first << " / " << root->right->right->right->parent->data.first << std::endl;
+				// }
+	
                 if (b == true)
+				{
 					insertcheck(node);
+					nil->parent = NULL; // insert되었을 때만 nil의 부모 초기화
+				}
+				// if (t_size == 2)
+				// {
+				// 	std::cout << root->right->data.first << " / " << root->data.first  << " . " << root->left->data.first  << " ? ?"<< std::endl;
+				// 	std::cout << root->right->parent->data.first << " / " << root->data.first  << " . " << root->left->parent  << " ? ?"<< std::endl;
+				// 	//std::cout << root->right->right->parent->data.first << " / " << root->right->right->parent->parent->data.first << std::endl;
+				// 	//std::cout << root->right->right->parent->left->data.first << " / " << root->right->right->parent->right->data.first << std::endl;
+				// }
 				return (pair<iterator, bool>(iterator(node), b));
 			}
 
@@ -175,8 +200,11 @@ namespace ft
 					// t_alloc.destroy(&node->data);
 					// n_alloc.deallocate(node, 1);
 					// node = NULL;
-					// --t_size;
-					node = parent;
+					
+					if (t_size == 1)
+						return (true);
+					node->data.second = parent->data.second;
+					t_size--;
                     return (false);
                 }
                 return (true);
@@ -186,7 +214,8 @@ namespace ft
 			{
 				//부모가 red이면 자식은 black
 				while (now != root && now->parent->color == true && now->parent->parent)
-				{
+				{				std::cout << " / " << std::endl;
+
 					//부모 노드가 조부모의 왼쪽 자식인 경우
 					if (now->parent == now->parent->parent->left)
 					{
@@ -252,9 +281,9 @@ namespace ft
 					return (node);
 				if (node == nil)
 					return (nil);
-				if (node->left == nil)
+				if (node->right == nil)
 					return (node);
-				return (minsearch(node->left));
+				return (minsearch(node->right));
 			}
 
 			node *search(node *node, value_type data)
@@ -270,7 +299,7 @@ namespace ft
 
 			void deletenode(value_type data)
 			{
-				if (root == NULL)
+				if (root == NULL || root == nil)
 					return ;
 
 				node *del = NULL; //지워질 노드
@@ -279,11 +308,14 @@ namespace ft
 
 				if (target == NULL)
 					return;
-				if (target->left == nil && target->right == nil)
+				if ((target->left == nil && target->right == nil) || (target->left == NULL && target->right == NULL))
 					del = target;
 				else
 				{
-					del = minsearch(target);
+					if (target->left != nil || target->left != NULL)
+						del = minsearch(target->left);
+					else
+						del = target->right;
 					t_alloc.construct(&target->data, del->data);
 				}
 
@@ -291,7 +323,7 @@ namespace ft
 					replace = del->left;
 				else
 					replace = del->right;
-				
+
 				replace->parent = del->parent;
 
 				if (del->parent == NULL)
@@ -308,15 +340,31 @@ namespace ft
 					else
 						del->parent->right = replace;
 				}
-
+// std::cout << "root " << root->data.first << std::endl;
+// std::cout << "rep " << replace->data.first << std::endl;
+// std::cout << "del " << del->data.first << std::endl;
 				if (del->color == false)
 					checkdelete(replace);
-
+// std::cout << "root " << root->data.first << std::endl;
+// std::cout << "rep " << replace->data.first << std::endl;
+// std::cout << "del " << del->data.first << std::endl;
+				if (replace == nil)
+					replace->parent = NULL;
 				t_alloc.destroy(&del->data);
+				del->parent = NULL;
+				del->left = NULL;
+				del->right = NULL;
 				n_alloc.deallocate(del, 1);
 				del = NULL;
 				--t_size;
 
+				// std::cout << "left " << begin().getptr()->right->data.first << std::endl;
+				// std::cout << root->left->right->data.first << " : " << root->left->right->color << "  /  " <<
+				// root->left->data.first << " : " << root->left->color << "  /  " <<
+				// root->data.first << " : " << root->color << "  /  " <<
+				// root->right->data.first << " : " << root->right->color << "  /  " << std::endl;
+				//root->right->right->data.first << " : " << root->right->right->color << std::endl;
+				
 				// std::cout << root->left->data.first << " : " << root->left->color << "  /  " <<
 				// root->data.first << " : " << root->color << "  /  " <<
 				// root->right->left->data.first << " : " << root->right->left->color << "  /  " <<
@@ -334,14 +382,6 @@ namespace ft
 					{
 						sibling = replace->parent->right;
 
-						// if (replace->parent->color == true)
-						// {
-						// 	if (sibling->color == false && sibling->left->color == false && sibling->right->color == false)
-						// 	{
-						// 		sibling->color = true;
-						// 		replace->color = false;
-						// 	}
-						// }
 						if (sibling->color == true) // 형제 노드가 red
 						{
 							sibling->color = false;
@@ -357,7 +397,7 @@ namespace ft
 							}
 							else // 조카 노드들 중 하나라도 black이 아닌 경우
 							{
-								if (sibling->left->color == true)
+								if (sibling->left->color == true && sibling->right->color == false)
 								{
 									sibling->color = true;
 									sibling->left->color = false;
@@ -376,14 +416,6 @@ namespace ft
 					{
 						sibling = replace->parent->left;
 					
-						// if (replace->parent->color == true)
-						// {
-						// 	if (sibling->color == false && sibling->left->color == false && sibling->right->color == false)
-						// 	{
-						// 		sibling->color = true;
-						// 		replace->color = false;
-						// 	}
-						// }
 						if (sibling->color == true) // 형제 노드가 red
 						{
 							sibling->color = false;
@@ -399,7 +431,7 @@ namespace ft
 							}
 							else // 조카 노드들 중 하나라도 black이 아닌 경우
 							{
-								if (sibling->right->color == true)
+								if (sibling->right->color == true && sibling->left->color == false)
 								{
 									sibling->color = true;
 									sibling->right->color = false;
@@ -420,14 +452,16 @@ namespace ft
 
 			void leftrotate(node *now)
 			{
-				if (now == NULL || now->right == NULL)
+				if (now == nil || now->right == nil)
 					return;
 
 				node *r_child = now->right;
 
-				now->right = r_child->left;
+				now->right = now->right->left;
 				if (now->right != nil)
-					r_child->left->parent = now;
+					now->right->parent = now;
+				r_child->left = now;
+				r_child->parent = now->parent;
 				if (now->parent == NULL)
 				{
 					this->root = r_child;
@@ -435,27 +469,26 @@ namespace ft
 				}
 				else
 				{
-					//r_child->parent = now->parent;
 					if (now == now->parent->left)
 						now->parent->left = r_child;
 					else
 						now->parent->right = r_child;
 				}
-				r_child->left = now;
 				now->parent = r_child;
 				//now = r_child;
 			}
 
 			void rightrotate(node *now)
 			{
-				if (now == NULL || now->left == NULL)
+				if (now == nil || now->left == nil)
 					return;
 
 				node *l_child = now->left;
 
-				now->left = l_child->right;
-				if (l_child->right != nil)
-					l_child->right->parent = now;
+				now->left = now->left->right;
+				if (now->left != nil)
+					now->left->parent = now;
+				l_child->right = now;	
 				l_child->parent = now->parent;
 				if (now->parent == NULL)
 					this->root = l_child;
@@ -466,7 +499,6 @@ namespace ft
 					else
 						now->parent->right = l_child;
 				}
-				l_child->right = now;	
 				now->parent = l_child;
 				//now = l_child;
 			}
@@ -483,12 +515,21 @@ namespace ft
 
 			iterator	end(void)
 			{
-				return (++(iterator(root).findright()));
+				iterator it = iterator(root).findright();
+
+				if (t_size != 0)
+					it.getptr()->right->parent = it.getptr();
+
+				return (++it);
 			};
 
 			const_iterator	end(void) const
 			{
-				return (++(const_iterator(iterator(root).findright())));
+				const_iterator it = iterator(root).findright();
+
+				if (t_size != 0)
+					it.getptr()->right->parent = it.getptr();
+				return (++it);
 			};
 
 			reverse_iterator	rbegin(void)
@@ -531,13 +572,30 @@ namespace ft
 
 			void swap(tree& t)
 			{
-				node *t_tmp = root;
-				size_type s_tmp = t_size;
+				value_compare	tmp_comp = t_comp;
+				allocator_type	tmp_alloc = t_alloc;
+				node_allocator	tmp_n_all = n_alloc;
+				size_type		tmp_size = t_size;
+				node 			*tmp_root = root;
+				node			*tmp_nil = nil;
+
+				t_comp = t.t_comp;
+				t.t_comp = tmp_comp;
+
+				t_alloc = t.t_alloc;
+				t.t_alloc = tmp_alloc;
+
+				n_alloc = t.n_alloc;
+				t.n_alloc = tmp_n_all;
+
+				t_size = t.t_size;
+				t.t_size = tmp_size;
 
 				root = t.root;
-				t.root = t_tmp;
-				t_size = t.t_size;
-				t.t_size = s_tmp;
+				t.root = tmp_root;
+
+				nil = t.nil;
+				t.nil = tmp_nil;			
 			}
 
 			void del_tree(node *n)
@@ -559,6 +617,7 @@ namespace ft
 					del_tree(root);
 					root->left = NULL;
 					root->right = NULL;
+					root = NULL;
 				}
 				t_size = 0;
 			}
@@ -660,6 +719,16 @@ namespace ft
 				if (it.getptr() != end().getptr() && !t_comp(*it, val) && !t_comp(val, *it))
 					it++;
 				return (it);
+			}
+
+			value_compare getcomp() const
+			{
+				return (t_comp);
+			}
+
+			allocator_type getalloc() const
+			{
+				return (t_alloc);
 			}
     };
 }

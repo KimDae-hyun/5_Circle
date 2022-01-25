@@ -113,34 +113,22 @@ namespace ft
 
 			bool	operator<(const vector_iterator<const T> &iter) const
 			{
-				if (this->ptr < iter.getptr())
-					return (1);
-				else
-					return (0);
+				return (this->ptr < iter.getptr());
 			}
 
 			bool	operator>(const vector_iterator<const T> &iter) const
 			{
-				if (this->ptr > iter.getptr())
-					return (1);
-				else
-					return (0);
+				return (this->ptr > iter.getptr());
 			}
 
 			bool	operator<=(const vector_iterator<const T> &iter) const
 			{
-				if (this->ptr <= iter.getptr())
-					return (1);
-				else
-					return (0);
+				return (this->ptr <= iter.getptr());
 			}
 
 			bool	operator>=(const vector_iterator<const T> &iter) const
 			{
-				if (this->ptr >= iter.getptr())
-					return (1);
-				else
-					return (0);
+				return (this->ptr >= iter.getptr());
 			}
 			
 			vector_iterator& operator+=(const int n)
@@ -183,11 +171,6 @@ namespace ft
 			typedef typename v_traits::reference		reference;
 			typedef	typename v_traits::pointer			pointer;
 			typedef typename v_traits::difference_type	size_type;
-        // public:
-		// 	typedef T	value_type;
-		// 	typedef T&	reference;
-		// 	typedef T*	pointer;
-		// 	typedef std::ptrdiff_t	size_type;
 
 		private:
 			pointer	ptr;
@@ -195,10 +178,7 @@ namespace ft
 		public:
 			reverse_iterator(void) : ptr(0) {}
 			reverse_iterator(const reverse_iterator &iter) {*this = iter;};
-			reverse_iterator(const vector_iterator<T> &iter)
-			{
-				ptr = iter.getptr();
-			};
+			reverse_iterator(const vector_iterator<T> &iter) {ptr = iter.getptr();};
 			~reverse_iterator() {};
 
 			operator reverse_iterator<const T> () const
@@ -335,7 +315,7 @@ namespace ft
 	}
 
 	template <class Iterator>
-	typename reverse_iterator<Iterator>::size_type operator- ( const reverse_iterator<Iterator>& lhs,	const reverse_iterator<Iterator>& rhs)
+	typename reverse_iterator<Iterator>::size_type operator- ( const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
 	{
 		return (lhs.getptr() - rhs.getptr());
 	}

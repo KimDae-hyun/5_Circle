@@ -19,8 +19,6 @@ namespace ft
 
 		public:
 			explicit stack (const container_type& ctnr = container_type()) : cont(ctnr) {};
-			// vec_iterator.hpp 161 컴파일 에러 -> g++이 아닌 clang++로 컴파일
-			// segmentation fault -> vector의 복사생성자 수정
 			bool empty() const {return (cont.empty());}
 			size_type size() const {return (cont.size());}
 			value_type& top() {return (cont.back());}
