@@ -21,8 +21,8 @@ namespace ft
 			typedef size_t										size_type;
 			typedef ft::map_iterator<value_type>			    iterator;
 			typedef ft::const_map_iterator<value_type>			const_iterator;
-			typedef ft::reverse_map_iterator<value_type>	    reverse_iterator;
-			typedef ft::reverse_const_iterator<value_type>		const_reverse_iterator;
+			typedef ft::reverse_iterator<iterator>			    reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 			class value_compare : public std::binary_function<value_type, value_type, bool>
 			{   // in C++98, it is required to inherit binary_function<value_type,value_type,bool>
 				friend class map;
@@ -56,9 +56,9 @@ namespace ft
 
 			map& operator= (const map& x)
 			{
-				tree.clear();
-				for (iterator i = x.begin(); i != x.end(); i++)
-					tree.insert(*i);
+				if (this == &x)
+					return (*this);
+				this->tree = x.tree;
 				return *this;
 			}
 
@@ -95,12 +95,12 @@ namespace ft
 
 			reverse_iterator rend()
 			{
-				return (reverse_iterator(--tree.rend()));
+				return (reverse_iterator(tree.rend()));
 			}
 
 			const_reverse_iterator rend() const
 			{
-				return (const_reverse_iterator(--tree.rend()));
+				return (const_reverse_iterator(tree.rend()));
 			}
 
 		// Capacity
@@ -123,14 +123,13 @@ namespace ft
 		//Element access
 			mapped_type& operator[] (const key_type& k)
 			{
- 				return ((*((tree.insert(ft::make_pair(k, mapped_type()))).first)).second); 
+ 				return (insert(ft::make_pair(k, mapped_type())).first->second); 
 			}
 
 		// Modifiers
 			ft::pair<iterator, bool> insert (const value_type& val)
 			{
-				pair<iterator, bool>	temp = tree.insert(val);
-				return (ft::make_pair(iterator(temp.first), temp.second));
+				return (tree.insert(val));
 			}
 
 			iterator insert (iterator position, const value_type& val)
@@ -146,22 +145,17 @@ namespace ft
 
 			void erase (iterator position)
 			{
-				tree.deletenode(*position);
+				tree.erase(position);
 			}
 
 			size_type erase (const key_type& k)
 			{
-				tree.deletenode(ft::make_pair(k, mapped_type()));
-				return (1);
+				return (tree.erase(ft::make_pair(k, mapped_type())));
 			}
 
 			void erase (iterator first, iterator last)
 			{
-				while (first != last)
-				{
-					tree.deletenode(*first);
-					first++;
-				}
+				tree.erase(first, last);
 			}
 
 			void swap (map& x)
@@ -182,7 +176,7 @@ namespace ft
 
 			value_compare value_comp() const
 			{
-				return (value_compare(tree.value_comp()));
+				return (value_compare(key_compare()));
 			}
 
 		//Operations
@@ -243,20 +237,7 @@ namespace ft
 	{
 		if (lhs.size() != rhs.size())
 			return (false);
-		typename ft::map<Key, T, Compare, Alloc>::const_iterator it1 = lhs.begin();
-		typename ft::map<Key, T, Compare, Alloc>::const_iterator it2 = rhs.begin();
-		while (it1 != lhs.end() && it2 != rhs.end())
-		{
-			if (it1->first != it2->first)
-				return (false);
-			else if (it1->second != it2->second)
-				return (false);
-			it1++;
-			it2++;
-		}
-		if (it1 != lhs.end() || it2 != rhs.end())
-			return (false);
-		return (true);
+		return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
 	}
 	
 	template <class Key, class T, class Compare, class Alloc>
@@ -268,61 +249,19 @@ namespace ft
 	template <class Key, class T, class Compare, class Alloc>
 	bool operator<  (const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs)
 	{
-		size_t	size;
-		size_t	i;
-
-		if (lhs.size() > rhs.size())
-			size = rhs.size();
-		else
-			size = lhs.size();
-		
-		typename ft::map<Key, T, Compare, Alloc>::const_iterator it1 = lhs.begin();
-		typename ft::map<Key, T, Compare, Alloc>::const_iterator it2 = rhs.begin();
-		
-		i = -1;
-		while (++i < size)
-		{
-			if (it1->first != it2->first)
-				return (it1->first < it2->first);
-			else if (it1->second != it2->second)
-				return (it1->second < it2->second);
-			it1++;
-			it2++;
-		}
-		return (lhs.size() < rhs.size());
+		return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 	}
 	
 	template <class Key, class T, class Compare, class Alloc>
 	bool operator<= (const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs)
 	{
-		return (!(lhs > rhs));
+		return(!(rhs < lhs));
 	}
 	
 	template <class Key, class T, class Compare, class Alloc>
 	bool operator>  (const map<Key, T, Compare, Alloc>& lhs, const map<Key, T, Compare, Alloc>& rhs)
 	{
-		size_t	size;
-		size_t	i;
-
-		if (lhs.size() > rhs.size())
-			size = rhs.size();
-		else
-			size = lhs.size();
-		
-		typename ft::map<Key, T, Compare, Alloc>::const_iterator it1 = lhs.begin();
-		typename ft::map<Key, T, Compare, Alloc>::const_iterator it2 = rhs.begin();
-		
-		i = -1;
-		while (++i < size)
-		{
-			if (it1->first != it2->first)
-				return (it1->first > it2->first);
-			else if (it1->second != it2->second)
-				return (it1->second > it2->second);
-			it1++;
-			it2++;
-		}
-		return (lhs.size() > rhs.size());
+		return (rhs < lhs);
 	}
 	
 	template <class Key, class T, class Compare, class Alloc>

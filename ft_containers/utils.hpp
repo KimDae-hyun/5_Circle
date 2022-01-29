@@ -7,6 +7,13 @@
 
 namespace ft
 {
+	enum Color
+	{
+		RED,
+		BLACK,
+		DBLACK
+	};
+
     template <bool Cond, class T = void>
     struct enable_if {};
 
@@ -100,7 +107,7 @@ namespace ft
 	template <class T1, class T2>
 	bool operator<  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
 	{
-		return (lhs.first < rhs.first || (!(rhs.first < lhs.first) && lhs.second < rhs.second));
+		return (lhs.first < rhs.first || (!(lhs.first < rhs.first) && lhs.second < rhs.second));
 	}
 
 	template <class T1, class T2>

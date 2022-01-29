@@ -2,6 +2,7 @@
 # define VECTOR_HPP
 
 # include "vec_iterator.hpp"
+# include "reverse_iterator.hpp"
 # include "utils.hpp"
 
 namespace ft
@@ -19,8 +20,8 @@ namespace ft
 			typedef size_t							size_type;
 			typedef ft::vector_iterator<T>			iterator;
 			typedef ft::vector_iterator<const T>	const_iterator;
-			typedef ft::reverse_iterator<T>			reverse_iterator;
-			typedef ft::reverse_iterator<const T>	const_reverse_iterator;
+			typedef ft::reverse_iterator<iterator>			reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 			
 		private:
 			pointer			v_ptr;
