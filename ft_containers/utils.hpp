@@ -2,8 +2,6 @@
 # define UTILS_HPP
 
 # include <iostream>
-# include <memory>
-# include <limits>
 
 namespace ft
 {
@@ -11,7 +9,7 @@ namespace ft
 	{
 		RED,
 		BLACK,
-		DBLACK
+		DOUBLE_B
 	};
 
     template <bool Cond, class T = void>

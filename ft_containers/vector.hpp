@@ -3,7 +3,6 @@
 
 # include "vec_iterator.hpp"
 # include "reverse_iterator.hpp"
-# include "utils.hpp"
 
 namespace ft
 {
@@ -11,15 +10,15 @@ namespace ft
 	class vector
 	{
 		public:
-			typedef T								value_type;
-			typedef Alloc							allocator_type;
-			typedef T&								reference;
-			typedef const T&						const_reference;
-			typedef T*								pointer;
-			typedef const T *						const_pointer;
-			typedef size_t							size_type;
-			typedef ft::vector_iterator<T>			iterator;
-			typedef ft::vector_iterator<const T>	const_iterator;
+			typedef T										value_type;
+			typedef Alloc									allocator_type;
+			typedef T&										reference;
+			typedef const T&								const_reference;
+			typedef T*										pointer;
+			typedef const T *								const_pointer;
+			typedef size_t									size_type;
+			typedef ft::vector_iterator<T>					iterator;
+			typedef ft::vector_iterator<const T>			const_iterator;
 			typedef ft::reverse_iterator<iterator>			reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 			
@@ -36,6 +35,7 @@ namespace ft
 			{
 				v_ptr = v_alloc.allocate(0);
 			}
+
 			explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
 			: v_ptr(NULL), v_size(n), v_capacity(n), v_alloc(alloc)
 			{
@@ -48,6 +48,7 @@ namespace ft
 					}
 				}
 			}
+
 			template <class InputIterator>
 			vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(), 
 					typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0)
@@ -56,13 +57,14 @@ namespace ft
 				v_ptr = v_alloc.allocate(0);
 				for (; first != last; first++)
             		push_back(*first);
-				pointer v_new = v_alloc.allocate(v_size); // capacity등을 최대값과 맞춰주기 위한 과정이 필요
+				pointer v_new = v_alloc.allocate(v_size);
 				for (size_type i = 0; i < v_size; i++)
 					v_new[i] = v_ptr[i];
 				v_alloc.deallocate(v_ptr, v_capacity);
 				v_ptr = v_new;
 				v_capacity = v_size;
 			}
+
 			vector (const vector &vec) : v_size(vec.v_size), v_capacity(vec.v_capacity), v_alloc(vec.v_alloc)
 			{
 				size_type i;

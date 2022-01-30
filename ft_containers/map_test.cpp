@@ -72,18 +72,18 @@ int main(void)
 
  	// std::cout << "==============\n";
 
-	// ft::map<char, int> first;
+	ft::map<char, int> first;
 	// ft::map<char, int> second;
-	// first['a'] = 10;
-	// first['b'] = 20;
-	// first['c'] = 30;
-	// first['d'] = 40;
-	// first['e'] = 50;
+	first['a'] = 10;
+	first['b'] = 20;
+	first['c'] = 30;
+	first['d'] = 40;
+	first['e'] = 50;
 	// first['a'] = 10;
 
 	// ft::map<char, int> second(first);
 	
-		ft::map<int, std::string> first;
+		// ft::map<int, std::string> first;
 
 		// first[42] = "fgzgxfn";
 		// first[25] = "funny";
@@ -92,14 +92,14 @@ int main(void)
 		// first[27] = "bee";
 		// first[90] = "8";
 
-	ft::map<int, std::string>::iterator i1 = first.end();
-	// first.erase('a');
+	ft::map<char, int>::iterator i1;
+	first.erase('a');
 
-	// first.erase('b');
+	first.erase(++first.begin());
 
 	//first.erase('c');
 
-	// first.erase('d');
+	first.erase('d');
 
 	// first.erase('e');
 
@@ -123,8 +123,6 @@ int main(void)
 	
 	// i1 = first.end();
 	// std::cout << "main test " << i1.getptr() << " / " << i1->first << std::endl;
-
-
 	for (i1 = first.begin(); i1 != first.end(); i1++)
 		std::cout << "main " << i1->first << " : " << i1->second << std::endl;
 	// std::cout << first.size() << std::endl;
