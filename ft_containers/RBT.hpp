@@ -67,7 +67,12 @@ namespace ft
 				tree_copy(tree.get_root());
 			}
 
-			~RBtree() {};
+			~RBtree()
+			{
+				deleteTree(get_root());
+				n_alloc.destroy(base_node);
+				n_alloc.deallocate(base_node, 1);
+			};
 
 			RBtree& operator=(const RBtree &tree)
 			{

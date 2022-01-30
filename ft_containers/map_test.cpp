@@ -71,115 +71,81 @@ int main(void)
 	// }
 
  	// std::cout << "==============\n";
+	{
+		ft::map<char, int> first;
 
-	ft::map<char, int> first;
-	// ft::map<char, int> second;
-	first['a'] = 10;
-	first['b'] = 20;
-	first['c'] = 30;
-	first['d'] = 40;
-	first['e'] = 50;
-	// first['a'] = 10;
+		first['a'] = 10;
+		first['b'] = 20;
+		first['c'] = 30;
+		first['d'] = 40;
+		first['e'] = 50;
+		first['a'] = 10;
 
-	// ft::map<char, int> second(first);
-	
-		// ft::map<int, std::string> first;
+		ft::map<char, int>::iterator i1;
 
-		// first[42] = "fgzgxfn";
-		// first[25] = "funny";
-		// first[80] = "hey";
-		// first[12] = "no";
-		// first[27] = "bee";
-		// first[90] = "8";
+		// first.erase('a');
 
-	ft::map<char, int>::iterator i1;
-	first.erase('a');
+		// first.erase('b');
 
-	first.erase(++first.begin());
+		// first.erase('c');
 
-	//first.erase('c');
+		// first.erase('d');
 
-	first.erase('d');
+		// first.erase('e');
 
-	// first.erase('e');
+		i1 = first.end();
+		std::cout << "main end " << i1->first << std::endl;
+		i1--;	
+		std::cout << "main test " << i1.getptr() << " / " << i1->first << std::endl;
 
-	// i1 = first.end();
-	// i1--;
-	// std::cout << "main end " << i1->first << std::endl;
-	
-	// i1 = first.end();
-	// std::cout << "main test "  << " / " << i1->first << std::endl;
-	// i1--;
-	// std::cout << "main test " << " / " << i1->first << std::endl;
-	// i1--;
-	// std::cout << "main test " << " / " << i1->first << std::endl;
-	// i1--;
-	// std::cout << "main test " << " / " << i1->first << std::endl;
-	// i1--;
-	// std::cout << "main test " << " / " << i1->first << std::endl;
-	// i1--;
-	// std::cout << "main test " << " / " << i1->first << std::endl;
+		for (i1 = first.begin(); i1 != first.end(); i1++)
+			std::cout << "main " << i1->first << " : " << i1->second << std::endl;
 
-	
-	// i1 = first.end();
-	// std::cout << "main test " << i1.getptr() << " / " << i1->first << std::endl;
-	for (i1 = first.begin(); i1 != first.end(); i1++)
-		std::cout << "main " << i1->first << " : " << i1->second << std::endl;
-	// std::cout << first.size() << std::endl;
-
-	// ft::map<char, int> second (first.begin(), first.end());
-	// std::cout << "after \n";
-	// std::cout << "123\n";
+		std::cout << first.size() << std::endl;
 
 
+		ft::map<char, int> second (first.begin(), first.end());
 
-	// ft::map<char, int>::iterator i;
+		ft::map<char, int>::iterator i;
 
-	// std::cout << "123\n";
-	// i = first.begin();
-	// std::cout << "1\n";
+		i = first.begin();
 
-	// ft::map<char, int>::const_iterator it = first.end();
-	// std::cout << "1\n";
-	// std::cout << "begin " << &i << " end " << &it << std::endl;
-	// std::cout << "1\n";
-	// for (; i != it; ++i)
-	// {	
-	// 	std::cout << "for ?? " << " : " << i->first << " / " << &i << std::endl;
-	// }
+		ft::map<char, int>::const_iterator it = first.end();
+		for (; i != it; ++i)
+			std::cout << "for " << " : " << i->first << " / " << &i << std::endl;
 
-	// std::cout << "begin " << &i << " end " << &it << std::endl;
+		std::cout << "empty " << first.empty() << std::endl;
+		std::cout << "size " << first.size() << std::endl;
+		std::cout << "max_size " << first.max_size() << std::endl;
 
-	//  i = first.end();
-	// std::cout << (i != first.end()) << " ??\n";
-	// //std::cout << i->first << " / " << &i << std::endl;
-	// i = first.end();
-	// std::cout << " / " << &i << std::endl;
-	// // ++i;
-	// // --i;
-	// std::cout << " / " << &i << std::endl;
+		second.insert(ft::pair<char, int>('f', 60));
+		second.insert(ft::pair<char, int>('g', 60));
 
-	// std::cout << "empty " << first.empty() << std::endl;
-	// std::cout << "size " << first.size() << std::endl;
-	// std::cout << "max_size " << first.max_size() << std::endl;
+		first.swap(second);
+		for (ft::map<char, int>::iterator it = first.begin(); it != first.end(); it++)
+			std::cout << "for " << " : " << it->first << " / " << &it << std::endl;
+		std::cout << "==============\n";
+		for (ft::map<char, int>::iterator it = second.begin(); it != second.end(); it++)
+			std::cout << "for " << " : " << it->first << " / " << &it << std::endl;
 
-	// second.insert(ft::pair<char, int>('f', 60));
-	// second.insert(ft::pair<char, int>('g', 60));
+		std::cout << "==============\n";
 
-	// first.swap(second);
-	// for (ft::map<char, int>::iterator it = first.begin(); it != first.end(); it++)
-	// 	std::cout << "for " << " : " << it->first << " / " << &it << std::endl;
-	// std::cout << "==============\n";
-	// for (ft::map<char, int>::iterator it = second.begin(); it != second.end(); it++)
-	// 	std::cout << "for " << " : " << it->first << " / " << &it << std::endl;
+		second.clear();
 
-	// std::cout << "==============\n";
+		second['n'] = 0;
+		for (ft::map<char, int>::iterator it = second.begin(); it != second.end(); it++)
+			std::cout << "for " << " : " << it->first << " / " << &it << std::endl;
+		std::cout << second.size() << std::endl;
+	}
+	ft::map<int, std::string> first;
 
-	// second.clear();
+	first[42] = "fgzgxfn";
+	first[25] = "funny";
+	first[80] = "hey";
+	first[12] = "no";
+	first[27] = "bee";
+	first[90] = "8";
 
-	// second['n'] = 0;
-	// for (ft::map<char, int>::iterator it = second.begin(); it != second.end(); it++)
-	// 	std::cout << "for " << " : " << it->first << " / " << &it << std::endl;
-	// std::cout << second.size() << std::endl;
+	system("leaks a.out");
 	return 0;
 }

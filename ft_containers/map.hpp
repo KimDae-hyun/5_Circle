@@ -1,6 +1,7 @@
 #ifndef MAP_HPP
 # define MAP_HPP
 
+# include <functional>
 # include "RBT.hpp"
 
 namespace ft
@@ -167,7 +168,6 @@ namespace ft
 	{
 		x.swap(y);
 	}
-
 }
 
 #endif

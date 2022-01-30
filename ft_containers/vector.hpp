@@ -77,6 +77,8 @@ namespace ft
 			
 			~vector(void)
 			{
+				for (size_type i = 0; i != v_capacity; i++)
+					v_alloc.destroy(&v_ptr[i]);
 				v_alloc.deallocate(v_ptr, v_capacity);
 			};
 

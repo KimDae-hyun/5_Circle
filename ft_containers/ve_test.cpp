@@ -131,5 +131,6 @@ int main()
     gettimeofday(&t, NULL);
     end = t.tv_usec;
     printf("start : %d, end : %d, %d\n", start, end, end - start);
+    system("leaks a.out");
     return (0);
 }
