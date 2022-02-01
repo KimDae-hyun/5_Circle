@@ -1,6 +1,8 @@
 #ifndef ITERATOR_TRAITS_HPP
 # define ITERATOR_TRAITS_HPP
 
+# include <iostream>
+
 namespace ft
 {
     struct input_iterator_tag { };
