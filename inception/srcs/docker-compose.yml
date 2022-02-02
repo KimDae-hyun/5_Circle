@@ -1,1 +1,9 @@
 version : '2'
+
+services:
+	mariadb:
+
+	wordpress:
+
+	nginx:
+
