@@ -1,0 +1,19 @@
+http {
+	index something;
+	limit_except GET;
+
+	server {
+		server_name example.com http://example.com localhost:80 localhost;
+		listen 80;
+		#client_body_size 44040192;
+		root /Users/daekim/Desktop/eval/webserv/state_pages;
+		error_page 404 /404.html;
+		index index.html test.html error.html;
+		autoindex off;
+
+		location / {
+			root /Users/daekim/Desktop/eval/webserv/state_pages;
+			index index2.html;
+		}
+	}
+}
